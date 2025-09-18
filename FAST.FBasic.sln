@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35728.132
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAST.FBasicInteractiveConsole", "FAST.FBasic.InteractiveConsole\FAST.FBasicInteractiveConsole.csproj", "{4351B36C-716B-4FBB-B2CA-201CBD0A0975}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAST.FBasicInterpreter", "FAST.FBasicInterpreter\FAST.FBasicInterpreter.csproj", "{30EEF832-C237-412F-AD85-D1ED11239FA6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4351B36C-716B-4FBB-B2CA-201CBD0A0975}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4351B36C-716B-4FBB-B2CA-201CBD0A0975}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4351B36C-716B-4FBB-B2CA-201CBD0A0975}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4351B36C-716B-4FBB-B2CA-201CBD0A0975}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

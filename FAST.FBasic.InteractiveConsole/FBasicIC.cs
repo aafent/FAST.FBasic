@@ -1,0 +1,190 @@
+﻿using FAST.FBasicInterpreter;
+using Microsoft.Extensions.Configuration;
+
+namespace FAST.FBasic.InteractiveConsole
+{
+    internal class FBasicIC
+    {
+        private readonly IConfiguration config;
+        private string iCommand;
+        private string programsFolder;
+        private string startupName;
+        private executionEnvironment env = null;
+
+        public FBasicIC(IConfiguration config)
+        {
+            this.iCommand = "RUN";
+            this.config=config;
+            this.programsFolder = config.GetValue<string>("Settings:ProgramsFolder")!;
+            if (string.IsNullOrEmpty(programsFolder)) programsFolder= @"~\..\..\..\..\FAST.FBasicInterpreter\Tests";
+            if (programsFolder.Contains("~")) programsFolder = programsFolder.Replace("~", Environment.CurrentDirectory);
+
+            this.startupName = config.GetValue<string>("Settings:Startup")!;
+            if (string.IsNullOrEmpty(startupName)) startupName = "callA.bas";
+        }
+
+
+        public void welcome()
+        {
+            Console.WriteLine("FBASIC Interpreter Interactive Console");
+        }
+
+        public void help()
+        {
+            Console.WriteLine("Help on FBASIC test console");
+            Console.WriteLine("---------------------------");
+            Console.WriteLine("...not ready yet..... :-)  ");
+        }
+
+
+
+        public void run(string iCommandArg)
+        {
+            if (env == null ) setupEnvironment(); // run once
+            iCommand = iCommandArg;
+            switch(iCommand)
+            {
+                case "R":
+                case "RUN":
+                    try
+                    {
+                        runFBasicProgram();
+                    }
+                    catch (fBasicException fbe)
+                    {
+                        Console.WriteLine(fbe.Message);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Non FBASIC exception");
+                        Console.WriteLine(ex.Message);
+                        throw;
+                    }
+                    
+                    break;
+                case "H":
+                case "HELP":
+                    help();
+                    break;
+                //case "B":
+                //spBuilder();
+                case "I":
+                case "INFO":
+                    internalInfo();
+                    break;
+                case "DIR":
+                    var files = Directory.GetFiles(programsFolder, "*.bas");
+                    foreach(var fname in files)
+                    {
+                        Console.WriteLine(Path.GetFileName(fname));
+                    }
+                    break;
+                case "L":
+                case "LOAD":
+                    while (true)
+                    {
+                        Console.Write("Enter program name to load: ");
+                        var pname=Console.ReadLine();
+                        if (pname.ToUpper()=="Q") break;
+                        if (!pname.ToUpper().EndsWith(".BAS")) pname+=".bas";
+                        var pfile = Directory.GetFiles(programsFolder, pname).FirstOrDefault();
+                        if (!string.IsNullOrEmpty(pfile))
+                        {
+                            this.startupName=pname;
+                            Console.WriteLine($"Program name: {startupName}, enter R(UN) command to run it.");
+                            break;
+                        } 
+                        else
+                        {
+                            Console.WriteLine($"Program: {pname} not found. Try again! (q=exit)");
+                        }
+                    }
+                    break;
+
+                case "S":
+                    Console.WriteLine("REVERSED SOURCE:");
+                    Console.WriteLine("---------------------------");
+                    var file = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
+                    var program = fBasicHelper.toProgram(file);
+                    var src = fBasicHelper.toSource(program);
+                    Console.WriteLine(src);
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+
+        private void setupEnvironment()
+        {
+            string cs = "Driver={Adaptive Server Enterprise};NA=alpha.pca.com.gr,5000;Uid=laskaris;Pwd=laskaris;database=LASKARIS;EncryptPassword=2;ServerInitiatedTransactions=0;AnsiNull=0";
+            //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
+
+            this.env = new();
+            env.printHandler += Console.WriteLine;
+            env.inputHandler += Console.ReadLine;
+            env.callHandler += (name) => { var filepath = Path.Combine(programsFolder, name); return File.ReadAllText(filepath); };
+            env.requestForObject += (context, group, name) =>
+            {
+                //if ($"{context}.{group}.{name}" == "ADAPTER.CONNECTION.SQL") return connection;
+                if ($"{context}.{group}.{name}" == "IN.TEST.NAME") return "THIS IS AN IN TEST!";
+                return null;
+            };
+        }
+
+        private void internalInfo()
+        {
+            Console.WriteLine($"Folder: {programsFolder}");
+            Console.WriteLine($"Program: {startupName}");
+        }
+
+        private void runFBasicProgram()
+        {
+            executionResult result;
+            var file = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
+            result = fBasicHelper.run(env, file, (interp) =>
+            {
+                // interp.AddDataAdapter(new sqlFBasicDataProvider());
+                interp.SetVar("table.column", new Value("myColumn1"));
+            });
+            if (result.hasError)
+            {
+                Console.WriteLine(result.errorText);
+                if (!string.IsNullOrEmpty(result.errorSourceLine)) Console.WriteLine(result.errorSourceLine);
+            }
+            else Console.WriteLine($"Result: {result.value}");
+
+        }
+
+        static void spBuilder()
+        {
+            var folder = Path.Combine(Environment.CurrentDirectory, @"..\..\..", "FBasicInterpreter", "Tests");
+            Console.WriteLine($"Folder: {folder}");
+            string name = "lets.bas";
+
+            string cs = "Driver={Adaptive Server Enterprise};NA=alpha.pca.com.gr,5000;Uid=laskaris;Pwd=laskaris;database=LASKARIS;EncryptPassword=2;ServerInitiatedTransactions=0;AnsiNull=0";
+            //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
+
+            executionEnvironment env = new();
+            env.printHandler += Console.WriteLine;
+            env.inputHandler += Console.ReadLine;
+            env.callHandler += (name) => { var filepath = Path.Combine(folder, name); return File.ReadAllText(filepath); };
+            env.requestForObject += (context, group, name) =>
+            {
+               // if ($"{context}.{group}.{name}" == "SQL.CONNECTION.ADAPTER") return connection;
+                return null;
+            };
+
+            foreach (string file in Directory.GetFiles(folder, name))
+            {
+                Console.WriteLine("SP BUILDER:");
+                Console.WriteLine("---------------------------");
+                var program = fBasicHelper.toProgram(file);
+                IsourceCodeBuilder builder = new storedProcedureBuilder();
+                builder.Build(program);
+                var src = builder.GetSource();
+                Console.WriteLine(src);
+            }
+        }
+    }
+}

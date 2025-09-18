@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Title>FAST FBasic Interpreter</Title>
+    <Description>FBasicInterpreter represents the fundamental rules of the programming language FBASIC</Description>
+    <Copyright>Global Cloud Services EOOD</Copyright>
+    <PackageReadmeFile>README.MD</PackageReadmeFile>
+    <PackageOutputPath>$(SolutionDir)\Packages</PackageOutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="C:\Development\FAST\FAST.FBasic\FAST.FBasicInterpreter\\Documents\README.MD" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Documents\README.MD">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+
+ 
+
+</Project>

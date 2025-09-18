@@ -1,0 +1,6 @@
+{
+  "Settings": {
+    "ProgramsFolder": "~\\..\\..\\..\\..", // ~ stands for current directory
+    "Startup": "callA.bas" 
+  }
+}
