@@ -10,8 +10,13 @@
     <Copyright>Global Cloud Services EOOD</Copyright>
     <PackageReadmeFile>README.MD</PackageReadmeFile>
     <PackageOutputPath>$(SolutionDir)\Packages</PackageOutputPath>
+	  <PackageId>FAST.FBasicInterpreter</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>GCS</Authors>
+	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
   </PropertyGroup>
 
+	
   <ItemGroup>
     <None Include="C:\Development\FAST\FAST.FBasic\FAST.FBasicInterpreter\\Documents\README.MD" />
   </ItemGroup>
