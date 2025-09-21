@@ -18,7 +18,7 @@
 
 	
   <ItemGroup>
-    <None Include="C:\Development\FAST\FAST.FBasic\FAST.FBasicInterpreter\\Documents\README.MD" />
+	  <None Include="Documents\README.MD" Pack="true" PackagePath="\"/>
   </ItemGroup>
 
   <ItemGroup>
