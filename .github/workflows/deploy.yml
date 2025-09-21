@@ -21,7 +21,7 @@ jobs:
       run: dotnet restore
 
     - name: Build and pack the project
-      run: dotnet pack /FAST.FBasic/FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release --output ./nupkg --no-build
+      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release --output ./nupkg --no-build
  
     - name: Push the package to NuGet.org
       run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
