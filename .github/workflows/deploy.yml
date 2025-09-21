@@ -5,7 +5,7 @@ on:
     branches:
       - main # or your default branch, like 'master'
     paths:
-      - 'FAST.FBasic/FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
+      - 'FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
   workflow_dispatch: # Allows manual trigger from the GitHub UI
 
 env:
