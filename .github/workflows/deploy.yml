@@ -23,11 +23,7 @@ jobs:
 
     - name: Build Project
       run: dotnet build FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release --no-restore
-
-    - name: Pack Project
-      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=1.0.0 --no-build --output nupkg
-      #run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{ env.PACKAGE_VERSION }} --no-build --output nupkg
-
+      
     - name: Get Package Version
       id: get_version
       run: |
@@ -37,6 +33,7 @@ jobs:
       shell: bash
     - name: Build and Pack
       run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=1.0.0 --output nupkg
-      
+      #run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{ env.PACKAGE_VERSION }} --no-build --output nupkg
+
     - name: Push package to NuGet
       run: dotnet nuget push "nupkg/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
