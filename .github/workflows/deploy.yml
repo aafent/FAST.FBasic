@@ -7,10 +7,7 @@ on:
     branches:
       - main # or your default branch, like 'master'
   workflow_dispatch: # Allows manual trigger from the GitHub UI
-on:
-  push:
-    tags:
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
