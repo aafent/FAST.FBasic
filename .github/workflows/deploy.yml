@@ -29,7 +29,7 @@ jobs:
       run: dotnet restore ${{ env.PROJECT_PATH }}
 
     - name: Build and pack the project
-      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --output ./nupkg --no-build
+      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --output ./nupkg #COUT: --no-build
 
     - name: Push the package to NuGet.org (Publish)
       run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ env.NUGET_FEED_URL }}
