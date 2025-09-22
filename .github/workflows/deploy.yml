@@ -5,11 +5,11 @@ on:
     branches:
       - main # or your default branch, like 'master'
     paths:
-      - 'FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
+      - '/FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
   workflow_dispatch: # Allows manual trigger from the GitHub UI
 
 env:
-  PROJECT_PATH: 'FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
+  PROJECT_PATH: '/FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
   BUILD_CONFIGURATION: 'Release'
   NUGET_FEED_URL: 'https://api.nuget.org/v3/index.json'
 
