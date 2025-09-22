@@ -1,36 +1,27 @@
-name: Publish FAST.FBasicInterpreter package to NuGet.org
+name: Deploy to NuGet
 
 on:
   push:
-    branches:
-      - main # or your default branch, like 'master'
-    paths:
-      - '/FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
-  workflow_dispatch: # Allows manual trigger from the GitHub UI
-
-env:
-  PROJECT_PATH: '/FAST.FBasic/FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj'
-  BUILD_CONFIGURATION: 'Release'
-  NUGET_FEED_URL: 'https://api.nuget.org/v3/index.json'
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+' # Triggers on tags like v1.0.0, v2.1.5, etc.
 
 jobs:
-  publish:
-    runs-on: ubuntu-latest
+  deploy:
+    runs-on: ubuntu-latest # Using a Linux runner, as indicated by your error log
+
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v4
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Use your target .NET version
+        dotnet-version: '8.0.x' # Specifies the .NET 8 SDK
 
-    - name: Restore dependencies
-      run: dotnet restore ${{ env.PROJECT_PATH }}
+    - name: Build and Pack
+      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{github.ref_name}} --output nupkg
+      # The previous command failed because the project path started with a '/', which MSBuild on Linux
+      # incorrectly interpreted as an unknown command-line switch. This command uses a correct relative path.
 
-    - name: Build and pack the project
-      run: dotnet pack ${{ env.PROJECT_PATH }} --configuration ${{ env.BUILD_CONFIGURATION }} --output ./nupkg --no-build
-
-    - name: Push the package to NuGet.org (Publish)
-      run: dotnet nuget push ./nupkg/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source ${{ env.NUGET_FEED_URL }}
-      
+    - name: Push package to NuGet
+      run: dotnet nuget push "nupkg/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
