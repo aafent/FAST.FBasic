@@ -8,9 +8,18 @@ on:
       - main # or your default branch, like 'master'
   workflow_dispatch: # Allows manual trigger from the GitHub UI
 
+
+
+name: Deploy to NuGet
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
 jobs:
   deploy:
-    runs-on: ubuntu-latest # Using a Linux runner, as indicated by your error log
+    runs-on: ubuntu-latest
 
     steps:
     - name: Checkout repository
@@ -19,12 +28,18 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: '8.0.x' # Specifies the .NET 8 SDK
+        dotnet-version: '8.0.x'
+
+    - name: Get Package Version
+      id: get_version
+      run: |
+        VERSION="${{github.ref_name}}"
+        VERSION_WITHOUT_V="${VERSION#v}"
+        echo "PACKAGE_VERSION=$VERSION_WITHOUT_V" >> $GITHUB_ENV
+      shell: bash
 
     - name: Build and Pack
-      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{github.ref_name}} --output nupkg
-      # The previous command failed because the project path started with a '/', which MSBuild on Linux
-      # incorrectly interpreted as an unknown command-line switch. This command uses a correct relative path.
-
+      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{ env.PACKAGE_VERSION }} --output nupkg
+      
     - name: Push package to NuGet
       run: dotnet nuget push "nupkg/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
