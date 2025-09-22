@@ -7,16 +7,10 @@ on:
     branches:
       - main # or your default branch, like 'master'
   workflow_dispatch: # Allows manual trigger from the GitHub UI
-
-
-
-name: Deploy to NuGet
-
 on:
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -37,7 +31,6 @@ jobs:
         VERSION_WITHOUT_V="${VERSION#v}"
         echo "PACKAGE_VERSION=$VERSION_WITHOUT_V" >> $GITHUB_ENV
       shell: bash
-
     - name: Build and Pack
       run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{ env.PACKAGE_VERSION }} --output nupkg
       
