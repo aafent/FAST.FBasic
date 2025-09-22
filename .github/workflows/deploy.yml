@@ -24,7 +24,7 @@ jobs:
     - name: Build Project
       run: dotnet build FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release --no-restore
       
-    - name: Get Package Version
+    - name: Get Package Version ${{ env.PACKAGE_VERSION }}
       id: get_version
       run: |
         VERSION="${{github.ref_name}}"
