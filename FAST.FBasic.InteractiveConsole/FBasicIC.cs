@@ -20,7 +20,7 @@ namespace FAST.FBasic.InteractiveConsole
             if (programsFolder.Contains("~")) programsFolder = programsFolder.Replace("~", Environment.CurrentDirectory);
 
             this.startupName = config.GetValue<string>("Settings:Startup")!;
-            if (string.IsNullOrEmpty(startupName)) startupName = "callA.bas";
+            if (string.IsNullOrEmpty(startupName)) startupName = "interactive.bas";
         }
 
 
