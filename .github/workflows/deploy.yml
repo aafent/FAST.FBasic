@@ -21,7 +21,7 @@ jobs:
       with:
         dotnet-version: '8.0.x'
 
-    - name: Get Package Version
+    - name: Get Package Version ${{ env.PACKAGE_VERSION }}
       id: get_version
       run: |
         VERSION="${{github.ref_name}}"
@@ -29,7 +29,8 @@ jobs:
         echo "PACKAGE_VERSION=$VERSION_WITHOUT_V" >> $GITHUB_ENV
       shell: bash
     - name: Build and Pack
-      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=v1.0.0 --output nupkg
-      
+      run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=1.0.0 --output nupkg
+      #run: dotnet pack FAST.FBasicInterpreter/FAST.FBasicInterpreter.csproj --configuration Release -p:PackageVersion=${{ env.PACKAGE_VERSION }} --no-build --output nupkg
+
     - name: Push package to NuGet
       run: dotnet nuget push "nupkg/*.nupkg" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
