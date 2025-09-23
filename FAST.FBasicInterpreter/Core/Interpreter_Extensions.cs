@@ -15,5 +15,31 @@
             library.InstallAll(interpreter);
         }
 
+
+        /// <summary>
+        /// Execute the program and return the results
+        /// </summary>
+        /// <returns>the results</returns>
+        public static executionResult ExecWithResult(this Interpreter interpreter)
+        {
+            executionResult result = new();
+            try
+            {
+                interpreter.Exec();
+                result.hasError = false;
+                result.value = interpreter.Result;
+            }
+            catch (fBasicException e)
+            {
+                result.hasError = true;
+                result.errorText = e.ToString();
+                result.lineOfError = e.line;
+                result.errorSourceLine = e.sourceLine;
+            }
+            return result;
+        }
+
+
+
     }
 }

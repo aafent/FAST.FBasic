@@ -105,8 +105,8 @@ namespace FAST.FBasic.InteractiveConsole
                     Console.WriteLine("REVERSED SOURCE:");
                     Console.WriteLine("---------------------------");
                     var file = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
-                    var program = fBasicHelper.toProgram(file);
-                    var src = fBasicHelper.toSource(program);
+                    var program = FBasicSource.ToProgram(file);
+                    var src = FBasicSource.ToSource(program);
                     Console.WriteLine(src);
                     break;
                 default:
@@ -142,7 +142,7 @@ namespace FAST.FBasic.InteractiveConsole
         {
             executionResult result;
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
-            result = fBasicHelper.run(env, basProgramFile, (interp) =>
+            result = FBasicSource.Run(env, basProgramFile, (interp) =>
             {
                 // interp.AddDataAdapter(new sqlFBasicDataProvider());
                 interp.SetVar("table.column", new Value("myColumn1"));
@@ -180,7 +180,7 @@ namespace FAST.FBasic.InteractiveConsole
             {
                 Console.WriteLine("SP BUILDER:");
                 Console.WriteLine("---------------------------");
-                var program = fBasicHelper.toProgram(file);
+                var program = FBasicSource.ToProgram(file);
                 IsourceCodeBuilder builder = new storedProcedureBuilder();
                 builder.Build(program);
                 var src = builder.GetSource();

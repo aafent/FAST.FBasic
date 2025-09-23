@@ -69,8 +69,7 @@ namespace FAST.FBasicInterpreter
         #region (+) private working data properties & fields 
 
         private Token prevToken; // token before last one
-        public Token lastToken; // last seen token
-
+        
         private Dictionary<string, Value> vars; // all variables are stored here
         private Dictionary<string, Marker> labels; // already seen labels 
         private Dictionary<string, Marker> loops; // for loops
@@ -86,9 +85,13 @@ namespace FAST.FBasicInterpreter
 
         #region (+) public data properties & fields
         /// <summary>
+        /// Latest interpreted token
+        /// </summary>
+        public Token lastToken; // last seen token
+        /// <summary>
         /// Logger for the execution
         /// </summary>
-        executionLoggerAbstract log = null;
+        public IFBasicLogger log = null;
         /// <summary>
         /// The Lexer
         /// </summary>
@@ -135,50 +138,6 @@ namespace FAST.FBasicInterpreter
         public getNextTokenMethod GetNextToken = null;
         
         #endregion (+) Element delegates
-
-        #region (+) Constructors
-
-        /// <summary>
-        /// Constructor with the source program as input
-        /// </summary>
-        /// <param name="source">the source</param>
-        public Interpreter(bool installBuiltIns, string source)
-        {
-            commonConstructor(installBuiltIns, source);
-        }
-
-        /// <summary>
-        /// Constructor with a program container as program
-        /// </summary>
-        /// <param name="program">the program</param>
-        public Interpreter(bool installBuiltIns, programContainer program)
-        {
-            var source=fBasicHelper.toSource(program);
-            commonConstructor(installBuiltIns, source);
-        }
-
-        private void commonConstructor(bool installBuiltIns, string source)
-        {
-            this.lex = new Lexer(source, Error);
-            this.vars = new Dictionary<string, Value>();
-            this.labels = new Dictionary<string, Marker>();
-            this.loops = new Dictionary<string, Marker>();
-            this.instructionStack = new();
-            this.funcs = new Dictionary<string, BasicFunction>();
-            this.statements = new();
-            this.ifCounter = 0;
-            this.Result = new();
-            this.log=new defaultExecutionLogger();
-
-            if (installBuiltIns) 
-            {
-                this.AddLibrary(new BuiltIns());
-                this.AddLibrary(new BuiltInsForCollections() );
-            }
-            
-        }
-
-        #endregion (+) Constructors
 
     }
 }

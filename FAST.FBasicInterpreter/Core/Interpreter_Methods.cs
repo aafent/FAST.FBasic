@@ -6,8 +6,7 @@ namespace FAST.FBasicInterpreter
     /// </summary>
     public partial class Interpreter : IfbasicError
     {
-
-        #region (+) Add elements
+        #region (+) Add and more for variables
 
         /// <summary>
         /// Set a variable value
@@ -33,6 +32,21 @@ namespace FAST.FBasicInterpreter
         {
             return vars.ContainsKey(name);
         }
+
+        /// <summary>
+        /// Get underlying variables and values 
+        /// </summary>
+        /// <returns>Dictionary, the key is the variable name</returns>
+        public Dictionary<string,Value> GetVariables()
+        {
+            return this.vars;
+        }
+
+        // (>) GetVar is at Program execution & control region. 
+
+        #endregion (+) Add and more for variables
+
+        #region (+) Add elements
 
         /// <summary>
         /// Add a new function
@@ -252,29 +266,6 @@ namespace FAST.FBasicInterpreter
             exit = false;
             GetNextToken();
             while (!exit) Line(); // do all lines
-        }
-
-        /// <summary>
-        /// Execute the program and return the results
-        /// </summary>
-        /// <returns>the results</returns>
-        public executionResult ExecWithResult()
-        {
-            executionResult result = new();
-            try
-            {
-                this.Exec();
-                result.hasError = false;
-                result.value = this.Result;
-            }
-            catch (fBasicException e)
-            {
-                result.hasError = true;
-                result.errorText = e.ToString();
-                result.lineOfError = e.line;
-                result.errorSourceLine = e.sourceLine;
-            }
-            return result;
         }
 
         /// <summary>

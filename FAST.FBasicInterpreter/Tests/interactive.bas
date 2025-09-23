@@ -19,7 +19,11 @@ let status=(cmd = "HALT" Or cmd = "STOP" Or cmd = "END" Or cmd = "Q")
 If status = 1 Then
 print "...bye!"
    Halt
-EndIf
+End If
+
+let status=(cmd = "HALT" Or cmd = "STOP" Or cmd = "END" Or cmd = "Q")
+ 
+
 
 REM at this point the command maybe is a program. So call it
 let resultvalue=0

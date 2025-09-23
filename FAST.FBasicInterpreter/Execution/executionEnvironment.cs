@@ -2,7 +2,6 @@
 
 namespace FAST.FBasicInterpreter
 {
-
     /// <summary>
     /// The base environment of an FBASIC Program
     /// Contains the necessary context to run a program
@@ -10,7 +9,6 @@ namespace FAST.FBasicInterpreter
     public class executionEnvironmentBase
     { 
     }
-
 
 
     /// <summary>
@@ -56,6 +54,15 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public RequestForObject requestForObject=null;
 
+        /// <summary>
+        /// The execution logger
+        /// </summary>
+        public FBasicLoggerAbstract executionLogger = new defaultExecutionLogger();
+
+        /// <summary>
+        /// Flag to disable the installation of Built-Ins statements and functions.
+        /// </summary>
+        public bool installBuiltIns { get; set; } = true;
 
 
         /// <summary>

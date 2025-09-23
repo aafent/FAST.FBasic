@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
+    <Nullable>disable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Title>FAST FBasic Interpreter</Title>
     <Description>FBasicInterpreter represents the fundamental rules of the programming language FBASIC</Description>
@@ -18,7 +18,7 @@
 
 	
   <ItemGroup>
-	  <None Include="Documents\README.MD" Pack="true" PackagePath="\"/>
+	  <None Include="Documents\README.MD" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>
