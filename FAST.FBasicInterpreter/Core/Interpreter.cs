@@ -1,3 +1,5 @@
+using FAST.FBasicInterpreter.Core;
+
 namespace FAST.FBasicInterpreter
 {
     /// <summary>
@@ -171,10 +173,10 @@ namespace FAST.FBasicInterpreter
 
             if (installBuiltIns) 
             {
-                BuiltIns.InstallAll(this); // map all built ins functions
-                BuiltInsForCollections.InstallAll(this);
-            } 
-            
+                this.AddLibrary(new BuiltIns());
+                this.AddLibrary(new BuiltInsForCollections() );
+            }
+            this.AddLibrary( new FBasicStringFunctions());
         }
 
         #endregion (+) Constructors

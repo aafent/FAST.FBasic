@@ -1,8 +1,10 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using FAST.FBasicInterpreter.Libraries;
+
+namespace FAST.FBasicInterpreter
 {
-    internal class BuiltIns
+    internal class BuiltIns : IFBasicLibrary
     {
-        public static void InstallAll(Interpreter interpreter)
+        public void InstallAll(Interpreter interpreter)
         {
             interpreter.AddFunction("str", Str);
             interpreter.AddFunction("num", Num);

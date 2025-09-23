@@ -1,4 +1,4 @@
-﻿## FBASIC - System Manual
+﻿## FBASIC - Language Reference Manual
 
 FBasic syntax **represents the fundamental rules of a programming language**. Without these rules, it is impossible to write a functioning code. FBasic is extendable and the developer can incorporate new functions and new statements. It is a free-form language, but as it is an interpreter, the error if that exists will be raised when the execution flow reaches the mistyped command. 
 
@@ -128,10 +128,10 @@ _example:_
 
 #### Statement RINPUT
 
-Used to perform an input request to the RequestObjectHandler. Has 3 arguments separated by comma. 
-Usage: RINPUT group, name, identifier 
-Where Group and Name are identifiers that are passed to the RequestObjectHandler to organize the request. The Context is always "IN"
-The last argument, which is variable name that will store the return of the request. 
+Used to perform an input request to the RequestObjectHandler. Has 3 arguments separated by comma.  
+Usage: RINPUT group, name, identifier  
+Where Group and Name are identifiers that are passed to the RequestObjectHandler to organize the request. The Context is always "IN"  
+The last argument, which is variable name that will store the return of the request.  
 The RequestObjectHandler, handler should be installed.
 
 _example:_
@@ -143,7 +143,6 @@ _example:_
 > print s
 > End
 > ```
-
 
 ### Debug
 
@@ -165,12 +164,25 @@ _example:_
 
 ### Functions
 
+#### Builtins functions:
+
 *   **str(n)**, converts a numeric value to a string value
 *   **num(s)**, converts a string value to a numeric value
 *   **abs(n)**, the absolute value of a numeric value
 *   **min(n,n)**, the minimum number between two
 *   **max(n,n)**, the maximum number between two
 *   **not(n)**, 0 for true, any other value is false (1)
+
+#### String functions:
+
+Functions for string manipulation, avaliable if library _FBasicStringFunctions_ is enabled.
+
+*   **len(string):** Returns the length (number of characters) of a string.
+*   **left(string, n)**: Extracts the first n characters from a string.
+*   **right(string, n)**: Extracts the last n characters from a string.
+*   **mid(string, start, length)**: Extracts a substring of a specific length from a string, starting at a given position.
+*   **ucase(string)**: Converts a string to uppercase.
+*   **lcase(string)**: Converts a string to lowercase.
 
 ### Variables
 
@@ -235,7 +247,6 @@ print "Day Numbers:"
 Foreach DayNo
 print [DayNo.Item]
 EndForeach DayNo
-
 ```
 
 ### Operators
@@ -337,12 +348,12 @@ To get the connection string, make a request to the “Request For Object” han
 *   CALL return's error: {subResult.errorText} \[E118\]
 *   SDATA collections supporting only the field name ITEM \[E119\].
 *   Collection for {name} is empty/out-of-ForEachLoop \[E120\].
-*   Found RETURN without corresponding GOSUB [E121]
-*   Expecting Value or Identifier, got {lastToken} [E123]
-*   {forbittenItem} not permitted. Use LET to assign the result value and use the variable [E124]
-*   Wrong number of arguments. Expected {argNo}. {syntax} [E125]
-*   Wrong argument(s) type. Check argument: {argNo}. {syntax} [E126]
-*   Wrong referred type. Expected: {expectedType}. {syntax} [E127]
+*   Found RETURN without corresponding GOSUB \[E121\]
+*   Expecting Value or Identifier, got {lastToken} \[E123\]
+*   {forbittenItem} not permitted. Use LET to assign the result value and use the variable \[E124\]
+*   Wrong number of arguments. Expected {argNo}. {syntax} \[E125\]
+*   Wrong argument(s) type. Check argument: {argNo}. {syntax} \[E126\]
+*   Wrong referred type. Expected: {expectedType}. {syntax} \[E127\]
 
 ### Exceptions:
 
@@ -357,7 +368,7 @@ To get the connection string, make a request to the “Request For Object” han
 *   Unknown unary operator. \[X008\]
 *   Cannot do binop on strings(except +). \[X009\]
 *   Unknown binary operator. \[X010\]
-*   Cannot convert {fromType} to {toType}. [X011]
+*   Cannot convert {fromType} to {toType}. \[X011\]
 
 **Errors from SQL Data Adapter**
 

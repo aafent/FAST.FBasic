@@ -1,8 +1,10 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using FAST.FBasicInterpreter.Libraries;
+
+namespace FAST.FBasicInterpreter
 {
-    internal class BuiltInsForCollections
+    internal class BuiltInsForCollections : IFBasicLibrary
     {
-        public static void InstallAll(Interpreter interpreter)
+        public void InstallAll(Interpreter interpreter)
         {
             interpreter.AddFunction("EOD", EOD);
             interpreter.AddFunction("SCI", StaticCollectionItem);
