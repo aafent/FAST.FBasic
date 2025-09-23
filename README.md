@@ -22,7 +22,7 @@ FBASIC is an adaptive and extensible programming languange interpreter.
 
 *(check this documentation frequently for updates)*
 
-
+*FBasic is under [GNU AFFERO GENERAL PUBLIC LICENSE](/aafent/FAST.FBasic?tab=AGPL-3.0-1-ov-file#readme), Version 3, 19 November 2007*
 
 
 
