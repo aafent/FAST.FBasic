@@ -164,7 +164,7 @@ _example:_
 
 ### Functions
 
-#### Builtins functions:
+#### Built-ins functions:
 
 *   **str(n)**, converts a numeric value to a string value
 *   **num(s)**, converts a string value to a numeric value
@@ -175,7 +175,7 @@ _example:_
 
 #### String functions:
 
-Functions for string manipulation, avaliable if library _FBasicStringFunctions_ is enabled.
+Functions for string manipulation, available if library _FBasicStringFunctions_ is enabled.
 
 *   **len(string):** Returns the length (number of characters) of a string.
 *   **left(string, n)**: Extracts the first n characters from a string.
