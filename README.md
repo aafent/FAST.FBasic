@@ -14,7 +14,7 @@ In today’s rapidly evolving digital landscape, enterprises are confronted with
 ### Technical Documents 
 FBASIC is an adaptive and extensible programming languange interpreter.
 
-- [What FBASIC is and what it is not(FAST.FBasicInterpreter/Documents/WhatItIs.md)]  
+- [What FBASIC is and what it is not](FAST.FBasicInterpreter/Documents/WhatItIs.md)  
 - [FBasic Programming Language Manual ](FAST.FBasicInterpreter/Documents/FBasicManual.md "FBasic Programming Language Manual ")
 - [How to add new statements](FAST.FBasicInterpreter/Documents/HowToAddNewStatements.md "new statements") 
 
