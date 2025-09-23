@@ -57,6 +57,8 @@ LCASE(string): Converts a string to lowercase.
             if (size < 1)
                 return interpreter.Error("RIGHT", Errors.E126_WrongArgumentType(1, syntax)).value;
 
+            if ((str.Length - size)<str.Length) 
+                return new Value(str);
 
             return new Value(str.Substring(str.Length - size));
         }

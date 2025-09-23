@@ -84,7 +84,7 @@
             sub.requestForObjectHandler = this.requestForObjectHandler;
             sub.funcs = this.funcs;
             sub.statements = this.statements;
-
+            if (!this.IsVariable("RESULTVALUE")) this.SetVar("RESULTVALUE", Value.Zero);
             sub.SetVar("RESULTVALUE", this.GetVar("RESULTVALUE")!);
             var subResult = sub.ExecWithResult();
             if (subResult.hasError) Error($"CALL return's error: {subResult.errorText} [E118]");

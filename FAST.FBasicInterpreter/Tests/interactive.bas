@@ -38,6 +38,7 @@ usage:
 print "Interactive commands:"
 print "?      : Returns this help"
 print "HALT   : Stop the execution, same as END"
+print "To run any FBASIC program file, just type the file name with or without the .bas suffix."
 Return
 
 End

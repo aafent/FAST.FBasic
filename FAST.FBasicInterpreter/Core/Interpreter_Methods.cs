@@ -25,6 +25,16 @@ namespace FAST.FBasicInterpreter
         }
 
         /// <summary>
+        /// Check if a variable is declared or not
+        /// </summary>
+        /// <param name="name">The variable name</param>
+        /// <returns>True,if is declared</returns>
+        public bool IsVariable(string name)
+        {
+            return vars.ContainsKey(name);
+        }
+
+        /// <summary>
         /// Add a new function
         /// </summary>
         /// <param name="name">the name of the function</param>
