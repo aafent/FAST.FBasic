@@ -24,7 +24,7 @@ FBASIC is an adaptive and extensible programming languange interpreter.
 
 *FBasic is under GNU AFFERO GENERAL PUBLIC LICENSE, Version 3, 19 November 2007*
 
-
+*FBASIC's initital inspiration and the initial code are from Timu5's project "BasicSharp".*
 
 
 
