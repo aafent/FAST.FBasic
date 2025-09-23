@@ -1,4 +1,3 @@
-using FAST.FBasicInterpreter.Core;
 
 namespace FAST.FBasicInterpreter
 {
@@ -176,7 +175,7 @@ namespace FAST.FBasicInterpreter
                 this.AddLibrary(new BuiltIns());
                 this.AddLibrary(new BuiltInsForCollections() );
             }
-            this.AddLibrary( new FBasicStringFunctions());
+            
         }
 
         #endregion (+) Constructors

@@ -1,5 +1,5 @@
 ﻿
-namespace FAST.FBasicInterpreter.Libraries
+namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Interface for FBASIC Libraries 

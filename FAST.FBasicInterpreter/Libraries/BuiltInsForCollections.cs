@@ -1,6 +1,4 @@
-﻿using FAST.FBasicInterpreter.Libraries;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     internal class BuiltInsForCollections : IFBasicLibrary
     {

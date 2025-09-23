@@ -141,11 +141,12 @@ namespace FAST.FBasic.InteractiveConsole
         private void runFBasicProgram()
         {
             executionResult result;
-            var file = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
-            result = fBasicHelper.run(env, file, (interp) =>
+            var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
+            result = fBasicHelper.run(env, basProgramFile, (interp) =>
             {
                 // interp.AddDataAdapter(new sqlFBasicDataProvider());
                 interp.SetVar("table.column", new Value("myColumn1"));
+                interp.AddLibrary(new FBasicStringFunctions());
             });
             if (result.hasError)
             {
