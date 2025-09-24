@@ -11,7 +11,7 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageOutputPath>.\Packages</PackageOutputPath>
 	  <PackageId>FAST.FBasicInterpreter</PackageId>
-	  <Version>1.0.1</Version>
+	  <Version>1.0.2</Version>
 	  <Authors>GCS</Authors>
 	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>

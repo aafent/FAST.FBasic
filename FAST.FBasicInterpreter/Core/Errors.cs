@@ -22,11 +22,22 @@
         public static string E125_WrongNumberOfArguments(int argNo, string syntax = "")
         {
             // Wrong number of arguments. Expected {argNo}. {syntax} [E125]
-            string msg = $"Wrong number of arguments. Expected {argNo}.";
+            string msg;
+            if (argNo==0)
+            {
+                msg = $"Wrong number of arguments. No arguments are expected.";
+            } else
+            {
+                msg = $"Wrong number of arguments. Expected {argNo}.";
+            }
+            
+           
             if (!string.IsNullOrEmpty(syntax)) msg += syntax;
             msg += " [E125]";
             return msg;
         }
+
+
         public static string E126_WrongArgumentType(int argNo=0, string syntax = "")
         {
             // Wrong argument(s) type. Check argument: {argNo}. {syntax} [E126]
@@ -44,6 +55,7 @@
             msg += " [E126]";
             return msg;
         }
+
 
         public static string X007_OnlyUnaryOperationsOnNumbers()
         {

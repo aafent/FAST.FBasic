@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using System.Reflection.Metadata;
+
+namespace FAST.FBasicInterpreter
 {
     public enum ValueType
     {
@@ -8,7 +10,31 @@
 
     public struct Value
     {
+        /// <summary>
+        /// The numeric value of True
+        /// </summary>
+        public const int TrueValue = 1;
+
+        /// <summary>
+        /// The numeric value of False
+        /// </summary>
+        public const int FalseValue=-1;
+
+        /// <summary>
+        /// The value used as Zero
+        /// </summary>
         public static readonly Value Zero = new Value(0);
+
+        /// <summary>
+        /// Value for the boolean true
+        /// </summary>
+        public static readonly Value True = new Value(TrueValue);
+
+        /// <summary>
+        /// Value for the boolean false
+        /// </summary>
+        public static readonly Value False  = new Value(FalseValue);
+
 
         /// <summary>
         /// Used to return an Error. 
@@ -26,6 +52,17 @@
             this.Type = ValueType.Real;
             this.Real = real;
         }
+        public Value(int value)
+        {
+            this.Type = ValueType.Real;
+            this.Real = value;
+        }
+        public Value(bool value)
+        {
+            this.Type = ValueType.Real;
+            this.Real = value?TrueValue:FalseValue;
+        }
+
 
         public Value(string str): this()
         {
@@ -138,10 +175,33 @@
             return this.String;
         }
 
+        /// <summary>
+        /// Convert an arithmetic value to integer
+        /// </summary>
+        /// <returns>Int</returns>
         public int ToInt()
         {
             if (this.Type == ValueType.Real) return (int)this.Real;
             throw new Exception(Errors.X011_CannotConvert("String","Integer"));
         }
+
+        /// <summary>
+        /// Convert the current arithmetic value to boolean
+        /// </summary>
+        /// <returns>bool</returns>
+        public bool ToBool() => this.Real==TrueValue?true:false;
+
+        /// <summary>
+        /// Check if the value is false
+        /// </summary>
+        /// <returns>bool</returns>
+        public bool IsFalse() => ToBool()==false;
+
+        /// <summary>
+        /// Check if the value is true
+        /// </summary>
+        /// <returns></returns>
+        public bool IsTrue() => !IsFalse();
+
     }
 }

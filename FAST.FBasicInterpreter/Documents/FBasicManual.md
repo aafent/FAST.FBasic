@@ -11,18 +11,17 @@ In this manual you can find the following chapters
 3.  Statements
 4.  Debugging
 5.  Comments
-6.  Functions
-7.  Variables
-8.  Collections
-9.  Operators
-10.  Libraries and Add-Ons  
-    1\. String functions
-    
-    2\. Mathimatical functions
-    
-    3\. SQL Data provider 
-    
-11.  Handlers
+6.  Datatypes
+7.  Functions
+8.  Variables
+9.  Collections
+10.  Operators
+11.  Libraries and Add-Ons  
+    1\. String functions  
+    2\. Mathematical functions  
+    3\. Date and Time functions   
+    4\. SQL Data provider
+12.  Handlers
 
 ### Flow Control
 
@@ -167,6 +166,19 @@ _example:_
 > let a=10 ' set the value 10 to variable a
 > ```
 
+### Datatypes
+
+FBASIC, as programming language, typically offers two primary data types: **String** and **Real**.
+
+*   A **String** is a sequence of characters, such as letters, numbers, or symbols, enclosed in double quotes. It's used for handling text.
+*   A **Real** (also known as a floating-point number) represents a number with a fractional component. It's used for all numerical calculations, from simple arithmetic to complex equations.
+
+In FBASIC interpreter, other data types like **Integer**, **Boolean**, **Date**, and **Time** are not natively supported. The FBASIC simulate these by using the existing **Real** and **String** types and applying specific conventions or libraries to manage them. For instance, integers are stored as **Real** numbers, and logical values (true/false) can be represented by numeric value. This simplifies the language while still allowing for a wide range of programming tasks.
+
+Especially for **Date** and **Time** datatypes check this manual at libraries chapter (Date & Time libraries). 
+
+About the Boolean values there a need to explain further the concept. In most of the BASIC implementations, **0 is false** and **\-1 is true**.   Why this?  In most modern programming languages, the integer 0 represents **false**, and any non-zero integer represents **true**. However, in early versions of BASIC, a different convention was adopted. This was due to the way logical operations were implemented at the machine-code level. The bitwise operations for _AND_, _OR_, and _NOT_ were often optimized to work with all the bits of a value. A bitwise _NOT_ of 00000000 (which is 0 in a byte) results in 11111111, which is -1 in two's complement representation. This made it convenient to use -1 for true, as it was the direct result of a _NOT_ operation on the false value (0).
+
 ### Functions
 
 #### Built-ins functions:
@@ -221,7 +233,28 @@ FBASIC,  includes a variety of built-in mathematical functions to perform commo
 
 as the FBASIC does not support constants, a constant is a variable with a value. Its up to the programmer to avoid to modify that value. 
 
-*   **PI:** The PI value, approximately equal to 3.14159. 
+*   **PI:** The PI value, approximately equal to 3.14159.
+
+#### Date & Time Functions
+
+Date and Time functions in the BASIC programming language are used to handle and manipulate dates and times. These functions allow programs to retrieve the current date and time, perform calculations with dates, and format dates for display or any other usage. The native date format is the DD-MM-YYYY. As the FBASIC does not support date as datatype, the functions will consider any valid value having this format as a date. 
+
+Date and Time functions listed here are available if library _FBasicDateFunctions_ is enabled.
+
+*   **date():** This function returns a string representing the current system date. The format typically includes the day, month, and year.
+*   **isdate(d)**: Check if the input string is a valid date.
+*   **day():** Extract the day as an numeric value (integer) from a date variable. For example, day("26-10-2025") would return 26.
+*   **month():** Extract the month as an numeric value (integer) from a date variable. For example, month("26-10-2025") would return 10.
+*   **year():** Extract the year as an numeric value (integer) from a date variable. For example, year("26-10-2025") would return 2025.
+*   **jtod():** Converts the japan style of date (YYYY-MM-DD) to International (DD-MM-YYYY).  For example, JTOD("2025-10-26") would return “26-10-2025”.
+*   **dtoj():** Converts the International (DD-MM-YYYY) date to japan style of date (YYYY-MM-DD).
+
+The native time format is the HH:MM:SS.FFF. As the FBASIC does not support date or time as datatype, the functions will consider any valid value having this format as a time. Also the functions will consider valid a time of the formats:  HH:MM:SS, HH:MM, and the HH:MM:SS.FFF, HH:MM:SS.FF and HH:MM:SS.F
+
+*   **time():** This function returns a string representing the current system time. The format is usually HH:MM:SS.
+*   **hour():** extracts the hours as an integer from a time variable.
+*   **minute():** extracts the minutes as an integer from a time variable.
+*   **second():** extracts the seconds as an integer from a time variable.
 
 ### Variables
 
@@ -320,13 +353,11 @@ assert 9 = 3 ^ 2</code></pre></blockquote></td></tr><tr><td>Arithmetic Operation
 
 Libraries are add-ons to the main FBASIC Interpreter that provide **functions**, **statements**, and **variables** (or **constants**). You can only enable a library during the interpreter's initialization, before you run the FBASIC program. Implementing a library is incredibly easy; refer to the how-to manual for more information.
 
-**Strings Library**
-
-The name of this library is: _FBasicStringFunctions_ and for further information see the _Functions_ section of this document. 
-
-**Mathimatical Library**
-
-The name of this library is: _FBasicMathFunctions_ and for further information see the _Functions_ section of this document. 
+*   **Buildins Libray:** contains the very basic functions are available to the FBASIC programing language, without the need to enable it. There is switch that the developer can disable that code.
+*   **Buildins Collections Library:**  contains the very basic functions and statements for collections manipulation. It is enabled by default but the developer can disable that code.
+*   **Strings Library:** The name of this library is: _FBasicStringFunctions_ and for further information see the _Functions_ section of this document.
+*   **Mathematical Library:** The name of this library is: _FBasicMathFunctions_ and for further information see the _Functions_ section of this document.
+*   **Date and Time Library:** The name of this library is: _FBasicDateFunctions_ and for further information see the _Functions_ section of this document.
 
 ### SQL Data Provider
 

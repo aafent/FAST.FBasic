@@ -148,6 +148,7 @@ namespace FAST.FBasic.InteractiveConsole
                 interp.SetVar("table.column", new Value("myColumn1"));
                 interp.AddLibrary(new FBasicStringFunctions());
                 interp.AddLibrary(new FBasicMathFunctions());
+                interp.AddLibrary(new FBasicDateFunctions());
             });
             if (result.hasError)
             {
