@@ -19,15 +19,7 @@
 
 	
   <ItemGroup>
-	  <None Include="..\README.md">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
 	  <None Include="Documents\README.MD" Pack="true" PackagePath="\" />
-	  <None Include="README.MD">
-	    <Pack>True</Pack>
-	    <PackagePath>\</PackagePath>
-	  </None>
   </ItemGroup>
 
   <ItemGroup>
