@@ -8,7 +8,6 @@
     <Title>FAST FBasic Interpreter</Title>
     <Description>FBasicInterpreter represents the fundamental rules of the programming language FBASIC</Description>
     <Copyright>Global Cloud Services EOOD</Copyright>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageOutputPath>.\Packages</PackageOutputPath>
 	  <PackageId>FAST.FBasicInterpreter</PackageId>
 	  <Version>1.0.2</Version>
