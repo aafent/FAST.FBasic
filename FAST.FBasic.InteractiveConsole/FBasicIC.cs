@@ -117,7 +117,7 @@ namespace FAST.FBasic.InteractiveConsole
 
         private void setupEnvironment()
         {
-            string cs = "Driver={Adaptive Server Enterprise};NA=alpha.pca.com.gr,5000;Uid=laskaris;Pwd=laskaris;database=LASKARIS;EncryptPassword=2;ServerInitiatedTransactions=0;AnsiNull=0";
+            string cs = "<connection string>";
             //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
 
             this.env = new();
@@ -147,6 +147,7 @@ namespace FAST.FBasic.InteractiveConsole
                 // interp.AddDataAdapter(new sqlFBasicDataProvider());
                 interp.SetVar("table.column", new Value("myColumn1"));
                 interp.AddLibrary(new FBasicStringFunctions());
+                interp.AddLibrary(new FBasicMathFunctions());
             });
             if (result.hasError)
             {

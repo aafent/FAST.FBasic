@@ -15,8 +15,13 @@ In this manual you can find the following chapters
 7.  Variables
 8.  Collections
 9.  Operators
-10.  Add-Ons  
-    1\. SQL Data provider
+10.  Libraries and Add-Ons  
+    1\. String functions
+    
+    2\. Mathimatical functions
+    
+    3\. SQL Data provider 
+    
 11.  Handlers
 
 ### Flow Control
@@ -148,7 +153,7 @@ _example:_
 
 *   ASSERT
 *   DUMP
-*   LOG
+*   LOGINFO
 
 ### Comments
 
@@ -183,6 +188,40 @@ Functions for string manipulation, available if library _FBasicStringFunctions_ 
 *   **mid(string, start, length)**: Extracts a substring of a specific length from a string, starting at a given position.
 *   **ucase(string)**: Converts a string to uppercase.
 *   **lcase(string)**: Converts a string to lowercase.
+
+#### **Math Functions:**
+
+FBASIC,  includes a variety of built-in mathematical functions to perform common calculations. There are available if library _FBasicMathFunctions_ is enabled.
+
+**Trigonometric Functions**
+
+*   **sin(X):** Returns the sine of X. The value of X must be in radians.
+*   **cos(X):** Returns the cosine of X. The value of X must be in radians.
+*   **tan(X):** Returns the tangent of X. The value of X must be in radians.
+*   **atn(X):** Returns the arctangent of X. The result is in radians.
+
+**Logarithmic and Exponential, Powers Functions**
+
+*   **log(X):** Returns the natural logarithm (base e) of X.
+*   **exp(X):** Returns the value of e raised to the power of X. This is the inverse of the LOG function.
+*   **sqr(X):** Square Root. Returns the square root of X. The value of X must be non-negative.
+
+**Value Functions**
+
+*   **abs(X):** Returns the absolute value of X. This function is useful for ensuring a number is non-negative. Note that abs() functions is available without the math library.
+*   **sgn(X):** Returns the sign of X. It returns 1 if X>0, -1 if X\<0, and 0 if X=0.
+*   **rnd():** This function is used to generate a random number. Its behavior can vary between different versions of BASIC. Often, RND without an argument generates a random number between 0 and 1.
+
+**Integer and Rounding Functions**
+
+*   **int(X):** Returns the largest integer less than or equal to X. For positive numbers, this is equivalent to truncating the decimal part.
+*   **fix(X):** Returns the integer part of X by truncating the decimal part. For negative numbers, it behaves differently from INT. For example, FIX(-3.7) returns -3, while INT(-3.7) returns -4.
+
+**Constants**
+
+as the FBASIC does not support constants, a constant is a variable with a value. Its up to the programmer to avoid to modify that value. 
+
+*   **PI:** The PI value, approximately equal to 3.14159. 
 
 ### Variables
 
@@ -275,7 +314,19 @@ assert 1 = Not 0
 assert 0 = Not 1
 assert 9 = 3 ^ 2</code></pre></blockquote></td></tr><tr><td>Arithmetic Operations</td><td>+</td><td>-</td><td>*</td><td>/</td><td>^</td></tr><tr><td>Equality and Assignment</td><td>=</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Other</td><td>(</td><td>)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Logical</td><td>And</td><td>Or</td><td>Not</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>
 
-## Add-Ons
+## Libraries and Add-Ons
+
+### What is a library
+
+Libraries are add-ons to the main FBASIC Interpreter that provide **functions**, **statements**, and **variables** (or **constants**). You can only enable a library during the interpreter's initialization, before you run the FBASIC program. Implementing a library is incredibly easy; refer to the how-to manual for more information.
+
+**Strings Library**
+
+The name of this library is: _FBasicStringFunctions_ and for further information see the _Functions_ section of this document. 
+
+**Mathimatical Library**
+
+The name of this library is: _FBasicMathFunctions_ and for further information see the _Functions_ section of this document. 
 
 ### SQL Data Provider
 

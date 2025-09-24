@@ -11,7 +11,7 @@
             interpreter.AddFunction("max", Max);
             interpreter.AddFunction("not", Not);
 
-            interpreter.AddStatement("Log",Log);
+            interpreter.AddStatement("LogInfo",LogInfo);
         }
 
         public static Value Str(Interpreter interpreter, List<Value> args)
@@ -62,9 +62,9 @@
             return new Value(args[0].Real == 0 ? 1 : 0);
         }
 
-        public static void Log(Interpreter interpreter)
+        public static void LogInfo(Interpreter interpreter)
         {
-            Console.WriteLine("LOG: "+ interpreter.Expr().ToString() );
+            interpreter.log.info(interpreter.Expr().ToString());
         }
 
     }
