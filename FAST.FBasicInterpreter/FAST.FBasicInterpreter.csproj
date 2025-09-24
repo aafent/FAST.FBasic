@@ -8,17 +8,26 @@
     <Title>FAST FBasic Interpreter</Title>
     <Description>FBasicInterpreter represents the fundamental rules of the programming language FBASIC</Description>
     <Copyright>Global Cloud Services EOOD</Copyright>
-    <PackageReadmeFile>README.MD</PackageReadmeFile>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageOutputPath>.\Packages</PackageOutputPath>
 	  <PackageId>FAST.FBasicInterpreter</PackageId>
 	  <Version>1.0.1</Version>
 	  <Authors>GCS</Authors>
 	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
+	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
   </PropertyGroup>
 
 	
   <ItemGroup>
+	  <None Include="..\README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
 	  <None Include="Documents\README.MD" Pack="true" PackagePath="\" />
+	  <None Include="README.MD">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
   </ItemGroup>
 
   <ItemGroup>
