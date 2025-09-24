@@ -12,7 +12,7 @@ In today’s rapidly evolving digital landscape, enterprises are confronted with
 - Read the initial [White Paper](FAST.FBasicInterpreter/Documents/whitePaper.md "White Paper") and the revised [White Paper (v2)](FAST.FBasicInterpreter/Documents/whitePaper_v2.md "White Paper (v2)")
 
 ### Technical Documents 
-FBASIC is an adaptive and extensible programming languange interpreter.
+FBASIC is an adaptive and extensible programming language interpreter.
 
 - [What FBASIC is and what it is not](FAST.FBasicInterpreter/Documents/WhatIs.md)  
 - [FBasic Programming Language Manual ](FAST.FBasicInterpreter/Documents/FBasicManual.md "FBasic Programming Language Manual ")

@@ -17,15 +17,10 @@
 	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
   </PropertyGroup>
 
-	
   <ItemGroup>
-	  <None Include="Documents\README.MD" Pack="true" PackagePath="\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Documents\README.MD">
-      <Pack>True</Pack>
+    <None Update="README.MD">
       <PackagePath>\</PackagePath>
+      <Pack>True</Pack>
     </None>
   </ItemGroup>
 
