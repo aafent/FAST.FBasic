@@ -13,12 +13,12 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The numeric value of True
         /// </summary>
-        public const int TrueValue = 1;
+        public const int TrueValue = -1;
 
         /// <summary>
         /// The numeric value of False
         /// </summary>
-        public const int FalseValue=-1;
+        public const int FalseValue=0;
 
         /// <summary>
         /// The value used as Zero

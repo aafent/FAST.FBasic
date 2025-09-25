@@ -7,7 +7,11 @@ let d=jtod("2010-12-31") 'YYYY-MM-DD
 print "Date Functions:"
 print "..............."
 print "date=" + d
-print "Is Date="+isdate(d)
+if not(isdate(d)) Then
+    print "NOT A VALID DATE"
+else
+    print "VALID DATE"
+endif
 print "Today=" + date()
 print "Today in japan=" + dtoj(date())
 print "Day=" + day(d) + "    +1=" + num(day(d)) + 1

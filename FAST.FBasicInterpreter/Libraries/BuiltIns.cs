@@ -59,7 +59,7 @@
             if (args.Count < 1)
                 return interpreter.Error("SCI", Errors.E125_WrongNumberOfArguments(1)).value;
 
-            return new Value(args[0].Real == 0 ? 1 : 0);
+            return args[0].Real == Value.FalseValue ? Value.True: Value.False;
         }
 
         public static void LogInfo(Interpreter interpreter)
