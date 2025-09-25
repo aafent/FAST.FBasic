@@ -1,6 +1,6 @@
 ﻿namespace FAST.FBasicInterpreter
 {
-    public interface IfbasicError
+    public interface IFBasicError
     {
         ErrorReturnClass Error(string source, string text);
     }

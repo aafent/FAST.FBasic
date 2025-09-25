@@ -6,9 +6,9 @@ namespace FAST.FBasicInterpreter
     {
         private string source=null;
 
-        protected override programContainer program { get; set; }
+        protected override ProgramContainer program { get; set; }
 
-        public override void Build(programContainer program)
+        public override void Build(ProgramContainer program)
         {
             this.program = program; 
             this.source=toSource();

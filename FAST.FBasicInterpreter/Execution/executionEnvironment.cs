@@ -6,7 +6,7 @@ namespace FAST.FBasicInterpreter
     /// The base environment of an FBASIC Program
     /// Contains the necessary context to run a program
     /// </summary>
-    public class executionEnvironmentBase
+    public class ExecutionEnvironmentBase
     { 
     }
 
@@ -14,13 +14,13 @@ namespace FAST.FBasicInterpreter
     /// <summary>
     /// The execution environment of an FBASIC Program
     /// </summary>
-    public class executionEnvironment : executionEnvironmentBase
+    public class ExecutionEnvironment : ExecutionEnvironmentBase
     {
 
         /// <summary>
         /// No parameters constructor
         /// </summary>
-        public executionEnvironment()
+        public ExecutionEnvironment()
         {
         }
 
@@ -28,7 +28,7 @@ namespace FAST.FBasicInterpreter
         /// Construct the environment from a base environment object
         /// </summary>
         /// <param name="baseEnvironment">Execution environment</param>
-        public executionEnvironment(executionEnvironmentBase baseEnvironment) :this()
+        public ExecutionEnvironment(ExecutionEnvironmentBase baseEnvironment) :this()
         {
         }
 
@@ -71,9 +71,9 @@ namespace FAST.FBasicInterpreter
         /// Use this code as example of initialization.
         /// </summary>
         /// <returns></returns>
-        public static executionEnvironment DefaultEnvironment()
+        public static ExecutionEnvironment DefaultEnvironment()
         {
-            executionEnvironment env = new();
+            ExecutionEnvironment env = new();
             env.printHandler += Console.WriteLine;
             env.inputHandler += Console.ReadLine;
             env.callHandler += (name) => { var filepath = Path.Combine(".", name); return File.ReadAllText(filepath); };

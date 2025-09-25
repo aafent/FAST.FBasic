@@ -20,9 +20,9 @@
         /// Execute the program and return the results
         /// </summary>
         /// <returns>the results</returns>
-        public static executionResult ExecWithResult(this Interpreter interpreter)
+        public static ExecutionResult ExecWithResult(this Interpreter interpreter)
         {
-            executionResult result = new();
+            ExecutionResult result = new();
             try
             {
                 interpreter.Exec();

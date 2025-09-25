@@ -5,7 +5,7 @@ namespace FAST.FBasicInterpreter
     /// <summary>
     /// Interface for FBASIC collections
     /// </summary>
-    public interface IfbasicCollection : IEnumerator
+    public interface IBAasicCollection : IEnumerator
     {
         /// <summary>
         /// True when the name reach the end of the data

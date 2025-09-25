@@ -3,7 +3,7 @@
     /// <summary>
     /// FBASIC execution Results
     /// </summary>
-    public class executionResult
+    public class ExecutionResult
     {
 
         /// <summary>

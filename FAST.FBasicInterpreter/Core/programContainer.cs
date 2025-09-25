@@ -3,12 +3,12 @@
     /// <summary>
     /// Contain of a parsed FBASIC program 
     /// </summary>
-    public class programContainer
+    public class ProgramContainer
     {
         /// <summary>
         /// An array of the parsed program elements
         /// </summary>
-        public programElement[] elements { get; set; }
+        public ProgramElement[] elements { get; set; }
 
         /// <summary>
         /// The variable names used in the program
@@ -21,7 +21,7 @@
     /// <summary>
     /// A single FBASIC program element
     /// </summary>
-    public class programElement
+    public class ProgramElement
     {
         /// <summary>
         /// The token
@@ -48,7 +48,7 @@
         /// Copy the values from the source
         /// </summary>
         /// <param name="source">The source</param>
-        public void copyFrom(programElement source)
+        public void CopyFrom(ProgramElement source)
         {
             this.token = source.token;
             this.value = source.value;

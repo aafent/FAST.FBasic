@@ -9,7 +9,7 @@ namespace FAST.FBasic.InteractiveConsole
         private string iCommand;
         private string programsFolder;
         private string startupName;
-        private executionEnvironment env = null;
+        private ExecutionEnvironment env = null;
 
         public FBasicIC(IConfiguration config)
         {
@@ -140,7 +140,7 @@ namespace FAST.FBasic.InteractiveConsole
 
         private void runFBasicProgram()
         {
-            executionResult result;
+            ExecutionResult result;
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
             result = FBasicSource.Run(env, basProgramFile, (interp) =>
             {
@@ -168,7 +168,7 @@ namespace FAST.FBasic.InteractiveConsole
             string cs = "Driver={Adaptive Server Enterprise};NA=alpha.pca.com.gr,5000;Uid=laskaris;Pwd=laskaris;database=LASKARIS;EncryptPassword=2;ServerInitiatedTransactions=0;AnsiNull=0";
             //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
 
-            executionEnvironment env = new();
+            ExecutionEnvironment env = new();
             env.printHandler += Console.WriteLine;
             env.inputHandler += Console.ReadLine;
             env.callHandler += (name) => { var filepath = Path.Combine(folder, name); return File.ReadAllText(filepath); };

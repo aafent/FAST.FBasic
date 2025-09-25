@@ -4,7 +4,7 @@
     /// The interpreter factory of the FBASIC 
     /// Part: THE FBASIC STATMENTS
     /// </summary>
-    public partial class Interpreter : IfbasicError
+    public partial class Interpreter : IFBasicError
     {
         #region (+) methods to implement the FBASIC Flow statements 
 

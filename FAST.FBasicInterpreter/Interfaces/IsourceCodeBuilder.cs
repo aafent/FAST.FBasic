@@ -2,7 +2,7 @@
 {
     public interface IsourceCodeBuilder
     {
-        void Build(programContainer program);
+        void Build(ProgramContainer program);
         string GetSource();
     }
 }

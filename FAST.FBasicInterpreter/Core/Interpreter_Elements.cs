@@ -4,7 +4,7 @@
     /// The interpreter factory of the FBASIC 
     /// Part: THE FBASIC ELEMENTS EXCEPT STATMENTS
     /// </summary>
-    public partial class Interpreter : IfbasicError
+    public partial class Interpreter : IFBasicError
     {
         void Statement()
         {

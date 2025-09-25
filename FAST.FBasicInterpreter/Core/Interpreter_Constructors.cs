@@ -5,7 +5,7 @@ namespace FAST.FBasicInterpreter
     /// The interpreter factory of the FBASIC
     /// Constructors
     /// </summary>
-    public partial class Interpreter : IfbasicError
+    public partial class Interpreter : IFBasicError
     {
         #region (+) Constructors
 
@@ -23,7 +23,7 @@ namespace FAST.FBasicInterpreter
         /// Constructor with a program container as program
         /// </summary>
         /// <param name="program">the program</param>
-        public Interpreter(bool installBuiltIns, programContainer program)
+        public Interpreter(bool installBuiltIns, ProgramContainer program)
         {
             var source=FBasicSource.ToSource(program);
             constructorCommon(source);

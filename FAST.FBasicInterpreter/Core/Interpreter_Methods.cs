@@ -4,7 +4,7 @@ namespace FAST.FBasicInterpreter
     /// The interpreter factory of the FBASIC
     /// Part: THE FBASIC INTERPRETER METHODS
     /// </summary>
-    public partial class Interpreter : IfbasicError
+    public partial class Interpreter : IFBasicError
     {
         #region (+) Add and more for variables
 
@@ -113,7 +113,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <param name="name">The collection name</param>
         /// <param name="collection">The collection handler</param>
-        public void AddCollection(string name, IfbasicCollection collection)
+        public void AddCollection(string name, IBAasicCollection collection)
         {
             if (!dataAdapters.ContainsKey(name))
             {    
@@ -261,7 +261,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public void Exec()
         {
-            lex.setAddonStatements(statements.Keys.ToArray());
+            lex.SetAddonStatements(statements.Keys.ToArray());
             GetNextToken=interpreter_GetNextToken;
             exit = false;
             GetNextToken();
@@ -273,7 +273,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public void RestartProgram()
         {
-            this.lex.restartProgram();
+            this.lex.RestartProgram();
             this.Result = new();
             this.instructionStack=new();
             this.ifCounter=0; 
@@ -284,10 +284,10 @@ namespace FAST.FBasicInterpreter
         /// Create a program container
         /// </summary>
         /// <returns>The program container</returns>
-        public bool tryParseSourceCode(out programContainer program)
+        public bool tryParseSourceCode(out ProgramContainer program)
         {
             program= new();
-            List<programElement> src = new();
+            List<ProgramElement> src = new();
             program.variables=new();
             try
             {
@@ -301,7 +301,7 @@ namespace FAST.FBasicInterpreter
                     {
                         if (src.Count > 0) // skip all the first newlines if the program start with them
                         {
-                            src.Add(new programElement() { token = lastToken, value = lex.Value, identifier = lex.Identifier });
+                            src.Add(new ProgramElement() { token = lastToken, value = lex.Value, identifier = lex.Identifier });
                         }
                         while (lastToken == Token.NewLine) GetNextToken();
                     }
@@ -311,14 +311,14 @@ namespace FAST.FBasicInterpreter
                         break;
                     }
                     lineMarker = lex.TokenMarker; // save current line marker
-                    src.Add(new programElement() { token = lastToken, 
+                    src.Add(new ProgramElement() { token = lastToken, 
                                                    value = lex.Value, 
                                                    identifier = lex.Identifier, 
                                                    isDoted=lex.Identifier.Contains('.') 
                                                   });
                     GetNextToken();
                 }
-                src.Add(new programElement() { token = Token.EOF, value = lex.Value, identifier = "" });
+                src.Add(new ProgramElement() { token = Token.EOF, value = lex.Value, identifier = "" });
             } 
             catch
             {

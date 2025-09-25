@@ -10,7 +10,7 @@
         /// </summary>
         /// <param name="program">The program container</param>
         /// <returns>stirng, the source program</returns>
-        public static string ToSource(programContainer program)
+        public static string ToSource(ProgramContainer program)
         {
             IsourceCodeBuilder builder = new fBasicSourceBuilder();
             builder.Build(program);
@@ -24,7 +24,7 @@
         /// <param name="sourceCode">The source code to run</param>
         /// <param name="action">Optional, Interpreter actions before run</param>
         /// <returns>executionResult</returns>
-        public static executionResult RunSource(executionEnvironment env, string sourceCode, Action<Interpreter> action =null )
+        public static ExecutionResult RunSource(ExecutionEnvironment env, string sourceCode, Action<Interpreter> action =null )
         {
             Interpreter basic = new Interpreter(env.installBuiltIns, sourceCode);
             if (env.printHandler != null) basic.printHandler = env.printHandler;
@@ -43,7 +43,7 @@
         /// <param name="fileName">Full path to file with the source program</param>
         /// <param name="action">Optional, Interpreter actions before run</param>
         /// <returns>executionResult</returns>
-        public static executionResult Run(executionEnvironment env, string fileName, Action<Interpreter> action = null)
+        public static ExecutionResult Run(ExecutionEnvironment env, string fileName, Action<Interpreter> action = null)
         {
             var src = File.ReadAllText(fileName);
             return RunSource(env,src,action);
@@ -56,7 +56,7 @@
         /// <param name="program">The program container</param>
         /// <param name="action">Optional, Interpreter actions before run</param>
         /// <returns>executionResult</returns>
-        public static executionResult Run(executionEnvironment env, programContainer program, Action<Interpreter> action = null) 
+        public static ExecutionResult Run(ExecutionEnvironment env, ProgramContainer program, Action<Interpreter> action = null) 
         {
             var src = ToSource(program);
             return RunSource(env,src,action);
@@ -67,11 +67,11 @@
         /// </summary>
         /// <param name="fileName">File path to the source file name</param>
         /// <returns>programContainer</returns>
-        public static programContainer ToProgram(string fileName)
+        public static ProgramContainer ToProgram(string fileName)
         {
             var src = File.ReadAllText(fileName);
             Interpreter basic = new Interpreter(true, src);
-            programContainer program;
+            ProgramContainer program;
             if ( basic.tryParseSourceCode(out program) ) return program;
             return null;
         }

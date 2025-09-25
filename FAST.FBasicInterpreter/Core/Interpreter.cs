@@ -4,7 +4,7 @@ namespace FAST.FBasicInterpreter
     /// <summary>
     /// The interpreter factory of the FBASIC
     /// </summary>
-    public partial class Interpreter : IfbasicError
+    public partial class Interpreter : IFBasicError
     {
         #region (+) Handlers
 
@@ -103,7 +103,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// Collection objects
         /// </summary>
-        public readonly Dictionary<string, IfbasicCollection> collections = new();
+        public readonly Dictionary<string, IBAasicCollection> collections = new();
         /// <summary>
         /// The result of the execution (statement: RESULT)
         /// </summary>

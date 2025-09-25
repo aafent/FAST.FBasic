@@ -4,9 +4,9 @@
     {
         private Dictionary<Token,int> tokenReferences =new();
 
-        protected abstract programContainer program { get; set; }
+        protected abstract ProgramContainer program { get; set; }
 
-        public abstract void Build(programContainer program);
+        public abstract void Build(ProgramContainer program);
 
         public abstract string GetSource();
 
@@ -29,7 +29,7 @@
         /// </summary>
         /// <param name="element">The element</param>
         /// <returns>Readable string</returns>
-        protected string readableElement(programElement element)
+        protected string readableElement(ProgramElement element)
         {
             return $"[{element.token} ({element.identifier}, {element.value})]";
         }
@@ -68,7 +68,7 @@
                 } 
                 var prevElement = program.elements[prevIndex];
 
-                this.isStatement=Lexer.isStatement(element.token);
+                this.isStatement=Lexer.IsStatement(element.token);
                 if (!this.isStatement) switch (element.token)
                 {
                     case Token.Plus:

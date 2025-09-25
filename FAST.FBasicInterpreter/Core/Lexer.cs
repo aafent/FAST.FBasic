@@ -13,7 +13,7 @@ namespace FAST.FBasicInterpreter
         public delegate ErrorReturnClass ErrorHandler(string text);
         private ErrorHandler Error=null;
 
-        private void fatalError(string text)
+        private void FatalError(string text)
         {
             if ( Error == null)
             {
@@ -45,7 +45,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// Restart the program's execution from the begin
         /// </summary>
-        public void restartProgram()
+        public void RestartProgram()
         {
             sourceMarker = new Marker(0, 1, 1);
             lastChar = source[0];
@@ -55,7 +55,7 @@ namespace FAST.FBasicInterpreter
         /// Set the add statements 
         /// </summary>
         /// <param name="names">Array with the name of the statements</param>
-        public void setAddonStatements(string[] names)
+        public void SetAddonStatements(string[] names)
         {
             this.statements = names.Select(s=> s.ToUpper() ).ToList();
         }
@@ -203,7 +203,7 @@ namespace FAST.FBasicInterpreter
 
                 double real;
                 if (!double.TryParse(num, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out real))
-                    fatalError("ERROR while parsing number");
+                    FatalError("ERROR while parsing number");
                 Value = new Value(real);
                 return Token.Value;
             }
@@ -236,18 +236,18 @@ namespace FAST.FBasicInterpreter
                         { 
                             case ']': break; // well done
                             case '[': 
-                                fatalError("Found opening bracket but expected closing [X003]");
+                                FatalError("Found opening bracket but expected closing [X003]");
                                 break;
                             case '\n':
-                                fatalError("Found end of line but expected closing bracket [X004]");
+                                FatalError("Found end of line but expected closing bracket [X004]");
                                 break;
                         }
 
                         Identifier += lastChar;
                     }
                     var p1=Identifier.IndexOf('.');
-                    if ( p1<0) fatalError("Identifier inside brackets must contains a dot character [X005]");
-                    if (p1==0|| p1==Identifier.Length ) fatalError("Bracket Identifier cannot starts or ends with dot character [X006]");
+                    if ( p1<0) FatalError("Identifier inside brackets must contains a dot character [X005]");
+                    if (p1==0|| p1==Identifier.Length ) FatalError("Bracket Identifier cannot starts or ends with dot character [X006]");
                     GetChar(); // move 1 character to bypass the ]
                     return Token.Identifier;
 
@@ -309,7 +309,7 @@ namespace FAST.FBasicInterpreter
         /// Returns the source program
         /// </summary>
         /// <returns>string, the source program</returns>
-        public string getSource()
+        public string GetSource()
         {
             return this.source;
         }
@@ -350,7 +350,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <param name="token"></param>
         /// <returns></returns>
-        public static bool isStatement(Token token)
+        public static bool IsStatement(Token token)
         {
             switch (token)
             { 

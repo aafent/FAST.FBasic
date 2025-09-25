@@ -4,7 +4,7 @@
     /// <summary>
     /// Data Provider for the FBASIC
     /// </summary>
-    public interface IfbasicDataAdapter : IfbasicError
+    public interface IfbasicDataAdapter : IFBasicError
     {
         /// <summary>
         /// a unique name of the data adapter

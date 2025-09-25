@@ -5,9 +5,9 @@ namespace FAST.FBasicInterpreter
     public class storedProcedureBuilder : sourceCodeBuilderAbstract
     {
         private string source=null;
-        protected override programContainer program { get; set; }
+        protected override ProgramContainer program { get; set; }
 
-        public override void Build(programContainer program)
+        public override void Build(ProgramContainer program)
         {
             this.program=program;
             this.source=toSource();
@@ -84,7 +84,7 @@ namespace FAST.FBasicInterpreter
             // (v) parsing the program
             bool done = false;
             int tokensCount = 0;
-            programElement prevItem = new() {  token= Token.Unknown };
+            ProgramElement prevItem = new() {  token= Token.Unknown };
             foreach (var item in program.elements)
             {
                 tokensCount++;
@@ -93,7 +93,7 @@ namespace FAST.FBasicInterpreter
                 {
                 }
 
-                if (Lexer.isStatement(item.token))
+                if (Lexer.IsStatement(item.token))
                 {
                     lineAnalysis(tokensCount);
                     if (hasLogicalOperators) src.Append("LOGICAL: ");
@@ -296,7 +296,7 @@ namespace FAST.FBasicInterpreter
 
 
                 // (v) before reloop
-                prevItem.copyFrom(item);
+                prevItem.CopyFrom(item);
             }
 
 
