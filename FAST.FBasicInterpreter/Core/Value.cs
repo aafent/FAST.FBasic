@@ -168,6 +168,10 @@ namespace FAST.FBasicInterpreter
             throw new Exception(Errors.X010_UnknownBinaryOperator());
         }
 
+        /// <summary>
+        /// Convert the value to string
+        /// </summary>
+        /// <returns>string</returns>
         public override string ToString()
         {
             if (this.Type == ValueType.Real)
@@ -189,7 +193,7 @@ namespace FAST.FBasicInterpreter
         /// Convert the current arithmetic value to boolean
         /// </summary>
         /// <returns>bool</returns>
-        public bool ToBool() => this.Real==TrueValue?true:false;
+        public bool ToBool() => this.Real==FalseValue?false:true;
 
         /// <summary>
         /// Check if the value is false
