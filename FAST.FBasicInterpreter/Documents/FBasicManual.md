@@ -367,7 +367,7 @@ Libraries are add-ons to the main FBASIC Interpreter that provide **functions**,
 
 ### SQL Data Provider
 
-SQL Data provider is designed to provide data collections based on a SQL statement and handle it as a readonly cursor. Adding the following extensions to the language:
+SQL Data provider is designed to provide data collections based on a SQL statement and handle it as a read only cursor. To active it add the library: _FBasicSQLDataAdapter_. Adding the following extensions to the language:
 
 *   Statements: CURSOR
 *   Functions: SQL
@@ -442,6 +442,7 @@ To get the connection string, make a request to the “Request For Object” han
 *   Wrong number of arguments. Expected {argNo}. {syntax} \[E125\]
 *   Wrong argument(s) type. Check argument: {argNo}. {syntax} \[E126\]
 *   Wrong referred type. Expected: {expectedType}. {syntax} \[E127\]
+*   Request object error. An object expected but got null. [E128]
 
 ### Exceptions:
 
@@ -457,10 +458,11 @@ To get the connection string, make a request to the “Request For Object” han
 *   Cannot do binop on strings(except +). \[X009\]
 *   Unknown binary operator. \[X010\]
 *   Cannot convert {fromType} to {toType}. \[X011\]
+*   FATAL Error ({source}). {text} [X012]
 
 **Errors from SQL Data Adapter**
 
-*   Unsupported data type {args\[0\].Type} \[S001\]
+*   Unsupported data type {type} \[S001\]
 *   SQL() takes only one argument \[S002\]
 *   Name: {name} is missing from {cursorName} \[S003\]
 

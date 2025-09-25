@@ -56,6 +56,10 @@
             return msg;
         }
 
+        public static string E128_RequestHandlerNullReturn(string context, string group, string name, string moreText=null)
+        {
+            return $"Request object error. An object expected but got null. Request:{context}.{group}.{name}. {moreText} [E128]";
+        }
 
         public static string X007_OnlyUnaryOperationsOnNumbers()
         {
@@ -82,7 +86,12 @@
             return $"Cannot convert {fromType} to {toType}. [X011]";
         }
 
-
+        public static string X012_GeneralException(string source, Exception ex)
+        {
+            string msg = $"FATAL Error ({source}) {ex.Message}. ";
+            if (ex.InnerException !=null) msg+=$"{ex.InnerException.Message} [X012]";
+            return msg;
+        }
 
     }
 

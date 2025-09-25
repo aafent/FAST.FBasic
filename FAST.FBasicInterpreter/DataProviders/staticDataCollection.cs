@@ -1,6 +1,6 @@
 ﻿namespace FAST.FBasicInterpreter
 {
-    internal class staticDataCollection : IBAasicCollection
+    internal class staticDataCollection : IBasicCollection
     {
         public List<Value> data = null; 
         private const int indexInitialValue = (-1);

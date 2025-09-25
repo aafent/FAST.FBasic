@@ -33,9 +33,8 @@ namespace FAST.FBasicInterpreter
         /// <param name="context">The Context</param>
         /// <param name="group">The group of names</param>
         /// <param name="name">The name</param>
-        /// <param name="value">output the value</param>
-        /// <returns>True if the request found</returns>
-        public delegate object RequestForObject(string context, string group, string name );
+        /// <returns>object</returns>
+        public delegate object RequestForObjectAction(string context, string group, string name );
 
         /// <summary>
         /// The delegation handler for the PRINT statement
@@ -62,7 +61,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The delegation handler for Request for Object
         /// </summary>
-        public RequestForObject requestForObjectHandler = null;
+        public RequestForObjectAction requestForObjectHandler = null;
 
         #endregion (+) Handlers
 
@@ -103,7 +102,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// Collection objects
         /// </summary>
-        public readonly Dictionary<string, IBAasicCollection> collections = new();
+        public readonly Dictionary<string, IBasicCollection> collections = new();
         /// <summary>
         /// The result of the execution (statement: RESULT)
         /// </summary>

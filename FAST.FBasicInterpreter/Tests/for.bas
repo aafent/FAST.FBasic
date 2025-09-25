@@ -1,4 +1,5 @@
-
+REM test FOR...NEXT
+REM
 let aa=5
 let a = 0
 

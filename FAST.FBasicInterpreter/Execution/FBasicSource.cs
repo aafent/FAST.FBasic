@@ -30,7 +30,7 @@
             if (env.printHandler != null) basic.printHandler = env.printHandler;
             if (env.inputHandler != null) basic.inputHandler = env.inputHandler;
             if (env.callHandler != null) basic.callHandler = env.callHandler;
-            if (env.requestForObject != null) basic.requestForObjectHandler = env.requestForObject;
+            if (env.requestForObjectHandler != null) basic.requestForObjectHandler = env.requestForObjectHandler;
             if (env.executionLogger!= null) basic.log = env.executionLogger;
             if ( action!=null) action(basic);
             return basic.ExecWithResult();

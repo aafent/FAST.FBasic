@@ -18,6 +18,7 @@ FBASIC is an adaptive and extensible programming languange interpreter.
 - [FBasic Programming Language Manual ](FAST.FBasicInterpreter/Documents/FBasicManual.md "FBasic Programming Language Manual ")
 - [How to add new statements](FAST.FBasicInterpreter/Documents/HowToAddNewStatements.md "new statements")
 - [How to run the interpreter](FAST.FBasicInterpreter/Documents/HowToRunInterpreter.md)
+- [Code examples](FAST.FBasicInterpreter/Documents/examplesA.md)
 
 ------------
 

@@ -456,7 +456,7 @@
 
             GetNextToken();
 
-            var value=requestForObject(context: "IN", group: group, name: name);
+            var value=RequestForObject(context: "IN", group: group, name: name);
 
             SetVar(vname, new Value(value.ToString()) );
 

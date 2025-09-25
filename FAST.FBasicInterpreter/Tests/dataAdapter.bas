@@ -6,7 +6,7 @@ REM loop
 dataloop1:
 fetch DATA1
 If EOD("DATA1") Then
-GoTo exitloop
+   GoTo exitloop
 EndIf
 
 
@@ -21,7 +21,7 @@ REM end loop
 print "***EOD****"
 let tms=tms+1
 If (tms = 1) Then
-reset DATA1
-GoTo dataloop1
+  reset DATA1
+  GoTo dataloop1
 EndIf
 

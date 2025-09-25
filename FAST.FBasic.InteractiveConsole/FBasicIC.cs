@@ -1,5 +1,6 @@
 ﻿using FAST.FBasicInterpreter;
 using Microsoft.Extensions.Configuration;
+using System.Data.Odbc;
 
 namespace FAST.FBasic.InteractiveConsole
 {
@@ -124,9 +125,14 @@ namespace FAST.FBasic.InteractiveConsole
             env.printHandler += Console.WriteLine;
             env.inputHandler += Console.ReadLine;
             env.callHandler += (name) => { var filepath = Path.Combine(programsFolder, name); return File.ReadAllText(filepath); };
-            env.requestForObject += (context, group, name) =>
+            env.requestForObjectHandler += (context, group, name) =>
             {
-                //if ($"{context}.{group}.{name}" == "ADAPTER.CONNECTION.SQL") return connection;
+                if ($"{context}.{group}.{name}" == "SQL.CONNECTION.DATA1") 
+                {
+                    string cs = "<replace with your CS hear>";
+                    var connection = new OdbcConnection(cs);
+                    return connection;
+                }
                 if ($"{context}.{group}.{name}" == "IN.TEST.NAME") return "THIS IS AN IN TEST!";
                 return null;
             };
@@ -144,11 +150,12 @@ namespace FAST.FBasic.InteractiveConsole
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
             result = FBasicSource.Run(env, basProgramFile, (interp) =>
             {
-                // interp.AddDataAdapter(new sqlFBasicDataProvider());
+                
                 interp.SetVar("table.column", new Value("myColumn1"));
                 interp.AddLibrary(new FBasicStringFunctions());
                 interp.AddLibrary(new FBasicMathFunctions());
                 interp.AddLibrary(new FBasicDateFunctions());
+                interp.AddLibrary(new FBasicSQLDataAdapter()); // interp.AddDataAdapter(new sqlFBasicDataProvider());
             });
             if (result.hasError)
             {
@@ -172,7 +179,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.printHandler += Console.WriteLine;
             env.inputHandler += Console.ReadLine;
             env.callHandler += (name) => { var filepath = Path.Combine(folder, name); return File.ReadAllText(filepath); };
-            env.requestForObject += (context, group, name) =>
+            env.requestForObjectHandler += (context, group, name) =>
             {
                // if ($"{context}.{group}.{name}" == "SQL.CONNECTION.ADAPTER") return connection;
                 return null;

@@ -113,7 +113,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <param name="name">The collection name</param>
         /// <param name="collection">The collection handler</param>
-        public void AddCollection(string name, IBAasicCollection collection)
+        public void AddCollection(string name, IBasicCollection collection)
         {
             if (!dataAdapters.ContainsKey(name))
             {    
@@ -132,7 +132,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="group">The group</param>
         /// <param name="name">The name</param>
         /// <returns>The requested object or null</returns>
-        public object requestForObject(string context, string group, string name, bool errorIfNull = true)
+        public object RequestForObject(string context, string group, string name, bool errorIfNull = true)
         {
             if (this.requestForObjectHandler == null) 
                 Error(context, $"The Request For Object Handler is not installed ({context},{group},{name}) [E100]");

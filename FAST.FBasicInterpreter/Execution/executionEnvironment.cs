@@ -52,7 +52,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The handler of Request For Object mechanism 
         /// </summary>
-        public RequestForObject requestForObject=null;
+        public RequestForObjectAction requestForObjectHandler=null;
 
         /// <summary>
         /// The execution logger
@@ -77,11 +77,7 @@ namespace FAST.FBasicInterpreter
             env.printHandler += Console.WriteLine;
             env.inputHandler += Console.ReadLine;
             env.callHandler += (name) => { var filepath = Path.Combine(".", name); return File.ReadAllText(filepath); };
-            env.requestForObject += (context, group, name) =>
-            {
-                //if ($"{context}.{group}.{name}" == "SQL.CONNECTION.ADAPTER") return connection;
-                return null;
-            };
+            env.requestForObjectHandler += (context, group, name) => null;
 
             return env;
         }
