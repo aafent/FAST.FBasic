@@ -10,7 +10,7 @@
     <Copyright>Global Cloud Services EOOD</Copyright>
     <PackageOutputPath>.\Packages</PackageOutputPath>
 	  <PackageId>FAST.FBasicInterpreter</PackageId>
-	  <Version>1.0.3</Version>
+	  <Version>1.0.4</Version>
 	  <Authors>GCS</Authors>
 	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
