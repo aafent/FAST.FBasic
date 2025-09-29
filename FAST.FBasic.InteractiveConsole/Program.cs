@@ -6,18 +6,16 @@ using Microsoft.Extensions.Hosting;
 var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
-        config.AddJsonFile("FBasicSettings.settings", optional: true, reloadOnChange: true);
+        config.AddJsonFile("FBasicSettings.json", optional: true, reloadOnChange: true);
     });
 var host = builder.Build();
 IConfiguration config = host.Services.GetRequiredService<IConfiguration>();
 FBasicIC FBASIC = new(config);
 
 FBASIC.welcome();
-string iCommand = "R"; //R
+string iCommand = "R"; //Run
 while (true)
 {
-    Console.WriteLine("==========================================[(v) TEST====]\n");
-
     try
     {
         FBASIC.run(iCommand);
@@ -29,7 +27,7 @@ while (true)
         Console.WriteLine();
     }
 
-    Console.WriteLine("==========END========[enter R=to rerun, Q=Exit, H=Help....]");
+    Console.Write("[enter command: R=rerun, Q=Exit, H=Help, L=Load, DIR....] ");
     iCommand = Console.ReadLine();
     iCommand = iCommand.ToUpper();
     if (iCommand == "R") continue;

@@ -1,6 +1,9 @@
 {
   "Settings": {
-    "ProgramsFolder": "~\\..\\..\\..\\..", // ~ stands for current directory
-    "Startup": "callA.bas" 
+    "ProgramsFolder": "~\\..\\..\\..\\..\\FAST.FBasicInterpreter\\Tests", // ~ stands for current directory
+    "Startup": "helloWorld.bas"
+  },
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=myServer;Database=myDB;Trusted_Connection=True;"
   }
 }

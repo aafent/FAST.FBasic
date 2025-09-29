@@ -9,7 +9,7 @@
         /// Program container to source
         /// </summary>
         /// <param name="program">The program container</param>
-        /// <returns>stirng, the source program</returns>
+        /// <returns>string, the source program</returns>
         public static string ToSource(ProgramContainer program)
         {
             IsourceCodeBuilder builder = new fBasicSourceBuilder();
@@ -26,13 +26,15 @@
         /// <returns>executionResult</returns>
         public static ExecutionResult RunSource(ExecutionEnvironment env, string sourceCode, Action<Interpreter> action =null )
         {
+            if (env==null) // in case the no environment, set the default environment. 
+            {
+                env=new();
+                env.DefaultEnvironment();
+            }
             Interpreter basic = new Interpreter(env.installBuiltIns, sourceCode);
-            if (env.printHandler != null) basic.printHandler = env.printHandler;
-            if (env.inputHandler != null) basic.inputHandler = env.inputHandler;
-            if (env.callHandler != null) basic.callHandler = env.callHandler;
-            if (env.requestForObjectHandler != null) basic.requestForObjectHandler = env.requestForObjectHandler;
-            if (env.executionLogger!= null) basic.log = env.executionLogger;
+            env.SetupInterpreter(basic);
             if ( action!=null) action(basic);
+
             return basic.ExecWithResult();
         }
 
@@ -75,6 +77,5 @@
             if ( basic.tryParseSourceCode(out program) ) return program;
             return null;
         }
-
     }
 }

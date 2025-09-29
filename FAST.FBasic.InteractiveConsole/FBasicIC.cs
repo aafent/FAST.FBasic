@@ -10,7 +10,7 @@ namespace FAST.FBasic.InteractiveConsole
         private string iCommand;
         private string programsFolder;
         private string startupName;
-        private ExecutionEnvironment env = null;
+        private ExecutionEnvironment env;
 
         public FBasicIC(IConfiguration config)
         {
@@ -18,16 +18,18 @@ namespace FAST.FBasic.InteractiveConsole
             this.config=config;
             this.programsFolder = config.GetValue<string>("Settings:ProgramsFolder")!;
             if (string.IsNullOrEmpty(programsFolder)) programsFolder= @"~\..\..\..\..\FAST.FBasicInterpreter\Tests";
-            if (programsFolder.Contains("~")) programsFolder = programsFolder.Replace("~", Environment.CurrentDirectory);
+            if (programsFolder.Contains("~")) 
+                programsFolder = programsFolder.Replace("~", Environment.CurrentDirectory);
 
             this.startupName = config.GetValue<string>("Settings:Startup")!;
-            if (string.IsNullOrEmpty(startupName)) startupName = "interactive.bas";
+            if (string.IsNullOrEmpty(startupName)) startupName = "helloWorld.bas";
         }
 
 
         public void welcome()
         {
             Console.WriteLine("FBASIC Interpreter Interactive Console");
+            Console.WriteLine("......................................");
         }
 
         public void help()
@@ -122,10 +124,9 @@ namespace FAST.FBasic.InteractiveConsole
             //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
 
             this.env = new();
-            env.printHandler += Console.WriteLine;
-            env.inputHandler += Console.ReadLine;
-            env.callHandler += (name) => { var filepath = Path.Combine(programsFolder, name); return File.ReadAllText(filepath); };
-            env.requestForObjectHandler += (context, group, name) =>
+            env.DefaultEnvironment();
+            env.callHandler = (name) => { var filepath = Path.Combine(programsFolder, name); return File.ReadAllText(filepath); };
+            env.requestForObjectHandler = (context, group, name) =>
             {
                 if ($"{context}.{group}.{name}" == "SQL.CONNECTION.DATA1") 
                 {
@@ -136,6 +137,11 @@ namespace FAST.FBasic.InteractiveConsole
                 if ($"{context}.{group}.{name}" == "IN.TEST.NAME") return "THIS IS AN IN TEST!";
                 return null;
             };
+            env.AddLibrary(new FBasicStringFunctions());
+            env.AddLibrary(new FBasicMathFunctions());
+            env.AddLibrary(new FBasicDateFunctions());
+            env.AddLibrary(new FBasicSQLDataAdapter());
+            env.AddVariable("table.column", "myColumn1");
         }
 
         private void internalInfo()
@@ -148,53 +154,65 @@ namespace FAST.FBasic.InteractiveConsole
         {
             ExecutionResult result;
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
+
+            /* Alternative way to execute a program
+             * 
+             * 
             result = FBasicSource.Run(env, basProgramFile, (interp) =>
             {
-                
                 interp.SetVar("table.column", new Value("myColumn1"));
                 interp.AddLibrary(new FBasicStringFunctions());
                 interp.AddLibrary(new FBasicMathFunctions());
                 interp.AddLibrary(new FBasicDateFunctions());
-                interp.AddLibrary(new FBasicSQLDataAdapter()); // interp.AddDataAdapter(new sqlFBasicDataProvider());
+                interp.AddLibrary(new FBasicSQLDataAdapter());
             });
+            */
+
+            result = FBasicSource.Run(env, basProgramFile);
             if (result.hasError)
             {
                 Console.WriteLine(result.errorText);
                 if (!string.IsNullOrEmpty(result.errorSourceLine)) Console.WriteLine(result.errorSourceLine);
             }
-            else Console.WriteLine($"Result: {result.value}");
-
-        }
-
-        static void spBuilder()
-        {
-            var folder = Path.Combine(Environment.CurrentDirectory, @"..\..\..", "FBasicInterpreter", "Tests");
-            Console.WriteLine($"Folder: {folder}");
-            string name = "lets.bas";
-
-            string cs = "Driver={Adaptive Server Enterprise};NA=alpha.pca.com.gr,5000;Uid=laskaris;Pwd=laskaris;database=LASKARIS;EncryptPassword=2;ServerInitiatedTransactions=0;AnsiNull=0";
-            //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
-
-            ExecutionEnvironment env = new();
-            env.printHandler += Console.WriteLine;
-            env.inputHandler += Console.ReadLine;
-            env.callHandler += (name) => { var filepath = Path.Combine(folder, name); return File.ReadAllText(filepath); };
-            env.requestForObjectHandler += (context, group, name) =>
+            else
             {
-               // if ($"{context}.{group}.{name}" == "SQL.CONNECTION.ADAPTER") return connection;
-                return null;
-            };
-
-            foreach (string file in Directory.GetFiles(folder, name))
-            {
-                Console.WriteLine("SP BUILDER:");
-                Console.WriteLine("---------------------------");
-                var program = FBasicSource.ToProgram(file);
-                IsourceCodeBuilder builder = new storedProcedureBuilder();
-                builder.Build(program);
-                var src = builder.GetSource();
-                Console.WriteLine(src);
+                Console.WriteLine();
+                Console.WriteLine("....................end of program....................");
+                Console.WriteLine($"Result: {result.value}");
             }
+                
+
         }
+
+        //    static void spBuilder()
+        //    {
+        //        var folder = Path.Combine(Environment.CurrentDirectory, @"..\..\..", "FBasicInterpreter", "Tests");
+        //        Console.WriteLine($"Folder: {folder}");
+        //        string name = "lets.bas";
+
+        //        string cs = "<your CS here>";
+        //        //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
+
+        //        ExecutionEnvironment env = new();
+        //        env.printHandler += Console.WriteLine;
+        //        env.inputHandler += Console.ReadLine;
+        //        env.callHandler += (name) => { var filepath = Path.Combine(folder, name); return File.ReadAllText(filepath); };
+        //        env.requestForObjectHandler += (context, group, name) =>
+        //        {
+        //           // if ($"{context}.{group}.{name}" == "SQL.CONNECTION.ADAPTER") return connection;
+        //            return null;
+        //        };
+
+        //        foreach (string file in Directory.GetFiles(folder, name))
+        //        {
+        //            Console.WriteLine("SP BUILDER:");
+        //            Console.WriteLine("---------------------------");
+        //            var program = FBasicSource.ToProgram(file);
+        //            IsourceCodeBuilder builder = new storedProcedureBuilder();
+        //            builder.Build(program);
+        //            var src = builder.GetSource();
+        //            Console.WriteLine(src);
+        //        }
+        //    }
     }
 }

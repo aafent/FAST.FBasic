@@ -31,5 +31,12 @@
         /// Statement to set: RESULT value
         /// </summary>
         public Value value { get;set; }
+
+
+        /// <summary>
+        /// The interpreters variables with the values, after the execution of the program
+        /// The dictionary key is the variable name and the value is the variable Value
+        /// </summary>
+        public Dictionary<string, Value> variables { get; set; } = null;
     }
 }

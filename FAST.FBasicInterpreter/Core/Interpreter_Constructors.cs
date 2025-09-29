@@ -10,12 +10,24 @@ namespace FAST.FBasicInterpreter
         #region (+) Constructors
 
         /// <summary>
+        /// Simple constructor with only the build ins
+        /// Invoke the SetSourceProgram() to place the source program
+        /// </summary>
+        /// <param name="installBuiltIns">true to install the build-ins</param>
+        public Interpreter(bool installBuiltIns)
+        {
+            ResetInterpreter();
+            constructorEnvironment(installBuiltIns);
+        }
+
+        /// <summary>
         /// Constructor with the source program as input
         /// </summary>
         /// <param name="source">the source</param>
         public Interpreter(bool installBuiltIns, string source)
         {
-            constructorCommon(source);
+            ResetInterpreter();
+            SetSourceProgram(source);
             constructorEnvironment(installBuiltIns);
         }
 
@@ -26,13 +38,13 @@ namespace FAST.FBasicInterpreter
         public Interpreter(bool installBuiltIns, ProgramContainer program)
         {
             var source=FBasicSource.ToSource(program);
-            constructorCommon(source);
+            ResetInterpreter();
+            SetSourceProgram(source);
             constructorEnvironment(installBuiltIns);
         }
 
-        private void constructorCommon(string source)
+        public void ResetInterpreter()
         {
-            this.lex = new Lexer(source, Error);
             this.vars = new Dictionary<string, Value>();
             this.labels = new Dictionary<string, Marker>();
             this.loops = new Dictionary<string, Marker>();
@@ -43,10 +55,16 @@ namespace FAST.FBasicInterpreter
             this.Result = new();
         }
 
+
+        public void SetSourceProgram(string source)
+        {
+            this.lex = new Lexer(source, Error);
+        }
+
         private void constructorEnvironment(bool installBuiltIns)
         {
             // (v) environment
-            this.log = new defaultExecutionLogger();
+            if (this.log == null) this.log = new defaultExecutionLogger();
             if (installBuiltIns)
             {
                 this.AddLibrary(new BuiltIns());

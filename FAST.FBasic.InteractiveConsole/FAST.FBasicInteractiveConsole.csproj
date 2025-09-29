@@ -17,4 +17,10 @@
     <ProjectReference Include="..\FAST.FBasicInterpreter\FAST.FBasicInterpreter.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="FBasicSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>
