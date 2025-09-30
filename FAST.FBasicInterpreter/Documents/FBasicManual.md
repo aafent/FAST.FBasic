@@ -20,7 +20,8 @@ In this manual you can find the following chapters
     1\. String functions  
     2\. Mathematical functions  
     3\. Date and Time functions   
-    4\. SQL Data provider
+    4\. SQL Data provider  
+    5\. Events triggering
 12.  Handlers
 
 ### Flow Control
@@ -177,13 +178,13 @@ In FBASIC interpreter, other data types like **Integer**, **Boolean**, **Date**,
 
 Especially for **Date** and **Time** datatypes check this manual at libraries chapter (Date & Time libraries). 
 
-About the Boolean values there a need to explain further the concept. In most of the BASIC implementations, **0 is false** and **\-1 is true**.
-Why this?  In most modern programming languages, the integer 0 represents **false**, and any non-zero integer represents **true**. 
-However, in early versions of BASIC, a different convention was adopted. This was due to the way logical operations were implemented at the machine-code level.
-The bitwise operations for _AND_, _OR_, and _NOT_ were often optimized to work with all the bits of a value. 
-A bitwise _NOT_ of 00000000 (which is 0 in a byte) results in 11111111, which is -1 in two's complement representation. 
-This made it convenient to use -1 for true, as it was the direct result of a _NOT_ operation on the false value (0).
-In conclusion, FBASIC will consider the zero (0) numeric value as False, and any non-zero as True. If the value of True will requested the interpreter will return -1. 
+About the Boolean values there a need to explain further the concept. In most of the BASIC implementations, **0 is false** and **\-1 is true**.  
+Why this?  In most modern programming languages, the integer 0 represents **false**, and any non-zero integer represents **true**.  
+However, in early versions of BASIC, a different convention was adopted. This was due to the way logical operations were implemented at the machine-code level.  
+The bitwise operations for _AND_, _OR_, and _NOT_ were often optimized to work with all the bits of a value.  
+A bitwise _NOT_ of 00000000 (which is 0 in a byte) results in 11111111, which is -1 in two's complement representation.  
+This made it convenient to use -1 for true, as it was the direct result of a _NOT_ operation on the false value (0).  
+In conclusion, FBASIC will consider the zero (0) numeric value as False, and any non-zero as True. If the value of True will requested the interpreter will return -1.
 
 ### Functions
 
@@ -364,6 +365,7 @@ Libraries are add-ons to the main FBASIC Interpreter that provide **functions**,
 *   **Strings Library:** The name of this library is: _FBasicStringFunctions_ and for further information see the _Functions_ section of this document.
 *   **Mathematical Library:** The name of this library is: _FBasicMathFunctions_ and for further information see the _Functions_ section of this document.
 *   **Date and Time Library:** The name of this library is: _FBasicDateFunctions_ and for further information see the _Functions_ section of this document.
+*   **Events Triggering Library:** The name this library is: _FBasicEvents_ (see below for further information)
 
 ### SQL Data Provider
 
@@ -405,6 +407,14 @@ _example demonstrating the elements: CURSOR, FETCH, EOD(), RESET, GOTO, Labels_
 
 To get the connection string, make a request to the “Request For Object” handler with Context=SQL, Group=CONNECTION, Name=ADAPTER and expecting a type of _IdatabaseConnectionAdapter_ as Object
 
+### Events Triggering
+
+Event triggering is the act of generating a signal that notifies other parts of a program or system that a specific,  
+significant action or condition has occurred. Essentially, it's the mechanism that initiates  
+the event-driven sequence.
+
+It is provided by the Library **FBasicEvents** and for further details see the document: [Events](event.md)
+
 ## Handlers
 
 *   PRINT handler
@@ -442,7 +452,7 @@ To get the connection string, make a request to the “Request For Object” han
 *   Wrong number of arguments. Expected {argNo}. {syntax} \[E125\]
 *   Wrong argument(s) type. Check argument: {argNo}. {syntax} \[E126\]
 *   Wrong referred type. Expected: {expectedType}. {syntax} \[E127\]
-*   Request object error. An object expected but got null. [E128]
+*   Request object error. An object expected but got null. \[E128\]
 
 ### Exceptions:
 
@@ -458,7 +468,7 @@ To get the connection string, make a request to the “Request For Object” han
 *   Cannot do binop on strings(except +). \[X009\]
 *   Unknown binary operator. \[X010\]
 *   Cannot convert {fromType} to {toType}. \[X011\]
-*   FATAL Error ({source}). {text} [X012]
+*   FATAL Error ({source}). {text} \[X012\]
 
 **Errors from SQL Data Adapter**
 

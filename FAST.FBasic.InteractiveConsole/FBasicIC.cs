@@ -39,7 +39,14 @@ namespace FAST.FBasic.InteractiveConsole
             Console.WriteLine("...not ready yet..... :-)  ");
         }
 
-
+        public void testEventHandler1(object sender, (string name, Stack<Value> args) e)
+        {
+            Console.WriteLine($"1st Listener for event: {e.name} triggered. Stack contains {e.args.Count} arguments");
+        }
+        public void testEventHandler2(object sender, (string name, Stack<Value> args) e)
+        {
+            Console.WriteLine($"2nd Listener for event: {e.name} triggered. Stack contains {e.args.Count} arguments");
+        }
 
         public void run(string iCommandArg)
         {
@@ -141,7 +148,12 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicMathFunctions());
             env.AddLibrary(new FBasicDateFunctions());
             env.AddLibrary(new FBasicSQLDataAdapter());
+            env.AddLibrary(new FBasicEvents());
             env.AddVariable("table.column", "myColumn1");
+
+            FBasicEvents.Reset();
+            FBasicEvents.FBasicEventHandler += testEventHandler1!;
+            FBasicEvents.FBasicEventHandler += testEventHandler2!;
         }
 
         private void internalInfo()
