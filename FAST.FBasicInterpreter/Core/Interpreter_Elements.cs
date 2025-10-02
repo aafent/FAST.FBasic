@@ -64,7 +64,7 @@
             if (lastToken == Token.Colon)
             {
                 // we can execute more statements in single line if we use ";"
-                GetNextToken();
+                while (GetNextToken()==Token.NewLine); // GetNextToken but bypass any NewLine
                 Statement();
             }
         }

@@ -26,6 +26,11 @@ namespace FAST.FBasicInterpreter
         public static readonly Value Zero = new Value(0);
 
         /// <summary>
+        /// The value used as Empty string
+        /// </summary>
+        public static readonly Value Empty = new Value(string.Empty);
+
+        /// <summary>
         /// Value for the boolean true
         /// </summary>
         public static readonly Value True = new Value(TrueValue);
@@ -42,34 +47,59 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public static readonly Value Error = new Value(0);
 
+        /// <summary>
+        /// The type of the value
+        /// </summary>
         public ValueType Type { get; set; }
 
         public double Real { get; set; }
         public string String { get; set; }
 
+
+        /// <summary>
+        /// Constructor with a real as initial value
+        /// </summary>
+        /// <param name="real">the real number</param>
         public Value(double real) : this()
         {
             this.Type = ValueType.Real;
             this.Real = real;
         }
+
+        /// <summary>
+        /// Constructor with a value an integer casted to Real as initial value
+        /// </summary>
+        /// <param name="value">The integer</param>
         public Value(int value)
         {
             this.Type = ValueType.Real;
             this.Real = value;
         }
+
+        /// <summary>
+        /// Constructor with a boolean as initial value that it is casted to the appropriate Real. 
+        /// </summary>
+        /// <param name="value">the boolean</param>
         public Value(bool value)
         {
             this.Type = ValueType.Real;
             this.Real = value?TrueValue:FalseValue;
         }
 
-
+        /// <summary>
+        /// Constructor with a string as initial value
+        /// </summary>
+        /// <param name="str">the string to initialize with</param>
         public Value(string str): this()
         {
             this.Type = ValueType.String;
             this.String = str;
         }
 
+        /// <summary>
+        /// Constructor that will copy type and value from another value
+        /// </summary>
+        /// <param name="value">The value to copy</param>
         public Value(Value value)
         {
             this.Type=value.Type;
@@ -77,6 +107,11 @@ namespace FAST.FBasicInterpreter
             this.String=value.String;
         }
 
+        /// <summary>
+        /// Convert from the current type to the specified
+        /// </summary>
+        /// <param name="type">Type to convert to</param>
+        /// <returns>A Value of the new type</returns>
         public Value Convert(ValueType type)
         {
             if (this.Type != type)

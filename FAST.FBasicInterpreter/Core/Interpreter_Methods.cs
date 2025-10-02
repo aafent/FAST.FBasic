@@ -153,8 +153,15 @@ namespace FAST.FBasicInterpreter
         /// <param name="text">The message</param>
         public ErrorReturnClass Error(string source, string text)
         {
-            string error =$"{source}: {text}";
-            return Error(error);
+            if (string.IsNullOrEmpty(source))
+            {
+                return Error($"{text}");
+            }
+            else
+            {
+                return Error($"{source}: {text}");
+            }
+            
         }
         private ErrorReturnClass Error(string text)
         {
@@ -226,6 +233,75 @@ namespace FAST.FBasicInterpreter
         {
             lastToken = Token.NewLine;
             lex.SetLastChar('\r');
+        }
+
+        /// <summary>
+        /// set the programs flow to a label, if exists
+        /// if the label is missing, the instruction pointer remains as it was
+        /// </summary>
+        /// <param name="label"></param>
+        /// <returns>true if the label found.</returns>
+        public bool SetFlowToLabelIfExists(string label)
+        {
+            var currentMarket = lex.CurrentSourceMarker; // save the position
+            if (!labels.ContainsKey(label))
+            {
+                // if we didn't encounter required label yet, start to search for it
+                while (true)
+                {
+                    if (GetNextToken() == Token.Colon && prevToken == Token.Identifier)
+                    {
+                        if (!labels.ContainsKey(lex.Identifier))
+                            labels.Add(lex.Identifier, lex.CurrentSourceMarker);
+                        if (lex.Identifier == label)
+                            break;
+                    }
+                    if (lastToken == Token.EOF)
+                    {
+                        lex.GoTo(currentMarket); // restore the position
+                        return false;
+                    }
+                }
+            }
+            lex.GoTo(labels[label]); // position will changed here, no need to restore
+            SetLastTokenToNewLine();
+            return true;
+        }
+
+        /// <summary>
+        /// Save current Instruction point to Instruction stack
+        /// </summary>
+        /// <returns>Marker that pushed</returns>
+        public Marker PushCurrentInstructionMarker()
+        {
+            instructionStack.Push(lex.CurrentSourceMarker);
+            return lex.CurrentSourceMarker;
+            //instructionStack.Push(lex.TokenMarker);
+            //return lex.TokenMarker;
+        }
+
+        /// <summary>
+        /// Push to the stack the specified marker
+        /// </summary>
+        /// <param name="marker"></param>
+        public void PushInstructionMarker(Marker marker)
+        {
+            instructionStack.Push(marker);
+        }
+
+        /// <summary>
+        /// Get the current instruction marker
+        /// </summary>
+        /// <returns></returns>
+        public Marker GetCurrentInstructionMarker()
+        {
+            return lex.CurrentSourceMarker;
+            //return lex.TokenMarker;
+        }
+
+        public void GoToInstructionMarker(Marker whereToGo)
+        {
+            lex.GoTo(whereToGo);
         }
 
         private Token interpreter_GetNextToken()
@@ -310,7 +386,7 @@ namespace FAST.FBasicInterpreter
                         exit = true;
                         break;
                     }
-                    lineMarker = lex.TokenMarker; // save current line marker
+                    lineMarker = lex.CurrentSourceMarker; // save current line marker
                     src.Add(new ProgramElement() { token = lastToken, 
                                                    value = lex.Value, 
                                                    identifier = lex.Identifier, 
@@ -389,13 +465,13 @@ namespace FAST.FBasicInterpreter
             while(true)
             {
                 log.info($"Line Maker.:  Line:{lineMarker.Line}, Column:{lineMarker.Column}, Pointer:{lineMarker.Pointer}");
-                log.info($"Token Maker:  Line:{lex.TokenMarker.Line}, Column:{lex.TokenMarker.Column}, Pointer:{lex.TokenMarker.Pointer}");
+                log.info($"Token Maker:  Line:{lex.CurrentSourceMarker.Line}, Column:{lex.CurrentSourceMarker.Column}, Pointer:{lex.CurrentSourceMarker.Pointer}");
 
                 log.info($"Token: Prev.: {prevToken}, Last:{lastToken}");
                 log.info($"Last Char.: {lex.lastChar}");
 
                 log.info(lex.GetLine(lineMarker));
-                log.info(lex.GetLine(lex.TokenMarker));
+                log.info(lex.GetLine(lex.CurrentSourceMarker));
 
                 if (!interactive) break;
  

@@ -26,6 +26,11 @@ namespace FAST.FBasicInterpreter
             }
         }
 
+        /// <summary>
+        /// Current source instruction marker. 
+        /// </summary>
+        public Marker CurrentSourceMarker {  get => sourceMarker; }
+
         public Marker TokenMarker { get; set; }
 
         public string Identifier { get; set; } // Last encountered identifier
@@ -66,7 +71,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="marker"></param>
         public void GoTo(Marker marker)
         {
-            sourceMarker = marker;
+           this.sourceMarker = marker;
             // (!) andreas: maybe here we should set the lastChar using the marker's pointer 
         }
 

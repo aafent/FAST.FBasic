@@ -55,6 +55,61 @@ namespace FAST.FBasicInterpreter
         }
 
 
+        /// <summary>
+        /// Get a value of any name (variable, collection item)
+        /// </summary>
+        /// <param name="interpreter">the interpreter</param>
+        /// <param name="name">The name</param>
+        /// <returns>Value</returns>
+        public static Value GetValue(this Interpreter interpreter, string name)
+        {
+            string firstPart = null;
+            string otherPart = null;
+            if (name.Length>1 && name[0]=='[' && name[name.Length-1]==']')
+            {
+                // (v) remove the surrounding []
+                name=name.Substring(1,name.Length-2);
+            }
+            var dotPosition = name.IndexOf('.');
+            if (dotPosition >= 0) // (v) collections dotted identifier [collection.item]
+            {
+                firstPart = name.Substring(0, dotPosition);
+                otherPart = name.Substring(dotPosition + 1);
+
+                if (interpreter.collections.ContainsKey(firstPart))
+                {
+                    return interpreter.collections[firstPart].getValue(otherPart);
+                }
+                else
+                {
+                    return interpreter.Error(null,$"Undeclared name {name} [E111]").value;
+                }
+            } 
+            else
+            {
+                return interpreter.GetVar(name);
+            }
+
+        }
+
+
+        /// <summary>
+        /// Dump the source line at the Market, for debugging purposes 
+        /// </summary>
+        /// <param name="interpreter"></param>
+        /// <param name="marker"></param>
+        public static void DumpSourceLine(this Interpreter interpreter, Marker marker)
+        {
+            string line = interpreter.lex.GetLine(marker.Line);
+            if (!string.IsNullOrEmpty(line))
+            {
+                if (marker.Column >= 0 && marker.Column <= line.Length)
+                {
+                    line = $"L{marker.Line}: " + line.Insert(marker.Column, $"[<-({marker.Column})-]");
+                }
+            }
+            Console.WriteLine(line);
+        }
 
     }
 }

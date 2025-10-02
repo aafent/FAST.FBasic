@@ -10,6 +10,16 @@
         {
             return $"Expecting keyword/statement, got {found}({msg}) [E106]";
         }
+
+        public static string E107_LabelNotFound(string label)
+            => $"Cannot find label named {label} [E107]";
+
+
+        public static string E117_CollectionIsNotSDATAType(string collectionName)
+        {
+            return $"Collection {collectionName} is not SDATA type of collection [E117]";
+        }
+
         public static string E124_NotPermitted(string forbittenItem)
         {
             return $"{forbittenItem} not permitted. Use LET to assign the result value and use the variable [E124]";

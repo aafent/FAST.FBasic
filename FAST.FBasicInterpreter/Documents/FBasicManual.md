@@ -21,8 +21,11 @@ In this manual you can find the following chapters
     2\. Mathematical functions  
     3\. Date and Time functions   
     4\. SQL Data provider  
-    5\. Events triggering
+    5\. Events triggering  
+    6\. Placeholder Replacer
 12.  Handlers
+
+---
 
 ### Flow Control
 
@@ -102,6 +105,8 @@ _Example:_
 > assert a = 10
 > ```
 
+---
+
 ### Statements
 
 *   LET
@@ -167,6 +172,8 @@ _example:_
 > let a=10 ' set the value 10 to variable a
 > ```
 
+---
+
 ### Datatypes
 
 FBASIC, as programming language, typically offers two primary data types: **String** and **Real**.
@@ -188,6 +195,8 @@ In conclusion, FBASIC will consider the zero (0) numeric value as False, and any
 
 ### Functions
 
+---
+
 #### Built-ins functions:
 
 *   **str(n)**, converts a numeric value to a string value
@@ -196,6 +205,8 @@ In conclusion, FBASIC will consider the zero (0) numeric value as False, and any
 *   **min(n,n)**, the minimum number between two
 *   **max(n,n)**, the maximum number between two
 *   **not(n)**, If the underlying number is **not equal** to the value for true (1) return True, otherwise returns False (-1)
+
+---
 
 #### String functions:
 
@@ -207,6 +218,8 @@ Functions for string manipulation, available if library _FBasicStringFunctions_ 
 *   **mid(string, start, length)**: Extracts a substring of a specific length from a string, starting at a given position.
 *   **ucase(string)**: Converts a string to uppercase.
 *   **lcase(string)**: Converts a string to lowercase.
+
+---
 
 #### **Math Functions:**
 
@@ -242,6 +255,8 @@ as the FBASIC does not support constants, a constant is a variable with a value.
 
 *   **PI:** The PI value, approximately equal to 3.14159.
 
+---
+
 #### Date & Time Functions
 
 Date and Time functions in the BASIC programming language are used to handle and manipulate dates and times. These functions allow programs to retrieve the current date and time, perform calculations with dates, and format dates for display or any other usage. The native date format is the DD-MM-YYYY. As the FBASIC does not support date as datatype, the functions will consider any valid value having this format as a date. 
@@ -263,11 +278,15 @@ The native time format is the HH:MM:SS.FFF. As the FBASIC does not support date 
 *   **minute():** extracts the minutes as an integer from a time variable.
 *   **second():** extracts the seconds as an integer from a time variable.
 
+---
+
 ### Variables
 
 *   RESULTVALUE _(for usage see statements: CALL, RESULT)_
 *   “ … ”  
 *   \[….\]
+
+---
 
 ### Collections
 
@@ -297,6 +316,8 @@ _example, demonstration of CURSOR, nested ForEeach loops, and RESET statement_
 > ```
 
 For more examples: see the other paragraphs of this manual. 
+
+---
 
 ### Static Collections
 
@@ -328,6 +349,8 @@ print [DayNo.Item]
 EndForeach DayNo
 ```
 
+---
+
 ### Operators
 
 FBASIC supports the following operators:
@@ -354,6 +377,8 @@ assert 1 = Not 0
 assert 0 = Not 1
 assert 9 = 3 ^ 2</code></pre></blockquote></td></tr><tr><td>Arithmetic Operations</td><td>+</td><td>-</td><td>*</td><td>/</td><td>^</td></tr><tr><td>Equality and Assignment</td><td>=</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Other</td><td>(</td><td>)</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>Logical</td><td>And</td><td>Or</td><td>Not</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr></tbody></table>
 
+---
+
 ## Libraries and Add-Ons
 
 ### What is a library
@@ -366,6 +391,8 @@ Libraries are add-ons to the main FBASIC Interpreter that provide **functions**,
 *   **Mathematical Library:** The name of this library is: _FBasicMathFunctions_ and for further information see the _Functions_ section of this document.
 *   **Date and Time Library:** The name of this library is: _FBasicDateFunctions_ and for further information see the _Functions_ section of this document.
 *   **Events Triggering Library:** The name this library is: _FBasicEvents_ (see below for further information)
+
+---
 
 ### SQL Data Provider
 
@@ -407,6 +434,8 @@ _example demonstrating the elements: CURSOR, FETCH, EOD(), RESET, GOTO, Labels_
 
 To get the connection string, make a request to the “Request For Object” handler with Context=SQL, Group=CONNECTION, Name=ADAPTER and expecting a type of _IdatabaseConnectionAdapter_ as Object
 
+---
+
 ### Events Triggering
 
 Event triggering is the act of generating a signal that notifies other parts of a program or system that a specific,  
@@ -415,12 +444,31 @@ the event-driven sequence.
 
 It is provided by the Library **FBasicEvents** and for further details see the document: [Events](event.md)
 
+---
+
+### Placeholder Replacer
+
+Placeholder Replacer implements the low level functionality is necessary to substitute placeholders in a string with value of identifiers (variables or collections).  
+It is provided by the Library **FBasicTextReplacer**
+
+Available statements are:
+
+**PHGOSUB variable \[ELSE label\]** :: variable contains as value a label to GOSUB to, if the label does not exists,  
+then the flow will GOSUB to the ELSE label.  
+**PHREPLACE intext outtext** :: Perform a text replace to the intext giving the replaced text to the outtext.  
+**PHSDATA colName intext** :: Create a SDATA type of collection with name colName with the collection names found in the intext.  
+**PHVSDATA colName intext** :: Similar to PHSDATA but it is collection all the identifiers are used.
+
+---
+
 ## Handlers
 
 *   PRINT handler
 *   INPUT handler
 *   Program load handler
 *   Request for Objecthandler
+
+---
 
 ## Error messages
 

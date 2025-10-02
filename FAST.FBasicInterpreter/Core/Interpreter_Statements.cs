@@ -21,7 +21,7 @@
                     if (GetNextToken() == Token.Colon && prevToken == Token.Identifier)
                     {
                         if (!labels.ContainsKey(lex.Identifier))
-                            labels.Add(lex.Identifier, lex.TokenMarker);
+                            labels.Add(lex.Identifier, lex.CurrentSourceMarker);  //labels.Add(lex.Identifier, lex.TokenMarker);
                         if (lex.Identifier == name)
                             break;
                     }
@@ -39,8 +39,13 @@
             Match(Token.Identifier);
             string name = lex.Identifier;
 
-            instructionStack.Push(lex.TokenMarker);
-
+            PushCurrentInstructionMarker();
+            if (!SetFlowToLabelIfExists(name))
+            {
+                Error(Errors.E107_LabelNotFound(name));
+                return;
+            }
+            /*
             if (!labels.ContainsKey(name))
             {
                 // if we didn't encounter required label yet, start to search for it
@@ -60,6 +65,7 @@
                 }
             }
             lex.GoTo(labels[name]);
+            */
             lastToken = Token.NewLine;
         }
         void Return()
@@ -67,7 +73,21 @@
             if (instructionStack.Count < 1)
                 Error($"Found RETURN without corresponding GOSUB [E121]");
             lex.GoTo(instructionStack.Pop());
-            GetNextToken(); // bypass the GOSUB LABEL that was Pushed 
+
+            //// (v) Advance to next command
+            //while(false)
+            //{
+            //    var xx=prevToken;
+            //    var yy=lastToken;
+            //    GetNextToken(); 
+            //    if (lastToken == Token.NewLine) break;
+            //    if (lastToken == Token.EOF ) break;
+            //    if (lastToken == Token.Colon ) break;
+            //    continue;
+            //}
+            ////GetNextToken(); // bypass the GOSUB LABEL that was Pushed 
+
+
             SetLastTokenToNewLine();
         }
         void CallStatement()
@@ -98,7 +118,7 @@
         void Label()
         {
             string name = lex.Identifier;
-            if (!labels.ContainsKey(name)) labels.Add(name, lex.TokenMarker);
+            if (!labels.ContainsKey(name)) labels.Add(name, lex.CurrentSourceMarker); // labels.Add(name, lex.TokenMarker);
 
             GetNextToken();
             Match(Token.NewLine);
@@ -401,7 +421,7 @@
                 }
                 else
                 {
-                    Error($"Collection {collectionName} is not SDATA type of collection [E117]");
+                    Error(Errors.E117_CollectionIsNotSDATAType(collectionName));
                     return; // not necessary as Error is exception
                 }
                 
