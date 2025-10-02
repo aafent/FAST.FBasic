@@ -1,15 +1,13 @@
 REM test code
-let ph1=10 ' set the value 10 to variable a
-
-let ph2="abcd12345fghijk"
+let n1=1234543.1234 
+let s1="abCD12345fghijk"
 sdata Days "Sat","Mon","Thu","The","Wes","Fri","Sat"
 
 let intext=">>>
-PH1 : {ph1}
-PH2 : {ph2}
-Day : {Days.Item}
-ph1,min 3, max 10: {ph1:1,10,c0}
-ph2,min 3, max 10: {ph2:3,5,U}
+Day : \{Days.Item\}
+n1,15-25,R0N: {n1:15,25,r0N}
+n1,0-25,N: {n1:0,25,N}  ({n1})
+s1,3-5,P: {s1:3,5,P}
 "
 
 Print "Collections used in the template:"

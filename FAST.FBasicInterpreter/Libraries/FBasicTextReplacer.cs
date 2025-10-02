@@ -2,13 +2,32 @@
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// Syntax:
+/// Statemets Syntax:
 /// Provides functionality to substitute placeholders in a string.
 /// PHGOSUB variable [ELSE label]   :: variable contains as value a label to GOSUB to,  if the label does not exists, 
 ///                                     then the flow will GOSUB to the ELSE label.
 /// PHREPLACE intext outtext        :: Perform a text replace to the intext giving the replaced text to the outtext. 
 /// PHSDATA colName intext          :: Create a SDATA type of collection with name colName with the collection names found in the intext. 
 /// PHVSDATA colName intext         :: Similar to PHSDATA but it is collection all the identifiers are used. 
+/// 
+/// Functions Syntax:
+/// pcase(string)                   :: Converts the string to Proper Case (first letter upper rest lower)
+/// 
+/// Placeholders are defined as {name}, where name is the name of a variable.
+/// The placeholder can also have format specifiers and modifiers, e.g., {name:10,20,U0}.
+/// Modifiers:
+///     min,max, - Minimum and maximum width of the substituted value. eg {name:10,20}   
+///     U        - Upper case 
+///     L        - Lower case
+///     P        - Proper (title) case (first letter upper, rest lower)
+///     T        - Trim spaces from both ends of the value.
+///     c        - Format a numeric value as currency, # uses the current thread's culture
+///     N        - Format a numeric value as readable string with thousand separator and decimal point
+///     0        - Left Padding character is '0' instead of space
+///     r        - Alignment: left, right, and if both letter then center. Default is left. eg {name:10,20,r}
+///     l        - ...
+///     lr       - ...
+///     
 /// </summary>
 public class FBasicTextReplacer : IFBasicLibrary
 {
@@ -18,6 +37,8 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.AddStatement("PHSDATA", PlaceHolderSData);
         interpreter.AddStatement("PHVSDATA", PlaceHolderVSData);
         interpreter.AddStatement("PHGOSUB", PlaceHolderGoSub);
+
+        interpreter.AddFunction("ucase", PCase); // Proper Case
     }
 
 
@@ -156,6 +177,7 @@ public class FBasicTextReplacer : IFBasicLibrary
             int minSize = 0, maxSize = 0;
             string modifiers = null;
 
+            #region (+) Parse for arguments (sizes,modifiers,etc)
             if (placeholder.Contains(":"))
             {
                 var parts = placeholder.Split(new[] { ':' }, 2);
@@ -183,60 +205,80 @@ public class FBasicTextReplacer : IFBasicLibrary
                     modifiers = rightPart;
                 }
             }
+            #endregion (+) Parse for arguments (sizes,modifiers,etc)
 
             string value = getValueForPlaceHolder(interpreter, name) ?? "";
 
-            // Apply modifiers
+            #region (+) Apply value changing modifiers
             if (!string.IsNullOrEmpty(modifiers))
             {
-                if (modifiers.Contains("U")) 
-                    value = value.ToUpper();
-                if (modifiers.Contains("L"))
-                    value = value.ToLower();
+                if (modifiers.Contains("c"))
+                {
+                    Double.TryParse(value, out double numValue);
+                    {
+                        value = numValue.ToString("C");
+                    }
+                }
+                if (modifiers.Contains("N"))
+                {
+                    Double.TryParse(value, out double numValue);
+                    {
+                        value = numValue.ToString("#,##0.#########");
+                    }
+                }
+
+
+                if (modifiers.Contains("U")) value = value.ToUpper();
+                if (modifiers.Contains("L")) value = value.ToLower();
+                if (modifiers.Contains("P")) value = ToProperCase(value);
+                if (modifiers.Contains("T")) value = value.Trim();
+            }
+            #endregion (+) Apply value changing modifiers
+
+            // (v) Padding character
+            char leftPadChar = ' ';
+            char rightPadChar = ' ';
+            if (!string.IsNullOrEmpty(modifiers))
+            {
+                if (modifiers.Contains("0")) leftPadChar = '0';
             }
 
-            // Alignments
+
+            #region (+) Work with sizes and Alignments
             if (maxSize > 0)
             {
                 // Truncate if longer than maxSize
-                if (value.Length > maxSize)
-                    value = value.Substring(0, maxSize);
-            }
+                if (value.Length > maxSize) value = value.Substring(0, maxSize);
 
-            if (!string.IsNullOrEmpty(modifiers))
-            {
                 if (minSize > 0 && value.Length < minSize)
                 {
                     int padLen = minSize - value.Length;
-                    if (modifiers.Contains("c"))
+                    if (modifiers.Contains("l")  && modifiers.Contains("r")) // center
                     {
-                        // Center
                         int leftPad = padLen / 2;
                         int rightPad = padLen - leftPad;
-                        value = new string(' ', leftPad) + value + new string(' ', rightPad);
+                        value = new string(leftPadChar, leftPad) + value + new string(rightPadChar, rightPad);
                     }
-                    else if (modifiers.Contains("r"))
+                    else if (modifiers.Contains("r")) // align right
                     {
-                        // Right
-                        char padChar=' ';
-                        if (modifiers.Contains("0")) padChar='0';
-                        value = new string(padChar, padLen) + value;
+                        value = new string(leftPadChar, padLen) + value;
                     }
-                    else if (modifiers.Contains("l"))
+                    else if (modifiers.Contains("l")) // align left
                     {
-                        // Left
-                        value = value + new string(' ', padLen);
+                        value = value + new string(rightPadChar, padLen);
                     }
                 }
             }
-            else
+            else // maxSize <= 0
             {
                 if (minSize > 0 && value.Length < minSize)
                 {
                     // Default left align
-                    value = value + new string(' ', minSize - value.Length);
+                    value = value + new string(rightPadChar, minSize - value.Length);
                 }
             }
+            #endregion (+) Work with sizes and Alignments
+
 
             return value;
         });
@@ -314,6 +356,35 @@ public class FBasicTextReplacer : IFBasicLibrary
         }
  
         return uniquePlaceholders;
+    }
+
+    /// <summary>
+    /// FBASIC Function PCase()
+    /// </summary>
+    internal static Value PCase(Interpreter interpreter, List<Value> args)
+    {
+        string syntax = "PCASE(string)";
+        if (args.Count != 1)
+            return interpreter.Error("PCASE", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
+        var value= ToProperCase(args[0].String);
+        return new Value(value);
+    }
+
+    /// <summary>
+    /// Converts the input string to Proper Case (first letter uppercase, rest lowercase).
+    /// </summary>
+    /// <param name="input">The input string</param>
+    /// <returns>String</returns>
+    public static string ToProperCase(string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+
+        // 1. Capitalize the first character.
+        char firstCharUpper = char.ToUpper(input[0]);
+        // 2. Lowercase the rest of the string.
+        string restOfStringLower = input.Substring(1).ToLower();
+        // 3. Combine and return.
+        return firstCharUpper + restOfStringLower;
     }
 
 }
