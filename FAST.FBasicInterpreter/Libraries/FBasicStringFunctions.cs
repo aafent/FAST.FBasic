@@ -32,14 +32,25 @@ LCASE(string): Converts a string to lowercase.
 
         public static Value Left(Interpreter interpreter, List<Value> args)
         {
-            string syntax="LEFT(string,size)";
+            //
+            // left(string,size)
+            // if the size is 0 returns empty string
+            // if the size is negative returns error
+            // if the size is greater than the string length returns the whole string
+            // if the input string is empty  returns empty string
+            //
+
+            string syntax ="left(string,size)";
             if (args.Count !=2 )
                 return interpreter.Error("LEFT", Errors.E125_WrongNumberOfArguments(2, syntax)).value;
 
             string str = args[0].Convert(ValueType.String).String;
+            if (string.IsNullOrEmpty(str)) return Value.Empty;
+
 
             int size = args[1].ToInt();
-            if (size < 1) 
+            if (size==0) return Value.Empty;
+            if (size < 0) 
                 return interpreter.Error("LEFT",Errors.E126_WrongArgumentType(1,syntax)).value;
 
             return new Value(str.Substring(0,size));
@@ -65,7 +76,14 @@ LCASE(string): Converts a string to lowercase.
 
         public static Value Mid(Interpreter interpreter, List<Value> args)
         {
-            string syntax = "MID(string,start,length)";
+            //
+            // mid(string,start,length)
+            // if the start is less than 1 returns error
+            // if the length is less than 1 returns error
+            // if the length+start is greater than the string length returns the rest of the string
+            // if the input string is empty  returns empty string
+            //
+            string syntax = "mid(string,start,length)";
             if (args.Count != 3)
                 return interpreter.Error("MID", Errors.E125_WrongNumberOfArguments(2, syntax)).value;
 
@@ -80,7 +98,18 @@ LCASE(string): Converts a string to lowercase.
             if (size < 1)
                 return interpreter.Error("MID", Errors.E126_WrongArgumentType(2, syntax)).value;
 
-            return new Value(str.Substring(pos - 1, size));
+            if (string.IsNullOrEmpty(str)) return Value.Empty;
+
+            if ( (size + pos) > str.Length )
+            {
+                return new Value(str.Substring(pos - 1));
+            }
+            else
+            {
+                return new Value(str.Substring(pos - 1, size));
+            }
+
+            
         }
 
 
