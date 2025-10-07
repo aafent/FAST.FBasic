@@ -1,4 +1,4 @@
-﻿namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter.DataProviders
 {
     internal class staticDataCollection : IBasicCollection
     {

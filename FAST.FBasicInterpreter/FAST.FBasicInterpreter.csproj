@@ -17,7 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Update="README.MD">
+    <None Update="ReleaseNotes.md">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>

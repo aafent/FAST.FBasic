@@ -15,6 +15,15 @@ namespace FAST.FBasicInterpreter
         public static void AddLibrary(this Interpreter interpreter, IFBasicLibrary library)
         {
             library.InstallAll(interpreter);
+            if (library is IFBasicLibraryWithMemory)
+            {
+                if (interpreter.librariesWithMemory == null) interpreter.librariesWithMemory = new();
+                var lib=(IFBasicLibraryWithMemory)library;
+                if (!interpreter.librariesWithMemory.ContainsKey(lib.uniqueName))
+                {
+                    interpreter.librariesWithMemory.Add(lib.uniqueName, lib);
+                }
+            }
         }
 
         /// <summary>

@@ -103,6 +103,12 @@ namespace FAST.FBasicInterpreter
         /// Collection objects
         /// </summary>
         public readonly Dictionary<string, IBasicCollection> collections = new();
+
+        /// <summary>
+        /// Libraries with memory
+        /// </summary>
+        public Dictionary<string, IFBasicLibraryWithMemory> librariesWithMemory; // libraries with memory
+
         /// <summary>
         /// The result of the execution (statement: RESULT)
         /// </summary>

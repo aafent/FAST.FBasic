@@ -337,6 +337,13 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public void Exec()
         {
+            if (this.librariesWithMemory != null)
+            {
+                foreach (var lib in this.librariesWithMemory.Values)
+                {
+                    lib.PrepareToExecute();
+                }
+            }
             lex.SetAddonStatements(statements.Keys.ToArray());
             GetNextToken=interpreter_GetNextToken;
             exit = false;
@@ -352,8 +359,16 @@ namespace FAST.FBasicInterpreter
             this.lex.RestartProgram();
             this.Result = new();
             this.instructionStack=new();
-            this.ifCounter=0; 
+            this.ifCounter=0;
             // (!) check if we need more "resets" here. Check the commonConstructor()
+
+            if (this.librariesWithMemory != null)
+            {
+                foreach (var lib in this.librariesWithMemory.Values)
+                {
+                    lib.ClearMemory();
+                }
+            }
         }
 
         /// <summary>

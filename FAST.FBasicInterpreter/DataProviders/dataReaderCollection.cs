@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace FAST.FBasicInterpreter
+namespace FAST.FBasicInterpreter.DataProviders
 {
     /// <summary>
     /// Abstract class to implement any collection based on a data reader
