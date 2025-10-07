@@ -186,7 +186,7 @@ namespace FAST.FBasicInterpreter
         /// <returns></returns>
         public static void DefaultEnvironment(this ExecutionEnvironment env)
         {
-            env.printHandler = Console.WriteLine;
+            env.printHandler = Console.Write;
             env.inputHandler = Console.ReadLine;
             env.callHandler = (name) => { var filepath = Path.Combine(".", name); return File.ReadAllText(filepath); };
             env.requestForObjectHandler = (context, group, name) => null;

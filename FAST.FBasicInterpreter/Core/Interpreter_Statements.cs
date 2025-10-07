@@ -361,10 +361,24 @@ namespace FAST.FBasicInterpreter
             if (printHandler == null)
             {
                 Expr(); // just to move the next instruction
+                if (lastToken == Token.Semicolon) GetNextToken();
             }
             else
             {
-                printHandler?.Invoke(Expr().ToString());
+                //printHandler?.Invoke(Expr().ToString());
+                var message = Expr().ToString();
+                if (lastToken == Token.Semicolon)
+                {
+                    // (>) do not append new line
+                    printHandler?.Invoke(message);
+                    GetNextToken();
+                }
+                else
+                {
+                    // (>) append new line
+                    message += System.Environment.NewLine;
+                    printHandler?.Invoke(message);
+                }
             }
 
         }

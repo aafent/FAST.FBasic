@@ -24,7 +24,7 @@ let tries = 0
 
 startGame:
 print "Word: " + guessedSoFar
-print "Enter guess (single letter):"
+print "Enter guess (single letter):";
 input guess
 
 let found = 0
