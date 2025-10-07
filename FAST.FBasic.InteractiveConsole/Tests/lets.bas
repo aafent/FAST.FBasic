@@ -1,3 +1,6 @@
+REM Test program for IF...THEN...ELSE...ENDIF statements
+REM Category: Assignments and Expressions
+REM 
 let a= 1 
 let a= 2 + 1
 assert 2 = (5 - 3)

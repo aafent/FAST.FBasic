@@ -1,4 +1,6 @@
-REM Data count loop
+REM Test program for  FOREACH...ENDFOREACH loop
+REM Category: Loops
+REM 
 Cursor DATA1, "select top 2 name from sysobjects order by name desc"
 Cursor DATA2, "select top 5 id,name from sysobjects order by name"
 let row=0

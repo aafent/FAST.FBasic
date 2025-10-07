@@ -4,7 +4,8 @@ REM Reference: https://en.wikipedia.org/wiki/Computus#Meeus/Jones/Butcher_Gregor
 REM Note: This algorithm gives the date in the Julian calendar, so we need to convert it to the Gregorian calendar by adding 13 days for the 20th and 21st centuries.
 REM This code assumes the input year is in the 20th or 21st century.
 REM This algorithm does not using modulo function, as does not exist in FAST BASIC (yet)
-REM 
+REM Category: Date Functions Library 
+REM
 print "Enter the year:"
 input iYear
 

@@ -1,6 +1,6 @@
-REM test code
-REM test program for StringsLibrary
-REM
+REM test code for string functions
+REM Library: FBasicStrings
+REM Category: String Functions
 REM
 
 let a = "ABCDefghig" ' 10 characters

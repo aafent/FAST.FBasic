@@ -1,5 +1,6 @@
-REM test FOR...NEXT
-REM
+REM Test program for  FOR...NEXT loop
+REM Category: Loops
+REM 
 let aa=5
 let a = 0
 

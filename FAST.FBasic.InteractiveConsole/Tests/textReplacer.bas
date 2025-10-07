@@ -1,4 +1,7 @@
-REM test code
+REM Testing the Text Replacer library
+REM Library: FBasicTextReplacer
+REM Category: Text Replacer Library 
+REM
 let n1=1234543.1234 
 let s1="abCD12345fghijk"
 sdata Days "Sat","Mon","Thu","The","Wes","Fri","Sat"

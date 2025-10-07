@@ -1,6 +1,6 @@
+REM Demonstrating program for event raising
 REM Library: FBasicEvents
-REM EVENTRAISE testing
-REM ...................................
+REM -----------------------------
 
 let xx=10
 let ss="This is a string"

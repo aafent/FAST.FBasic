@@ -1,6 +1,7 @@
-REM Interactive Console
 REM 
-REM 
+REM interactive FBASIC interpreter console
+REM Category: Examples C
+REM
 
 print "FBASIC Interactive console, (c) 2005."
 print "                     (enter ? for help)"

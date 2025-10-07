@@ -1,3 +1,6 @@
+REM Test program for IF...THEN...ELSE...ENDIF statements
+REM Category: Decision Making
+REM 
 If 1 = 1 Then
 assert 1
 Else

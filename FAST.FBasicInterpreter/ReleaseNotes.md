@@ -9,7 +9,9 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
-| 2024-11-15 | New interface: IFBasicLibraryWithMemory, allowing libraries to manage their own memory. |
+| 2025-10-07 | Better remarks to .bas programs                                 |
+|			 | Move examples to FAST.FBasicInteractiveConsole project. |
+| 2025-10-06 | New interface: IFBasicLibraryWithMemory, allowing libraries to manage their own memory. |
 |		     | New Library: FBasicStackLibrary, providing stack operations. |
 |		     | New infrastructure of AI statements and AI library |
 |			 | Introduction of this release notes markdown document. |

@@ -1,6 +1,6 @@
-REM test code
-REM test program for DateFunctions library
-REM
+REM Testing the DateFunctions library
+REM Library: FBasicDateFunctions
+REM Category: Date Functions Library 
 REM
 let d=jtod("2010-12-31") 'YYYY-MM-DD
 

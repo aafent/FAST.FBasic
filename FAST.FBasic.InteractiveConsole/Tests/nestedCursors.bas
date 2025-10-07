@@ -1,4 +1,9 @@
 REM Nested Cursors
+REM Program presents data adapter functionality
+REM Connect to SQL Server and fetch data from sysobjects and syscolumns tables
+REM by using data adapter and cursor
+REM NOTE: via RequestObject Handler the SQLConnection object is populated
+REM ---------------------------------------------------
 REM 
 Cursor DATA1, "select top 2 name,id from sysobjects where type='U' order by name desc"
 'Cursor DATA2, "select top 5 colid, name, type from syscolumns where id=[DATA1.id]"

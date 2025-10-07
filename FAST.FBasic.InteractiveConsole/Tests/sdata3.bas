@@ -1,4 +1,6 @@
-REM SDATA Test-3
+REM Test program for statement SDATA
+REM Access to a static collection of items
+REM Category: Collections
 REM 
 For i = 1 To 10
 sdata Numbers i

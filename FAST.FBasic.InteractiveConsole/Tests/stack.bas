@@ -1,5 +1,7 @@
-REM stack statements
-
+REM test code for stack management statements and functions
+REM Library: FBasicStack
+REM Category: String Functions
+REM
 assert stackcnt() = 0 'ensure that you are starting with empty stack
 
 

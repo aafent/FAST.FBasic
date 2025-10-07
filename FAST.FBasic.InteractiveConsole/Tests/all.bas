@@ -1,4 +1,6 @@
-REM CALL testing
+REM Test program for CALL and GOTO statements
+REM 
+REM
 RESULT 0
 let a=1*3*(-1)
 print "string" + " print"

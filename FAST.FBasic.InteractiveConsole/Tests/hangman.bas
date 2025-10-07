@@ -1,5 +1,6 @@
 rem 
 rem Hangman (game)
+rem Category: Examples B
 rem
 sdata words "apple", "banana", "computer", "python", "hangman", "programming" 
 sdata words "science", "guitar", "electric", "holiday"

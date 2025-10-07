@@ -1,11 +1,14 @@
 REM Repayment Schedule Calculation 
 REM This program calculates the monthly payment and generates a repayment schedule for a loan.
 REM
-print "Enter loan amount:"
+REM Test program for IF...THEN...ELSE...ENDIF statements
+REM Category: Examples C
+REM 
+print "Enter loan amount:";
 input loanAmount
-print "Enter annual interest rate (percentage):"
+print "Enter annual interest rate (percentage):";
 input annualInterestRate
-print "Enter loan duration in months:"
+print "Enter loan duration in months:";
 input months
 
 let monthlyInterestRate = annualInterestRate / 100 / 12

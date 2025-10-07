@@ -1,6 +1,6 @@
-REM test code
-REM test program for MathLibrary
-REM
+REM Testing the Math Library
+REM Library: MathLibrary
+REM Category: Math Functions Library 
 REM
 let n=2
 print "n=" + n

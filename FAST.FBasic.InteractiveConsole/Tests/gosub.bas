@@ -1,4 +1,5 @@
-﻿REM GOSUB...RETURN Test
+﻿REM Test program for GOSUB...RETURN Test
+REM Category: Flow Control
 REM
 print "This is a GOSUB...RETURN EXAMPLE"
 let tms=0

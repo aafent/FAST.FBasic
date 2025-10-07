@@ -1,4 +1,6 @@
-REM SDATA Test2
+REM Test program for statement SDATA
+REM Nested FOREACH loops
+REM Category: Collections
 REM 
 sdata Months "Jan","Feb","Mar"
 sdata Months "Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"

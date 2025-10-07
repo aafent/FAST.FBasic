@@ -17,7 +17,7 @@ namespace FAST.FBasic.InteractiveConsole
             this.iCommand = "RUN";
             this.config=config;
             this.programsFolder = config.GetValue<string>("Settings:ProgramsFolder")!;
-            if (string.IsNullOrEmpty(programsFolder)) programsFolder= @"~\..\..\..\..\FAST.FBasicInterpreter\Tests";
+            if (string.IsNullOrEmpty(programsFolder)) programsFolder= @"~\\..\\..\\..\\..\\FAST.FBasic.InteractiveConsole\\Tests";
             if (programsFolder.Contains("~")) 
                 programsFolder = programsFolder.Replace("~", Environment.CurrentDirectory);
 
@@ -170,6 +170,7 @@ namespace FAST.FBasic.InteractiveConsole
             ExecutionResult result;
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
 
+            #region (+) Alternative way to execute a program
             /* Alternative way to execute a program
              * 
              * 
@@ -182,6 +183,7 @@ namespace FAST.FBasic.InteractiveConsole
                 interp.AddLibrary(new FBasicSQLDataAdapter());
             });
             */
+            #endregion
 
             result = FBasicSource.Run(env, basProgramFile);
             if (result.hasError)

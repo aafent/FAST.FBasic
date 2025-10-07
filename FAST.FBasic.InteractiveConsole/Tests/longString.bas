@@ -1,4 +1,6 @@
-REM test code
+REM Test program for long strings
+REM Category: Assignments and Expressions
+REM 
 let a=10 ' set the value 10 to variable a
 
 let ss=">>>
