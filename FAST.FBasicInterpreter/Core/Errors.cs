@@ -71,6 +71,11 @@
             return $"Request object error. An object expected but got null. Request:{context}.{group}.{name}. {moreText} [E128]";
         }
 
+        public static string E129_IsEmpty(string whatIsEmpty)
+        {
+            return "{whatIsEmpty} is empty [E129]";
+        }
+
         public static string X007_OnlyUnaryOperationsOnNumbers()
         {
             return "Can only do unary operations on numbers. [X007]";

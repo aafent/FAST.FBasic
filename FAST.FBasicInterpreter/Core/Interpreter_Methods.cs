@@ -37,7 +37,7 @@ namespace FAST.FBasicInterpreter
         /// Get underlying variables and values 
         /// </summary>
         /// <returns>Dictionary, the key is the variable name</returns>
-        public Dictionary<string,Value> GetVariables()
+        public Dictionary<string, Value> GetVariables()
         {
             return this.vars;
         }
@@ -66,7 +66,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="statment">A reference to the statement method implementation</param>
         public void AddStatement(string name, BasicStatement statement)
         {
-            name=name.ToUpper(); // crucial to be upper
+            name = name.ToUpper(); // crucial to be upper
             if (!statements.ContainsKey(name)) statements.Add(name, statement);
             else statements[name] = statement;
 
@@ -79,7 +79,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="adapter">The adapter (IfbasicDataAdapter) </param>
         public void AddDataAdapter(IfbasicDataAdapter adapter)
         {
-            if (!dataAdapters.ContainsKey(adapter.name)) 
+            if (!dataAdapters.ContainsKey(adapter.name))
             {
                 dataAdapters.Add(adapter.name, adapter);
                 adapter.bind(this);
@@ -103,7 +103,7 @@ namespace FAST.FBasicInterpreter
         /// <typeparam name="T">The type of the adapter</typeparam>
         /// <param name="name">The name of the adapter</param>
         /// <returns>The instance of the Adapter</returns>
-        public T GetDataAdapter<T>(string name) where T: IfbasicDataAdapter
+        public T GetDataAdapter<T>(string name) where T : IfbasicDataAdapter
         {
             return (T)dataAdapters[name];
         }
@@ -116,12 +116,12 @@ namespace FAST.FBasicInterpreter
         public void AddCollection(string name, IBasicCollection collection)
         {
             if (!dataAdapters.ContainsKey(name))
-            {    
+            {
                 collections.Add(name, collection);
             }
             else
             {
-                collections[name]=collection;
+                collections[name] = collection;
             }
         }
 
@@ -134,10 +134,10 @@ namespace FAST.FBasicInterpreter
         /// <returns>The requested object or null</returns>
         public object RequestForObject(string context, string group, string name, bool errorIfNull = true)
         {
-            if (this.requestForObjectHandler == null) 
+            if (this.requestForObjectHandler == null)
                 Error(context, $"The Request For Object Handler is not installed ({context},{group},{name}) [E100]");
             var returnObject = this.requestForObjectHandler(context, group, name);
-            if (errorIfNull & (returnObject == null)) 
+            if (errorIfNull & (returnObject == null))
                 Error(context, $"Cannot get object for: ({context},{group},{name}) [E101]");
             return returnObject;
         }
@@ -161,13 +161,13 @@ namespace FAST.FBasicInterpreter
             {
                 return Error($"{source}: {text}");
             }
-            
+
         }
         private ErrorReturnClass Error(string text)
         {
             if (lineMarker.Line > 0)
             {
-                string line=lex.GetLine(lineMarker.Line);
+                string line = lex.GetLine(lineMarker.Line);
                 if (!string.IsNullOrEmpty(line))
                 {
                     if (lineMarker.Column >= 0 && lineMarker.Column <= line.Length)
@@ -176,7 +176,8 @@ namespace FAST.FBasicInterpreter
                     }
                 }
                 throw new FBasicException(text, lineMarker, line);
-            } else
+            }
+            else
             {
                 throw new FBasicException(text, lineMarker);
             }
@@ -345,7 +346,7 @@ namespace FAST.FBasicInterpreter
                 }
             }
             lex.SetAddonStatements(statements.Keys.ToArray());
-            GetNextToken=interpreter_GetNextToken;
+            GetNextToken = interpreter_GetNextToken;
             exit = false;
             GetNextToken();
             while (!exit) Line(); // do all lines
@@ -358,8 +359,8 @@ namespace FAST.FBasicInterpreter
         {
             this.lex.RestartProgram();
             this.Result = new();
-            this.instructionStack=new();
-            this.ifCounter=0;
+            this.instructionStack = new();
+            this.ifCounter = 0;
             // (!) check if we need more "resets" here. Check the commonConstructor()
 
             if (this.librariesWithMemory != null)
@@ -377,9 +378,9 @@ namespace FAST.FBasicInterpreter
         /// <returns>The program container</returns>
         public bool tryParseSourceCode(out ProgramContainer program)
         {
-            program= new();
+            program = new();
             List<ProgramElement> src = new();
-            program.variables=new();
+            program.variables = new();
             try
             {
                 GetNextToken = interpreter_GetNextToken;
@@ -402,56 +403,58 @@ namespace FAST.FBasicInterpreter
                         break;
                     }
                     lineMarker = lex.CurrentSourceMarker; // save current line marker
-                    src.Add(new ProgramElement() { token = lastToken, 
-                                                   value = lex.Value, 
-                                                   identifier = lex.Identifier, 
-                                                   isDoted=lex.Identifier.Contains('.') 
-                                                  });
+                    src.Add(new ProgramElement()
+                    {
+                        token = lastToken,
+                        value = lex.Value,
+                        identifier = lex.Identifier,
+                        isDoted = lex.Identifier.Contains('.')
+                    });
                     GetNextToken();
                 }
                 src.Add(new ProgramElement() { token = Token.EOF, value = lex.Value, identifier = "" });
-            } 
+            }
             catch
             {
                 return false;
             }
 
-            program.elements= src.ToArray();
+            program.elements = src.ToArray();
 
             int numOfElements = program.elements.Count();
-            if (numOfElements > 0) for (var inx=1; inx<=numOfElements; inx++) // (!) inx starts from 1 here not 0
-            {
-                if ( (inx+1) == numOfElements ) break; 
-                if (program.elements[inx - 1].token == Token.Let  &&
-                    program.elements[inx ].token == Token.Identifier &&
-                    program.elements[inx + 1].token == Token.Equal ) // (<) locate the "LET identifier =" statement
+            if (numOfElements > 0) for (var inx = 1; inx <= numOfElements; inx++) // (!) inx starts from 1 here not 0
                 {
+                    if ((inx + 1) == numOfElements) break;
+                    if (program.elements[inx - 1].token == Token.Let &&
+                        program.elements[inx].token == Token.Identifier &&
+                        program.elements[inx + 1].token == Token.Equal) // (<) locate the "LET identifier =" statement
+                    {
                         if (program.elements[inx].isDoted) continue; // (<) do not list doted variables. normally will not found in LET statement
 
-                        var name= program.elements[inx].identifier;
+                        var name = program.elements[inx].identifier;
                         if (program.variables.ContainsKey(name)) continue; // (<) if already in list goto next
 
                         program.variables.Add(name, ValueType.Real); // add the variable to the list. The type Real is the default type
 
                         // (v) now check the next elements and try to extract variable type
-                        inx = inx+2; if (inx == numOfElements) break; // (<) goto next element +1 is the "=", +2 is the next
+                        inx = inx + 2; if (inx == numOfElements) break; // (<) goto next element +1 is the "=", +2 is the next
 
                         if (program.elements[inx].token == Token.Value)
                         {
-                            program.variables[name]=program.elements[inx].value.Type; // (<) we are sure about the type
+                            program.variables[name] = program.elements[inx].value.Type; // (<) we are sure about the type
                             continue;
                         }
-                            
+
                         // (v) now to identify the type go forward until find a value or a line change
                         inx++; // goto next element
-                        bool exitLoop=false;
-                        while ( inx <= numOfElements )
+                        bool exitLoop = false;
+                        while (inx <= numOfElements)
                         {
-                            switch(program.elements[inx].token)
+                            switch (program.elements[inx].token)
                             {
                                 case Token.Value:
                                     program.variables[name] = program.elements[inx].value.Type; // (<) we are sure about the type
-                                    exitLoop=true;
+                                    exitLoop = true;
                                     break;
                                 case Token.EOF:
                                 case Token.Semicolon:
@@ -462,9 +465,9 @@ namespace FAST.FBasicInterpreter
                             if (exitLoop) break;
                             inx++;
                         }
-                }
+                    }
 
-            }
+                }
             return true;
         }
 
@@ -474,10 +477,10 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// Dumps to the log information regarding the current parsing stage
         /// </summary>
-        public void dumpInterpreter(bool interactive=false)
+        public void dumpInterpreter(bool interactive = false)
         {
-            Marker oldLineMarker=new(lineMarker); // save the marker
-            while(true)
+            Marker oldLineMarker = new(lineMarker); // save the marker
+            while (true)
             {
                 log.info($"Line Maker.:  Line:{lineMarker.Line}, Column:{lineMarker.Column}, Pointer:{lineMarker.Pointer}");
                 log.info($"Token Maker:  Line:{lex.CurrentSourceMarker.Line}, Column:{lex.CurrentSourceMarker.Column}, Pointer:{lex.CurrentSourceMarker.Pointer}");
@@ -489,13 +492,13 @@ namespace FAST.FBasicInterpreter
                 log.info(lex.GetLine(lex.CurrentSourceMarker));
 
                 if (!interactive) break;
- 
+
                 Console.Write(">>>n=nextToken, r=restore. x=exit, d=dump >>>");
                 var cmd = Console.ReadLine().ToUpper();
-                bool exit=false;
+                bool exit = false;
                 switch (cmd)
-                { 
-                    case "N": 
+                {
+                    case "N":
                         GetNextToken();
                         break;
                     case "R":
@@ -503,7 +506,7 @@ namespace FAST.FBasicInterpreter
                         break;
                     case "X":
                     case "Q":
-                        exit=true;
+                        exit = true;
                         break;
                     case "D":
                         foreach (var item in vars)
@@ -515,7 +518,7 @@ namespace FAST.FBasicInterpreter
                 if (exit) break;
                 Console.WriteLine();
             }
-            lineMarker =new(oldLineMarker); // restore the marker
+            lineMarker = new(oldLineMarker); // restore the marker
         }
         #endregion (+) Other
 

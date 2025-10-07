@@ -60,7 +60,11 @@ public class FBasicStack : IFBasicLibraryWithMemory
 
         interpreter.GetNextToken(); // advance to next command
 
-        if (stack.Count < 1) throw new Exception("xxx");
+        if (stack.Count < 1)
+        {
+            interpreter.Error(uniqueName, Errors.E129_IsEmpty("Stack"));
+            return;
+        }
 
         interpreter.SetVar(name, stack.Pop());
 
@@ -74,7 +78,11 @@ public class FBasicStack : IFBasicLibraryWithMemory
         string name = interpreter.lex.Identifier;
         interpreter.GetNextToken(); // advance to next command
 
-        if (stack.Count < 1) throw new Exception("xxx");
+        if (stack.Count < 1)
+        {
+            interpreter.Error(uniqueName, Errors.E129_IsEmpty("Stack"));
+            return;
+        }
         interpreter.SetVar(name, stack.Peek());
 
     }
