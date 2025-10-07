@@ -150,6 +150,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicSQLDataAdapter());
             env.AddLibrary(new FBasicEvents());
             env.AddLibrary(new FBasicTextReplacer());
+            env.AddLibrary(new FBasicStack());
 
             env.AddVariable("table.column", "myColumn1");
 

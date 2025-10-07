@@ -1,6 +1,6 @@
 ﻿using System.Data.Common;
 
-namespace FAST.FBasicInterpreter
+namespace FAST.FBasicInterpreter.DataProviders
 {
     public class cursorCollection : dataReaderCollection<DbDataReader, sqlFBasicDataProvider>
     {

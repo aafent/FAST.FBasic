@@ -1,8 +1,9 @@
 ﻿using FAST.FBasicInterpreter;
+using FAST.FBasicInterpreter.DataProviders;
 using System.Text.RegularExpressions;
 
 /// <summary>
-/// Statemets Syntax:
+/// Statements Syntax:
 /// Provides functionality to substitute placeholders in a string.
 /// PHGOSUB variable [ELSE label]   :: variable contains as value a label to GOSUB to,  if the label does not exists, 
 ///                                     then the flow will GOSUB to the ELSE label.
@@ -42,7 +43,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     }
 
 
-    private void PlaceHolderGoSub(Interpreter interpreter)
+    private static void PlaceHolderGoSub(Interpreter interpreter)
     {
         // Syntax PHGOSUB Identifier_with_label [ELSE label]
         //

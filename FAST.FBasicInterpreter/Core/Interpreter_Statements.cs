@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using FAST.FBasicInterpreter.DataProviders;
+
+namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// The interpreter factory of the FBASIC 
