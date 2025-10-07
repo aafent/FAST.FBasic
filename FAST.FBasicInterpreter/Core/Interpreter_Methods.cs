@@ -175,10 +175,10 @@ namespace FAST.FBasicInterpreter
                         line = line.Insert(lineMarker.Column, "<--E  ");
                     }
                 }
-                throw new fBasicException(text, lineMarker, line);
+                throw new FBasicException(text, lineMarker, line);
             } else
             {
-                throw new fBasicException(text, lineMarker);
+                throw new FBasicException(text, lineMarker);
             }
         }
 
@@ -328,7 +328,7 @@ namespace FAST.FBasicInterpreter
         public Value GetVar(string name)
         {
             if (!vars.ContainsKey(name))
-                throw new fBasicException($"Variable with name {name} does not exist. [X101]", lineMarker.Line);
+                throw new FBasicException($"Variable with name {name} does not exist. [X101]", lineMarker.Line);
             return vars[name];
         }
 

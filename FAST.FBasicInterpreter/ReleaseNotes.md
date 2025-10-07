@@ -13,6 +13,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 |		     | New Library: FBasicStackLibrary, providing stack operations. |
 |		     | New infrastructure of AI statements and AI library |
 |			 | Introduction of this release notes markdown document. |
+|	         | fBasicException renamed to FBasicException
 | 2024-10-05 | package release 1.0.7.                                 | 
 | 2025-09    | Open source release of the FAST.FBasicInterpreter project on GitHub. |
 | 2024-06    | Initial release of the FAST.FBasicInterpreter project. |

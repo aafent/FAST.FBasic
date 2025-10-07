@@ -53,7 +53,7 @@ namespace FAST.FBasicInterpreter
                     result.variables = interpreter.GetVariables(); // Reference to the variables
                 }
             }
-            catch (fBasicException e)
+            catch (FBasicException e)
             {
                 result.hasError = true;
                 result.errorText = e.ToString();

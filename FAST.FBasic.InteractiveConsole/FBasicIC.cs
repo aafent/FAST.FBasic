@@ -60,7 +60,7 @@ namespace FAST.FBasic.InteractiveConsole
                     {
                         runFBasicProgram();
                     }
-                    catch (fBasicException fbe)
+                    catch (FBasicException fbe)
                     {
                         Console.WriteLine(fbe.Message);
                     }

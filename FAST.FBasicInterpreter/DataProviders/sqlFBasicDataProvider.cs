@@ -52,7 +52,7 @@ namespace FAST.FBasicInterpreter.DataProviders
                                                                     // (>) if pass parameters, this is a nice time to do it
                 collection.reader = command.ExecuteReader();
             } 
-            catch (fBasicException)
+            catch (FBasicException)
             {
                 errorFound = true;
                 throw;
