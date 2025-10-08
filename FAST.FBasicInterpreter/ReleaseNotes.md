@@ -9,7 +9,9 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
-| 2025-10-07 | Better remarks to .bas programs                                 |
+| 2025-10-08 | Add to Math Functions: mod(), round() | 
+| 2025-10-07 | Package release 1.0.8.                                 |
+|            | Better remarks to .bas programs                                 |
 |			 | Move examples to FAST.FBasicInteractiveConsole project. |
 | 2025-10-06 | New interface: IFBasicLibraryWithMemory, allowing libraries to manage their own memory. |
 |		     | New Library: FBasicStackLibrary, providing stack operations. |

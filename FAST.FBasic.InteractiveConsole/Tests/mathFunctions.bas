@@ -24,10 +24,19 @@ print "Value Functions"
 print "..............."
 print "abs=" + abs(n)
 print "sgn=" + sgn(n)
-print "rnd=" + rnd()
+print "mod=" + mod(5, 2)
 
+
+print "Rounding Functions"
+print ".................."
 print "fix=" + fix(n)
 print "int=" + int(n)
+print "round=" + round(PI, 3)
+
+print "Other Functions"
+print "..............."
+print "rnd=" + rnd()
+
 
 print ""
 print "Constants"
