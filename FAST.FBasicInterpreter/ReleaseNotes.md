@@ -9,6 +9,8 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+|            | New statement SSET for setting values in static collections | 
+|            | New operators for strings: <, >, <= >= 
 |			 | Bug with inline comments and newline, fixed | 
 | 2025-10-08 | Add to Math Functions: mod(), round() | 
 |            | Add to String Functions: instr()

@@ -54,6 +54,7 @@
             this.value = source.value;
             this.identifier = source.identifier;
             this.isDoted = source.isDoted;
+
         }
     }
 

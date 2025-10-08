@@ -9,8 +9,10 @@ namespace FAST.FBasicInterpreter
             interpreter.AddFunction("EOD", EOD);
             interpreter.AddFunction("SCI", StaticCollectionItem);
             interpreter.AddFunction("SCNT", StaticCollectionCount);
+
             interpreter.AddStatement("FETCH",FETCH);
             interpreter.AddStatement("RESET", RESET);
+            interpreter.AddStatement("SSET", SSET);
         }
  
         public static Value EOD(Interpreter interpreter, List<Value> args)
@@ -47,9 +49,8 @@ namespace FAST.FBasicInterpreter
             interpreter.Match(Token.Identifier);
             string collectionName = interpreter.lex.Identifier;
 
-            interpreter.lastToken = Token.NewLine;
-
-
+            interpreter.SetLastTokenToNewLine();
+            //interpreter.lastToken = Token.NewLine;
 
             // (v) implementation
             if (!interpreter.collections.ContainsKey(collectionName))
@@ -59,6 +60,55 @@ namespace FAST.FBasicInterpreter
             collection.Reset();
             collection.endOfData=false;
         }
+
+        private static void SSET(Interpreter interpreter)
+        {
+            // Syntax: SSET collection index value
+            //  Used to SSET a value at a specific index of a static collection
+            //
+            interpreter.Match(Token.Identifier);
+            string collectionName = interpreter.lex.Identifier;
+            
+            interpreter.GetNextToken();
+            int index=-1;
+            switch(interpreter.lastToken)
+            {
+                case Token.Value:
+                    index=interpreter.lex.Value.ToInt();    
+                    break;
+                case Token.Identifier:
+                    var name = interpreter.lex.Identifier;
+                    index = interpreter.GetValue(name).ToInt();
+                    break;
+                default:
+                    interpreter.Match(Token.Value); // will produce error 
+                    return; 
+            }
+
+            interpreter.GetNextToken();
+            Value value=Value.Empty;
+            switch (interpreter.lastToken)
+            {
+                case Token.Value:
+                    value = interpreter.lex.Value;
+                    break;
+                case Token.Identifier:
+                    var name = interpreter.lex.Identifier;
+                    value = interpreter.GetValue(name);
+                    break;
+                default:
+                    interpreter.Match(Token.Value); // will produce error 
+                    return;
+            }
+            interpreter.GetNextToken();
+
+            index = index - 1; // 1-based to 0-based
+            if (index < 0)
+                interpreter.Error("SSET", Errors.E130_OutOfRange($"Collection: {collectionName}", $"index={1 + index}"));
+
+            ((staticDataCollection)interpreter.collections[collectionName]).data[index]=value;
+        }
+
 
         /// <summary>
         /// SCI() : Static Collection Item
@@ -75,8 +125,10 @@ namespace FAST.FBasicInterpreter
                 return interpreter.Error("SCI", Errors.E126_WrongArgumentType(syntax:syntax)).value;
 
             string collectionName = args[0].String;
-            int item = args[1].ToInt();
-            
+            int item = args[1].ToInt() - 1; // 1-based to 0-based
+            if (item < 0)
+                return interpreter.Error("SCI", Errors.E130_OutOfRange($"Collection: {collectionName}",$"index={1+item}")).value;   
+
             var collection=interpreter.collections[collectionName];
             if (!(collection is staticDataCollection))
             {

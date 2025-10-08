@@ -190,21 +190,38 @@ namespace FAST.FBasicInterpreter
             else
             {
                 if (a.Type == ValueType.String)
-                    throw new Exception(Errors.X009_CannotDoBinopOnStrings());
-
-                switch (tok)
                 {
-                    case Token.Minus: return new Value(a.Real - b.Real);
-                    case Token.Asterisk: return new Value(a.Real * b.Real);
-                    case Token.Slash: return new Value(a.Real / b.Real);
-                    case Token.Caret: return new Value(Math.Pow(a.Real, b.Real));
-                    case Token.Less: return new Value(a.Real < b.Real ? 1 : 0);
-                    case Token.More: return new Value(a.Real > b.Real ? 1 : 0);
-                    case Token.LessEqual: return new Value(a.Real <= b.Real ? 1 : 0);
-                    case Token.MoreEqual: return new Value(a.Real >= b.Real ? 1 : 0);
-                    case Token.And: return new Value((a.Real != 0) && (b.Real != 0) ? 1 : 0);
-                    case Token.Or: return new Value((a.Real != 0) || (b.Real != 0) ? 1 : 0);
+                    var cmp=string.Compare(a.String, b.String, StringComparison.Ordinal);
+                    switch (tok)
+                    {
+                        case Token.Less: return new Value(cmp < 0 ? 1 : 0);
+                        case Token.More: return new Value(cmp > 0 ? 1 : 0);
+                        case Token.LessEqual: return new Value(cmp < 0 | cmp==0 ? 1 : 0);
+                        case Token.MoreEqual: return new Value(cmp > 0 | cmp==0 ? 1 : 0);
+
+                        default:
+                            throw new Exception(Errors.X009_CannotDoBinopOnStrings());
+                    }
+
+                    
+                } 
+                else
+                {
+                    switch (tok)
+                    {
+                        case Token.Minus: return new Value(a.Real - b.Real);
+                        case Token.Asterisk: return new Value(a.Real * b.Real);
+                        case Token.Slash: return new Value(a.Real / b.Real);
+                        case Token.Caret: return new Value(Math.Pow(a.Real, b.Real));
+                        case Token.Less: return new Value(a.Real < b.Real ? 1 : 0);
+                        case Token.More: return new Value(a.Real > b.Real ? 1 : 0);
+                        case Token.LessEqual: return new Value(a.Real <= b.Real ? 1 : 0);
+                        case Token.MoreEqual: return new Value(a.Real >= b.Real ? 1 : 0);
+                        case Token.And: return new Value((a.Real != 0) && (b.Real != 0) ? 1 : 0);
+                        case Token.Or: return new Value((a.Real != 0) || (b.Real != 0) ? 1 : 0);
+                    }
                 }
+
             }
 
             throw new Exception(Errors.X010_UnknownBinaryOperator());

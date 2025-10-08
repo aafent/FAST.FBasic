@@ -71,6 +71,11 @@
             return $"Request object error. An object expected but got null. Request:{context}.{group}.{name}. {moreText} [E128]";
         }
 
+        public static string E130_OutOfRange(string whatIsOutOfRange, string more=null)
+        {
+            return $"{whatIsOutOfRange} is out of range. {more} [E129]";
+        }
+
         public static string E129_IsEmpty(string whatIsEmpty)
         {
             return "{whatIsEmpty} is empty [E129]";
