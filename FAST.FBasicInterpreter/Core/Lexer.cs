@@ -1,3 +1,5 @@
+using System.Text.RegularExpressions;
+
 namespace FAST.FBasicInterpreter
 {
     /// <summary>
@@ -256,12 +258,12 @@ namespace FAST.FBasicInterpreter
                     GetChar(); // move 1 character to bypass the ]
                     return Token.Identifier;
 
-                // (v) escape character
+                // (v) inline comment
                 case '\'':
                     // skip comment until new line
                     while (lastChar != '\n') GetChar();
-                    GetChar();
-                    return GetToken();
+                    //GetChar();
+                    return Token.NewLine;
 
                 // (v) Comparison operators <,>,<>,<=,>=
                 case '<':
