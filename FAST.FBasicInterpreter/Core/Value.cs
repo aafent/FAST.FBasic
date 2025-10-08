@@ -119,7 +119,14 @@ namespace FAST.FBasicInterpreter
                 switch (type)
                 {
                     case ValueType.Real:
-                        this.Real = double.Parse(this.String);
+                        double tmpd;
+                        if (double.TryParse(this.String, out tmpd))
+                        {
+                            this.Real = tmpd;
+                        } else
+                        {   // (!) does not produce error. 
+                            this.Real = 0;
+                        }
                         this.Type = ValueType.Real;
                         break;
                     case ValueType.String:

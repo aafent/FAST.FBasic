@@ -60,6 +60,13 @@ namespace FAST.FBasicInterpreter
                 result.lineOfError = e.line;
                 result.errorSourceLine = e.sourceLine;
             }
+            catch (Exception ex)
+            {
+                result.hasError = true;
+                result.errorText = ex.ToString();
+                result.lineOfError = interpreter.lex.CurrentSourceMarker.Line;
+                result.errorSourceLine = interpreter.lex.GetLine(result.lineOfError);
+            }
             return result;
         }
 
