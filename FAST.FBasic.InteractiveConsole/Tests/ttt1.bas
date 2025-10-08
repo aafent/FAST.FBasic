@@ -1,4 +1,5 @@
 REM TicTacToe FBASIC (No Arrays)
+REM Category: Games
 REM FBASIC Tic-Tac-Toe Game (Player 'X' vs. Computer 'O') ---
 REM Follows strict constraints: No arrays, No CALL.
 REM Uses individual variables (C1-C9) and GOSUB/RETURN/GOTO only.

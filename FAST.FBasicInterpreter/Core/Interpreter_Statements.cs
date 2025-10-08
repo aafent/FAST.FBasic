@@ -10,6 +10,9 @@ namespace FAST.FBasicInterpreter
     {
         #region (+) methods to implement the FBASIC Flow statements 
 
+        /// <summary>
+        /// GOTO
+        /// </summary>
         void Goto()
         {
             Match(Token.Identifier);
@@ -36,6 +39,10 @@ namespace FAST.FBasicInterpreter
             lex.GoTo(labels[name]);
             lastToken = Token.NewLine;
         }
+
+        /// <summary>
+        /// GOSUB (GOSUB...RETURN)
+        /// </summary>
         void Gosub()
         {
             Match(Token.Identifier);
@@ -47,51 +54,24 @@ namespace FAST.FBasicInterpreter
                 Error(Errors.E107_LabelNotFound(name));
                 return;
             }
-            /*
-            if (!labels.ContainsKey(name))
-            {
-                // if we didn't encounter required label yet, start to search for it
-                while (true)
-                {
-                    if (GetNextToken() == Token.Colon && prevToken == Token.Identifier)
-                    {
-                        if (!labels.ContainsKey(lex.Identifier))
-                            labels.Add(lex.Identifier, lex.TokenMarker);
-                        if (lex.Identifier == name)
-                            break;
-                    }
-                    if (lastToken == Token.EOF)
-                    {
-                        Error($"Cannot find label named {name} [E107]");
-                    }
-                }
-            }
-            lex.GoTo(labels[name]);
-            */
             lastToken = Token.NewLine;
         }
+
+        /// <summary>
+        /// RETURN (GOSUB...RETURN)
+        /// </summary>
         void Return()
         {
             if (instructionStack.Count < 1)
                 Error($"Found RETURN without corresponding GOSUB [E121]");
             lex.GoTo(instructionStack.Pop());
 
-            //// (v) Advance to next command
-            //while(false)
-            //{
-            //    var xx=prevToken;
-            //    var yy=lastToken;
-            //    GetNextToken(); 
-            //    if (lastToken == Token.NewLine) break;
-            //    if (lastToken == Token.EOF ) break;
-            //    if (lastToken == Token.Colon ) break;
-            //    continue;
-            //}
-            ////GetNextToken(); // bypass the GOSUB LABEL that was Pushed 
-
-
             SetLastTokenToNewLine();
         }
+
+        /// <summary>
+        /// CALL
+        /// </summary>
         void CallStatement()
         {
             if (callHandler == null) Error("There is no handler for the CALL statement [E109]");
@@ -113,10 +93,18 @@ namespace FAST.FBasicInterpreter
             this.SetVar("RESULTVALUE", subResult.value);
             this.Result = subResult.value;
         }
+
+        /// <summary>
+        /// HALT | END
+        /// </summary>
         void Halt()
         {
             exit = true;
         }
+
+        /// <summary>
+        /// label:
+        /// </summary>
         void Label()
         {
             string name = lex.Identifier;
@@ -129,6 +117,10 @@ namespace FAST.FBasicInterpreter
         #endregion (+) methods to implement the FBASIC Flow statements 
 
         #region (+) methods to implement the FBASIC Loop statements 
+
+        /// <summary>
+        /// FOR (FOR...NEXT)    
+        /// </summary>
         void For()
         {
             Match(Token.Identifier);
@@ -171,6 +163,10 @@ namespace FAST.FBasicInterpreter
                 }
             }
         }
+
+        /// <summary>
+        /// NEXT (FOR...NEXT)
+        /// </summary>
         void Next()
         {
             // jump to beginning of the "for" loop
@@ -181,6 +177,9 @@ namespace FAST.FBasicInterpreter
             lastToken = Token.NewLine;
         }
 
+        /// <summary>
+        /// FOREACH (FOREACH...ENDFOREACH)
+        /// </summary>
         void ForEachStatement()
         {
             // Syntax: FOREACH collectionName
@@ -248,6 +247,10 @@ namespace FAST.FBasicInterpreter
 
             return; // normal return
         }
+
+        /// <summary>
+        /// ENDFOREACH (FOREACH...ENDFOREACH)
+        /// </summary>
         void EndForEachStatement()
         {
             // jump to beginning of the "forEach" loop
@@ -284,6 +287,10 @@ namespace FAST.FBasicInterpreter
         #endregion (+) methods to implement the FBASIC Loop statements 
 
         #region (+) methods to implement the FBASIC Decision statements 
+
+        /// <summary>
+        /// IF (IF...THEN...[ELSE]...ENDIF)
+        /// </summary>
         void If()
         {
             // check if argument is equal to 0
@@ -324,6 +331,9 @@ namespace FAST.FBasicInterpreter
             }
         }
 
+        /// <summary>
+        /// ELSE (IF...THEN...[ELSE]...ENDIF)
+        /// </summary>
         void Else()
         {
             // skip to matching endif
@@ -350,12 +360,18 @@ namespace FAST.FBasicInterpreter
         #endregion (+) methods to implement the FBASIC Decision statements 
 
         #region (+) methods to implement the FBASIC In-Out, Data & Values statements 
+        /// <summary>
+        /// RESULT
+        /// </summary>
         void ResultStatement()
         {
             this.Result = Expr();
             SetVar("RESULTVALUE", this.Result);
         }
 
+        /// <summary>
+        /// PRINT
+        /// </summary>
         void Print()
         {
             if (printHandler == null)
@@ -383,6 +399,9 @@ namespace FAST.FBasicInterpreter
 
         }
 
+        /// <summary>
+        /// INPUT
+        /// </summary>
         void Input()
         {
             while (true)
@@ -405,6 +424,9 @@ namespace FAST.FBasicInterpreter
             }
         }
 
+        /// <summary>
+        /// LET
+        /// </summary>
         void Let()
         {
             if (lastToken != Token.Equal)
@@ -421,6 +443,9 @@ namespace FAST.FBasicInterpreter
             SetVar(id, Expr());
         }
 
+        /// <summary>
+        /// SDATA
+        /// </summary>
         void SDataStatement()
         {
             // Syntax: SDATA collectionName item1,item2,item3,item...N
@@ -469,6 +494,9 @@ namespace FAST.FBasicInterpreter
             return; // normal return
         }
 
+        /// <summary>
+        /// RINPUT
+        /// </summary>
         void RInputStatement()
         {
             // Syntax: RINPUT group, name, identifier 
@@ -498,18 +526,21 @@ namespace FAST.FBasicInterpreter
 
         }
 
-    
-
-
         #endregion (+) methods to implement the FBASIC In-Out, Data & Values  statements 
 
         #region (+) methods to implement the FBASIC Other statements 
 
+        /// <summary>
+        /// any ADDON statement
+        /// </summary>
         void AddOnStatement()
         {
             this.statements[lex.AddOn](this);
         }
 
+        /// <summary>
+        /// ASSERT
+        /// </summary>
         void Assert()
         {
             bool result = (Expr().BinOp(new Value(0), Token.Equal).Real == 1);
@@ -520,6 +551,9 @@ namespace FAST.FBasicInterpreter
             }
         }
 
+        /// <summary>
+        /// DUMP
+        /// </summary>
         void DumpStatement()
         {
             dumpInterpreter();
