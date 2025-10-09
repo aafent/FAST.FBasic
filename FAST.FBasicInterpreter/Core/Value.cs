@@ -10,6 +10,17 @@ namespace FAST.FBasicInterpreter
 
     public struct Value
     {
+
+        /// <summary>
+        /// The date format used in the interpreter
+        /// </summary>
+        public const string dateFormat = "dd-MM-yyy";
+
+        /// <summary>
+        /// The time format used in the interpreter
+        /// </summary>
+        public const string timeFormat = "HH:mm:ss.fff";
+
         /// <summary>
         /// The numeric value of True
         /// </summary>
@@ -95,6 +106,29 @@ namespace FAST.FBasicInterpreter
             this.Type = ValueType.String;
             this.String = str;
         }
+
+
+        /// <summary>
+        /// Constructor with a DateOnly as initial value that is converted to string using the interpreter date format
+        /// </summary>
+        /// <param name="dateOnly"></param>
+        public Value(DateOnly dateOnly)
+        {
+            this.Type = ValueType.String;
+            this.String = dateOnly.ToString(dateFormat);
+        }
+
+
+        /// <summary>
+        /// Constructor with a TimeOnly as initial value that is converted to string using the interpreter time format
+        /// </summary>
+        /// <param name="timeOnly"></param>
+        public Value(TimeOnly timeOnly)
+        {
+            this.Type = ValueType.String;
+            this.String = timeOnly.ToString(timeFormat);
+        }
+
 
         /// <summary>
         /// Constructor that will copy type and value from another value

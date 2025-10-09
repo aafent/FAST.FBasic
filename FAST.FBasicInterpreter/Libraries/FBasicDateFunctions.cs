@@ -18,8 +18,6 @@
      */
     public class FBasicDateFunctions : IFBasicLibrary
     {
-        public const string dateFormat = "dd-MM-yyy";
-        public const string timeFormat = "HH:mm:ss.fff"; 
 
         public void InstallAll(Interpreter interpreter)
         {
@@ -46,7 +44,7 @@
             if (args.Count != 0)
                 return interpreter.Error("DATE", Errors.E125_WrongNumberOfArguments(0)).value;
  
-            return new Value(DateTime.Now.ToString(dateFormat));
+            return new Value(DateTime.Now.ToString(Value.dateFormat));
         }
         public static Value JtoD(Interpreter interpreter, List<Value> args)
         {
@@ -141,8 +139,8 @@
         {
             if (args.Count != 0)
                 return interpreter.Error("TIME", Errors.E125_WrongNumberOfArguments(0)).value;
-
-            return new Value(DateTime.Now.ToString(timeFormat));
+            
+            return new Value(DateTime.Now.ToString(Value.timeFormat));
         }
 
         public static Value Hour(Interpreter interpreter, List<Value> args)
@@ -255,11 +253,11 @@
             switch (unit)
             {
                 case "YEAR":
-                    return new Value(startDate.AddYears(num).ToString(dateFormat) );
+                    return new Value(startDate.AddYears(num).ToString(Value.dateFormat) );
                 case "MONTH":
-                    return new Value(startDate.AddMonths(num).ToString(dateFormat));
+                    return new Value(startDate.AddMonths(num).ToString(Value.dateFormat));
                 case "DAY":
-                    return new Value(startDate.AddDays(num).ToString(dateFormat));
+                    return new Value(startDate.AddDays(num).ToString(Value.dateFormat));
 
                 default:
                     return interpreter.Error("dateadd", Errors.E127_WrongArgumentReferredType("valid date Unit")).value;
