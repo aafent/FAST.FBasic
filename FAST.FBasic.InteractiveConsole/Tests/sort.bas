@@ -64,7 +64,7 @@ iLoopStart:
 
    REM Inner loop: j from 1 to collectionSize - i
    jLoopStart:
-      j = j + 1
+      let j = j + 1
       
       REM Comparison boundary check
       If j > (collectionSize - i) Then
