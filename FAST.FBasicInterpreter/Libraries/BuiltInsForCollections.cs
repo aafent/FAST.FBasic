@@ -15,7 +15,7 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("SSET", SSET);
         }
  
-        public static Value EOD(Interpreter interpreter, List<Value> args)
+        private static Value EOD(Interpreter interpreter, List<Value> args)
         {
             if (args.Count != 1) throw new ArgumentException();
             string collection = args[0].String;
@@ -23,7 +23,7 @@ namespace FAST.FBasicInterpreter
             return new Value(interpreter.collections[collection].endOfData ? 1 : 0);
         }
 
-        public static void FETCH(Interpreter interpreter)
+        private static void FETCH(Interpreter interpreter)
         {
             // Syntax: FECH collection
             //  Used to FETCH next item of a collection
@@ -41,7 +41,7 @@ namespace FAST.FBasicInterpreter
             collection.endOfData=!collection.MoveNext();
         }
 
-        public static void RESET(Interpreter interpreter)
+        private static void RESET(Interpreter interpreter)
         {
             // Syntax: RESET collection
             //  Used to RESET a collection
@@ -114,7 +114,7 @@ namespace FAST.FBasicInterpreter
         /// SCI() : Static Collection Item
         /// </summary>
         /// <returns>Value, the selected value</returns>
-        public static Value StaticCollectionItem(Interpreter interpreter, List<Value> args)
+        private static Value StaticCollectionItem(Interpreter interpreter, List<Value> args)
         {
             const string syntax= "SCI(SCollectionName,Item)";
             if (args.Count < 2)
@@ -142,7 +142,7 @@ namespace FAST.FBasicInterpreter
         /// SCNT() : Static Collection Count
         /// </summary>
         /// <returns>Number, the number of items in collection</returns>
-        public static Value StaticCollectionCount(Interpreter interpreter, List<Value> args)
+        private static Value StaticCollectionCount(Interpreter interpreter, List<Value> args)
         {
             const string syntax = "SCNT(SCollectionName)";
             if (args.Count != 1)
