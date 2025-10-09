@@ -23,3 +23,13 @@ Foreach DayNo
 print [DayNo.Item]
 EndForeach DayNo
 
+print "SCLEAR The collection"
+SCLEAR DayNo
+
+print "Day Numbers (after clear):"
+Foreach DayNo
+print [DayNo.Item]
+EndForeach DayNo
+
+Halt
+

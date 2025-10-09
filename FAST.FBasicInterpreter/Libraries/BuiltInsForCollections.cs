@@ -13,6 +13,7 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("FETCH",FETCH);
             interpreter.AddStatement("RESET", RESET);
             interpreter.AddStatement("SSET", SSET);
+            interpreter.AddStatement("SCLEAR", SCLEAR);
         }
  
         private static Value EOD(Interpreter interpreter, List<Value> args)
@@ -107,6 +108,31 @@ namespace FAST.FBasicInterpreter
                 interpreter.Error("SSET", Errors.E130_OutOfRange($"Collection: {collectionName}", $"index={1 + index}"));
 
             ((staticDataCollection)interpreter.collections[collectionName]).data[index]=value;
+        }
+
+        private static void SCLEAR(Interpreter interpreter)
+        {
+            // Syntax: SCLEAR collection
+            //  Used to RESET and then to CLEAR a collection
+            //
+            interpreter.Match(Token.Identifier);
+            string collectionName = interpreter.lex.Identifier;
+
+            interpreter.SetLastTokenToNewLine();
+
+            // (v) implementation
+            if (!interpreter.collections.ContainsKey(collectionName))
+                interpreter.Error("SCLEAR", $"Collection: ${collectionName} not found.");
+            var collection = interpreter.collections[collectionName];
+
+            // (v) reset the collection
+            collection.Reset();
+            if (collection is staticDataCollection staticCollection)
+            {
+                // (v) clear the data of the collection
+                staticCollection.data.Clear();
+            }
+            collection.endOfData = false;
         }
 
 
