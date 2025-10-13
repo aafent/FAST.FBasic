@@ -2,10 +2,15 @@
 
 namespace FAST.FBasicInterpreter
 {
+
+    /// <summary>
+    /// Value type
+    /// </summary>
     public enum ValueType
     {
         Real, // it's double
-        String
+        String,
+        Object
     }
 
     public struct Value
@@ -65,7 +70,7 @@ namespace FAST.FBasicInterpreter
 
         public double Real { get; set; }
         public string String { get; set; }
-
+        public object Object { get; set; }
 
         /// <summary>
         /// Constructor with a real as initial value
@@ -105,6 +110,19 @@ namespace FAST.FBasicInterpreter
         {
             this.Type = ValueType.String;
             this.String = str;
+        }
+
+        /// <summary>
+        /// Constructor with an object as initial value. The description is used when the value is converted to string
+        /// FBasic cannot manipulate objects, but it can store and retrieve them; the manipulation is responsibility of the host application and the libraries
+        /// </summary>
+        /// <param name="obj">The object to store</param>
+        /// <param name="description"></param>
+        public Value(Object obj, string description)
+        {
+            this.Type = ValueType.Object;
+            this.Object = obj;
+            this.String = description;
         }
 
 
@@ -167,6 +185,9 @@ namespace FAST.FBasicInterpreter
                         this.String = this.Real.ToString();
                         this.Type = ValueType.String;
                         break;
+
+                    case ValueType.Object:
+                        throw new Exception(Errors.X011_CannotConvert("Object", "Any FBASIC type"));       
                 }
             }
             return this;
@@ -299,6 +320,8 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <returns></returns>
         public bool IsTrue() => !IsFalse();
+
+        public bool IsObject() => this.Type == ValueType.Object;
 
     }
 }
