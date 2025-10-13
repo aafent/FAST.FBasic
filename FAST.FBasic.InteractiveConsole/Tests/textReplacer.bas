@@ -29,6 +29,10 @@ print "The output is:"
 
 PHReplace intext outtext
 print outtext
+print words(outtext,1)+" Words in total"
+print words(outtext,2)+" Words > than 2 characters in length"
+print words(outtext,4)+" Words > than 4 characters in length"
+
 halt
 
 rem

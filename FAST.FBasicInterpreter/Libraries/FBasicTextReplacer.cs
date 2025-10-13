@@ -13,6 +13,9 @@ using System.Text.RegularExpressions;
 /// 
 /// Functions Syntax:
 /// pcase(string)                   :: Converts the string to Proper Case (first letter upper rest lower)
+/// words(s, 1)                     :: counts the number of words in a string s that are at least 1 character long. if the input string is empty returns 0, if the minWordSize is less than 1 it is set to 1. The word delimiters are space, tab, newline and carriage-return. Consequent delimiters are treated as one.
+
+
 /// 
 /// Placeholders are defined as {name}, where name is the name of a variable.
 /// The placeholder can also have format specifiers and modifiers, e.g., {name:10,20,U0}.
@@ -40,8 +43,10 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.AddStatement("PHGOSUB", PlaceHolderGoSub);
 
         interpreter.AddFunction("ucase", PCase); // Proper Case
+        interpreter.AddFunction("words", Words); // words count
     }
 
+    #region (+) FBASIC Statments
 
     private static void PlaceHolderGoSub(Interpreter interpreter)
     {
@@ -107,8 +112,12 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.SetVar(outputName, new Value(output));
     }
 
+    #endregion (+) FBASIC Statements
 
-    internal static void placeHolderFilter(Interpreter interpreter, bool dottedOnly)
+
+    #region (+) Supporting methods 
+
+    private static void placeHolderFilter(Interpreter interpreter, bool dottedOnly)
     {
         // Syntax: PHSDATA collectionName identifier_string_template
         //  
@@ -158,7 +167,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// </summary>
     /// <param name="input">The string containing placeholders.</param>
     /// <returns>The string with placeholders substituted.</returns>
-    internal static string substitutePlaceholders(Interpreter interpreter, string input)
+    private static string substitutePlaceholders(Interpreter interpreter, string input)
     {
         if (input == null) return null;
 
@@ -290,7 +299,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// <summary>
     /// This method should be implemented to return the value of the placeholder.
     /// </summary>
-    internal static string getValueForPlaceHolder(Interpreter interpreter, string placeHolderName)
+    private static string getValueForPlaceHolder(Interpreter interpreter, string placeHolderName)
     {
 
         return interpreter.GetValue(placeHolderName).ToString();
@@ -302,7 +311,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// </summary>
     /// <param name="text">The string content to search.</param>
     /// <returns>A List of unique placeholder names (e.g., "ph1", "ph2:1,10,c0").</returns>
-    internal static List<string> getUniquePlaceholders(string text, bool dottedOnly=false, bool leftPartOnly=false)
+    private static List<string> getUniquePlaceholders(string text, bool dottedOnly=false, bool leftPartOnly=false)
     {
         if (string.IsNullOrEmpty(text))
         {
@@ -359,10 +368,14 @@ public class FBasicTextReplacer : IFBasicLibrary
         return uniquePlaceholders;
     }
 
+    #endregion (+) Supporting methods 
+
+    #region (+) FBASIC Functions
+
     /// <summary>
     /// FBASIC Function PCase()
     /// </summary>
-    internal static Value PCase(Interpreter interpreter, List<Value> args)
+    private static Value PCase(Interpreter interpreter, List<Value> args)
     {
         string syntax = "PCASE(string)";
         if (args.Count != 1)
@@ -371,6 +384,31 @@ public class FBasicTextReplacer : IFBasicLibrary
         return new Value(value);
     }
 
+    /// <summary>
+    /// FBASIC Function Words()
+    /// </summary>
+    /// <param name="interpreter"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    private static Value Words(Interpreter interpreter, List<Value> args)
+    {
+        // Syntax: words(s,1) : counts the number of words in a string s that are at least 1 character long.
+        // if the input string is empty returns 0, if the minWordSize is less than 1 it is set to 1
+        // The word delimiters are space, tab, newline and carriage-return. Consequent delimiters are treated as one.
+        //
+        string syntax = "words(string,minWordSize)";
+        if (args.Count != 2)
+            return interpreter.Error("WORDS", Errors.E125_WrongNumberOfArguments(2, syntax)).value;
+
+        string str = args[0].Convert(FAST.FBasicInterpreter.ValueType.String).String;
+        int size = args[1].ToInt();
+
+        return new Value(CountLongWords(str, size));
+    }
+
+    #endregion (+) FBASIC Functions
+
+    #region (+) Public static methods 
     /// <summary>
     /// Converts the input string to Proper Case (first letter uppercase, rest lowercase).
     /// </summary>
@@ -387,5 +425,50 @@ public class FBasicTextReplacer : IFBasicLibrary
         // 3. Combine and return.
         return firstCharUpper + restOfStringLower;
     }
+
+
+
+    /// <summary>
+    /// Counts the number of words in a given text string whose length is
+    /// equal to or greater than the specified minimum word size.
+    /// </summary>
+    /// <param name="text">The input string to be analyzed. If null or whitespace, returns 0.</param>
+    /// <param name="minWordSize">The minimum required length for a sequence of characters to be considered a 'word'.</param>
+    /// <returns>The total number of words meeting the minimum size requirement.</returns>
+    public static int CountLongWords(string text, int minWordSize)
+    {
+        if (minWordSize < 1) minWordSize = 1;
+
+        // 1. Handle null or empty input gracefully, returning 0 as specified.
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return 0;
+        }
+
+        // This leverages the string.Split(char[], StringSplitOptions) overload.
+        char[] separators = new char[] { ' ', '\t', '\n', '\r' };
+
+        // 2. Use LINQ for a declarative and efficient counting process.
+        // The approach involves:
+        //    a. Splitting the string by whitespace characters (spaces, tabs, newlines).
+        //    b. Removing any resulting empty entries (e.g., from multiple spaces)
+        //       using StringSplitOptions.RemoveEmptyEntries.
+        //    c. Trimming each word to ensure leading/trailing punctuation or non-word
+        //       characters from the split process (though uncommon here) don't skew the count.
+        //    d. Filtering the array to include only words where the length is 
+        //       greater than or equal to minWordSize.
+        //    e. Counting the final filtered collection.
+
+
+        int count = text.Split(
+            separator: separators,
+            options: StringSplitOptions.RemoveEmptyEntries
+        )
+        .Where(word => word.Length >= minWordSize)
+        .Count();
+
+        return count;
+    }
+    #endregion (+) Public static methods
 
 }

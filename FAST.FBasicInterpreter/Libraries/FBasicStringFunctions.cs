@@ -22,10 +22,13 @@
             interpreter.AddFunction("instr", InStr);
             interpreter.AddFunction("lcase", LCase);
             interpreter.AddFunction("ucase", UCase);
+            
 
         }
 
-        public static Value Len(Interpreter interpreter, List<Value> args)
+        #region (+) FBASIC Functions
+
+        private static Value Len(Interpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("LEN", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -33,7 +36,7 @@
             return new Value(args[0].Convert(ValueType.String).String.Length);
         }
 
-        public static Value Left(Interpreter interpreter, List<Value> args)
+        private static Value Left(Interpreter interpreter, List<Value> args)
         {
             //
             // left(string,size)
@@ -59,7 +62,7 @@
             return new Value(str.Substring(0,size));
         }
 
-        public static Value Right(Interpreter interpreter, List<Value> args)
+        private static Value Right(Interpreter interpreter, List<Value> args)
         {
             string syntax = "RIGHT(string,size)";
             if (args.Count != 2)
@@ -77,7 +80,7 @@
             return new Value(str.Substring(str.Length - size));
         }
 
-        public static Value Mid(Interpreter interpreter, List<Value> args)
+        private static Value Mid(Interpreter interpreter, List<Value> args)
         {
             //
             // mid(string,start,length)
@@ -116,7 +119,7 @@
         }
 
 
-        public static Value InStr(Interpreter interpreter, List<Value> args)
+        private static Value InStr(Interpreter interpreter, List<Value> args)
         {
             //
             // INSTR(start, string1, string2): Returns the position of the first occurrence of string2 within string1, starting the search at the specified position.
@@ -142,7 +145,7 @@
             return new Value(str1.IndexOf(str2,pos) + 1);
         }
 
-        public static Value UCase(Interpreter interpreter, List<Value> args)
+        private static Value UCase(Interpreter interpreter, List<Value> args)
         {
             string syntax = "UCASE(string)";
             if (args.Count != 1)
@@ -154,7 +157,7 @@
         }
 
 
-        public static Value LCase(Interpreter interpreter, List<Value> args)
+        private static Value LCase(Interpreter interpreter, List<Value> args)
         {
             string syntax = "LCASE(string)";
             if (args.Count != 1)
@@ -164,6 +167,8 @@
 
             return new Value(str.ToLower());
         }
+
+        #endregion (+) FBASIC Functions
 
     }
 
