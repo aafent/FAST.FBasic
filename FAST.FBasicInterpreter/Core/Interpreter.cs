@@ -76,7 +76,8 @@ namespace FAST.FBasicInterpreter
 
         private Dictionary<string, BasicFunction> funcs; // all mapped functions
         private Dictionary<string, BasicStatement> statements; // all mapped statements
-        private int ifCounter; // counter used for matching "if" with "else"
+        private int ifCounter; // (NOT WORKING, TO RECHECK) counter used for matching "if" with "else"
+                            
         private Marker lineMarker; // current line marker
         private bool exit; // do we need to exit?
 

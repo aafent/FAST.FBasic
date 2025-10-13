@@ -312,7 +312,10 @@ namespace FAST.FBasicInterpreter
 
 
             if (lastToken == Token.EOF && prevToken == Token.EOF)
+            {
                 Error($"Unexpected end of program [E103]");
+            }
+                
 
             return lastToken;
         }
@@ -490,6 +493,8 @@ namespace FAST.FBasicInterpreter
 
                 log.info(lex.GetLine(lineMarker));
                 log.info(lex.GetLine(lex.CurrentSourceMarker));
+
+                log.info($"Variables: {vars.Count}, Labels: {labels.Count}, Loops: {loops.Count}, Instr.Stack: {instructionStack.Count}, If.Counter: {ifCounter}");
 
                 if (!interactive) break;
 

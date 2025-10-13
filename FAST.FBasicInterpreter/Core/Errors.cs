@@ -28,7 +28,6 @@
         {
             return $"Undeclared variable {varName} [E112]";
         }
-
         public static string E125_WrongNumberOfArguments(int argNo, string syntax = "")
         {
             // Wrong number of arguments. Expected {argNo}. {syntax} [E125]
@@ -46,6 +45,12 @@
             msg += " [E125]";
             return msg;
         }
+
+        public static string E132_InternalError(string moreText = null)
+        {
+            return $"Internal error. {moreText} [E132]";
+        }
+
 
 
         public static string E126_WrongArgumentType(int argNo=0, string syntax = "")

@@ -1,6 +1,7 @@
 ﻿using FAST.FBasicInterpreter;
 using Microsoft.Extensions.Configuration;
 using System.Data.Odbc;
+using System.Runtime.InteropServices;
 
 namespace FAST.FBasic.InteractiveConsole
 {
@@ -11,6 +12,10 @@ namespace FAST.FBasic.InteractiveConsole
         private string programsFolder;
         private string startupName;
         private ExecutionEnvironment env;
+
+        string sourceProgram=null!;
+        Interpreter basic= null!;
+        ExecutionResult result = null!;
 
         public FBasicIC(IConfiguration config)
         {
@@ -52,26 +57,26 @@ namespace FAST.FBasic.InteractiveConsole
         {
             if (env == null ) setupEnvironment(); // run once
             iCommand = iCommandArg;
-            switch(iCommand)
+
+            switch (iCommand)
             {
                 case "R":
                 case "RUN":
-                    try
-                    {
-                        runFBasicProgram();
-                    }
-                    catch (FBasicException fbe)
-                    {
-                        Console.WriteLine(fbe.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Non FBASIC exception");
-                        Console.WriteLine(ex.Message);
-                        throw;
-                    }
-                    
+                    runFBasicProgram();
                     break;
+
+                case "DUMP":
+                case "D":
+                    if (basic == null ) break;
+                    basic.dumpInterpreter(true);
+
+                    break;
+
+                case "LIST":
+                    Console.WriteLine($"LIST OF {this.startupName} LOADED ON THE LATEST RUN:");
+                    Console.WriteLine( this.sourceProgram );
+                    break;
+
                 case "H":
                 case "HELP":
                     help();
@@ -89,6 +94,7 @@ namespace FAST.FBasic.InteractiveConsole
                         Console.WriteLine(Path.GetFileName(fname));
                     }
                     break;
+
                 case "L":
                 case "LOAD":
                     while (true)
@@ -185,7 +191,25 @@ namespace FAST.FBasic.InteractiveConsole
             */
             #endregion
 
-            result = FBasicSource.Run(env, basProgramFile);
+            #region (+) Other way to execute a program
+            //result = FBasicSource.Run(env, basProgramFile);
+            #endregion
+
+            // (v) most analytical way to execute a program
+            // 
+
+            if (env == null) // in case the no environment, set the default environment. 
+            {
+                env = new();
+                env.DefaultEnvironment();
+            }
+            this.sourceProgram = File.ReadAllText(basProgramFile);
+            basic = new Interpreter(env.installBuiltIns, this.sourceProgram);
+            env.SetupInterpreter(basic);
+
+            result=basic.ExecWithResult();
+
+
             if (result.hasError)
             {
                 Console.WriteLine(result.errorText);

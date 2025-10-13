@@ -291,15 +291,42 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// IF (IF...THEN...[ELSE]...ENDIF)
         /// </summary>
+        /// 
         void If()
         {
             // check if argument is equal to 0
-            bool result = (Expr().BinOp(new Value(0), Token.Equal).Real == 1);
+            bool isFALSE = (Expr().BinOp(new Value(0), Token.Equal).Real == 1);
 
             Match(Token.Then);
             GetNextToken();
+            bool isBlock = lastToken == Token.NewLine;
 
-            if (result)
+            // (v) Only for non-block IF..THEN..STATEMENT
+            if ( !isBlock )
+            {
+                if (lastToken == Token.If )
+                {
+                    Error("Inline IF cannot contain IF. Use AND instead. [E131]");
+                    return; // never executed. 
+                }
+
+                if (!isFALSE) 
+                { 
+                    Statement(); // execute the next statement
+                    return; // exit
+                }
+
+                if (lastToken==Token.NewLine ) return;
+                while (GetNextToken()!=Token.NewLine) { } // just to the next newline
+                return; // exit
+            }
+
+
+
+
+            // (v) Only for block IF..THEN..ELSE..ENDIF
+
+            if (isFALSE && isBlock) // Skip to matching ELSE or ENDIF, mind the nested IFs
             {
                 // in case "if" evaluate to zero skip to matching else or endif
                 int i = ifCounter;
@@ -329,6 +356,8 @@ namespace FAST.FBasicInterpreter
                     GetNextToken();
                 }
             }
+
+
         }
 
         /// <summary>
