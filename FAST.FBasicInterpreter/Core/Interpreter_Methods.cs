@@ -77,7 +77,7 @@ namespace FAST.FBasicInterpreter
         /// Adapter can added only once
         /// </summary>
         /// <param name="adapter">The adapter (IfbasicDataAdapter) </param>
-        public void AddDataAdapter(IfbasicDataAdapter adapter)
+        public void AddDataAdapter(IFBasicDataAdapter adapter)
         {
             if (!dataAdapters.ContainsKey(adapter.name))
             {
@@ -103,7 +103,7 @@ namespace FAST.FBasicInterpreter
         /// <typeparam name="T">The type of the adapter</typeparam>
         /// <param name="name">The name of the adapter</param>
         /// <returns>The instance of the Adapter</returns>
-        public T GetDataAdapter<T>(string name) where T : IfbasicDataAdapter
+        public T GetDataAdapter<T>(string name) where T : IFBasicDataAdapter
         {
             return (T)dataAdapters[name];
         }

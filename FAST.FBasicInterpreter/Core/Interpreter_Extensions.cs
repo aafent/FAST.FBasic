@@ -37,7 +37,9 @@ namespace FAST.FBasicInterpreter
             ExecutionResult result = new();
             try
             {
+                result.programStartWhen= DateTime.Now;
                 interpreter.Exec();
+                result.programEndWhen = DateTime.Now;
                 result.hasError = false;
                 result.value = interpreter.Result;
                 if (copyOfTheVariables) // (v) copy of the variables
@@ -59,13 +61,19 @@ namespace FAST.FBasicInterpreter
                 result.errorText = e.ToString();
                 result.lineOfError = e.line;
                 result.errorSourceLine = e.sourceLine;
-            }
+                #if DEBUG
+                result.exception=e;
+                #endif
+    }
             catch (Exception ex)
             {
                 result.hasError = true;
                 result.errorText = ex.ToString();
                 result.lineOfError = interpreter.lex.CurrentSourceMarker.Line;
                 result.errorSourceLine = interpreter.lex.GetLine(result.lineOfError);
+                #if DEBUG
+                result.exception = ex;
+                #endif
             }
             return result;
         }

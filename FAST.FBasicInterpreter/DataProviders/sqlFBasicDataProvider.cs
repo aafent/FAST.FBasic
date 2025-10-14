@@ -5,7 +5,7 @@ namespace FAST.FBasicInterpreter.DataProviders
     /// <summary>
     /// FBASIC SQL Data Provider 
     /// </summary>
-    public class sqlFBasicDataProvider : IfbasicDataAdapter
+    public class sqlFBasicDataProvider : IFBasicDataAdapter
     {
         public const string adapterName = "SQL";
         public string name => adapterName;

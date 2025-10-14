@@ -41,7 +41,16 @@ namespace FAST.FBasic.InteractiveConsole
         {
             Console.WriteLine("Help on FBASIC test console");
             Console.WriteLine("---------------------------");
-            Console.WriteLine("...not ready yet..... :-)  ");
+            Console.WriteLine("RUN  | R  :: Run the last loaded program");
+            Console.WriteLine("LOAD | L  :: Load a program from the tests folder");
+            Console.WriteLine("INFO | I  :: Get information about the execution, errors, etc");
+            Console.WriteLine("LIST |    :: List the last loaded program");
+            Console.WriteLine("DIR  |    :: List all .BAS files in the tests folder");
+            Console.WriteLine("S    |    :: Show the reversed source of the last loaded program");
+            Console.WriteLine("DUMP | D  :: Dump the interpreter state");
+            Console.WriteLine("HELP | H  :: Show this help");
+            Console.WriteLine("QUIT | Q  :: Exit of the test console program");
+
         }
 
         public void testEventHandler1(object sender, (string name, Stack<Value> args) e)
@@ -157,6 +166,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicEvents());
             env.AddLibrary(new FBasicTextReplacer());
             env.AddLibrary(new FBasicStack());
+            env.AddLibrary(new FBasicDecisionTables());
 
             env.AddVariable("table.column", "myColumn1");
 
@@ -169,11 +179,24 @@ namespace FAST.FBasic.InteractiveConsole
         {
             Console.WriteLine($"Folder: {programsFolder}");
             Console.WriteLine($"Program: {startupName}");
+            if (result!=null)
+            {
+                var diff= result.programEndWhen - result.programStartWhen;
+                Console.WriteLine($"Run duration: {diff.ToString("c")} seconds");
+            }
+            Console.WriteLine();
+            #if DEBUG
+            if (result!=null && result.exception!= null)
+            {
+                Console.WriteLine($"Exception:");
+                Console.WriteLine(result.exception.StackTrace);
+            }
+            #endif
         }
 
         private void runFBasicProgram()
         {
-            ExecutionResult result;
+            
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
 
             #region (+) Alternative way to execute a program
@@ -197,7 +220,7 @@ namespace FAST.FBasic.InteractiveConsole
 
             // (v) most analytical way to execute a program
             // 
-
+            
             if (env == null) // in case the no environment, set the default environment. 
             {
                 env = new();
@@ -208,7 +231,6 @@ namespace FAST.FBasic.InteractiveConsole
             env.SetupInterpreter(basic);
 
             result=basic.ExecWithResult();
-
 
             if (result.hasError)
             {

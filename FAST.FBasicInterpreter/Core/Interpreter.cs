@@ -99,7 +99,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// Data adapters 
         /// </summary>
-        public readonly Dictionary<string, IfbasicDataAdapter> dataAdapters = new(); 
+        public readonly Dictionary<string, IFBasicDataAdapter> dataAdapters = new(); 
         /// <summary>
         /// Collection objects
         /// </summary>

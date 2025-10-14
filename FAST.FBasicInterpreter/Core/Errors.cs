@@ -24,9 +24,9 @@
         {
             return $"{forbittenItem} not permitted. Use LET to assign the result value and use the variable [E124]";
         }
-        public static string E112_UndeclaredVariable(string varName)
+        public static string E112_UndeclaredEntity(string entityType, string entity, string moreText=null)
         {
-            return $"Undeclared variable {varName} [E112]";
+            return $"Undeclared entity({entityType}) {entity}. {moreText} [E112]";
         }
         public static string E125_WrongNumberOfArguments(int argNo, string syntax = "")
         {
@@ -85,6 +85,13 @@
         {
             return "{whatIsEmpty} is empty [E129]";
         }
+
+        public static string E133_AlreadyDefined(string what, string more=null)
+        {
+            return $"{what} is already defined. {more} [E133]";
+        }
+
+
 
         public static string X007_OnlyUnaryOperationsOnNumbers()
         {

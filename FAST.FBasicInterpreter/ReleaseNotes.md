@@ -9,9 +9,14 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
-|            | New statement SSET for setting values in static collections | 
-|            | New operators for strings: <, >, <= >= 
-|			 | Bug with inline comments and newline, fixed | 
+| 2025-14-10 | Add execution time measurement to the interpreter.     |
+|     //     | Library FBasicDecisionTables, supporting decision tables.  |
+|     //     | IF...THEN...1-STATEMENT  In line if statements added. 
+|	  //     | Value now supporting Object as underlying type, allowing to store any .NET object. |
+|     //     | Value now implements IComparable, allowing sorting of collections of Values. |
+| 2025-10-08 | New statement SSET for setting values in static collections | 
+|     //     | New operators for strings: <, >, <= >= 
+|	  //	 | Bug with inline comments and newline, fixed | 
 | 2025-10-08 | Add to Math Functions: mod(), round() | 
 |            | Add to String Functions: instr()
 | 2025-10-07 | Package release 1.0.8.                                 |

@@ -199,7 +199,7 @@
                 }
                 else
                 {
-                    return Error(Errors.E112_UndeclaredVariable(lex.Identifier)).value;
+                    return Error(Errors.E112_UndeclaredEntity("variable",lex.Identifier)).value;
                 }
             }
 
@@ -219,58 +219,6 @@
             else if (lastToken == Token.Identifier)
             {
                 prim=GetIdentifierOrCF(); // all permitted
-                /* method GetIdentifierOrVCF() replace the following code:
-                string firstPart = null;
-                string otherPart = null;
-                var dotPosition = lex.Identifier.IndexOf('.');
-                if (dotPosition >= 0)
-                {
-                    firstPart = lex.Identifier.Substring(0, dotPosition);
-                    otherPart = lex.Identifier.Substring(dotPosition + 1);
-
-                    if (collections.ContainsKey(firstPart))
-                    {
-                        prim = collections[firstPart].getValue(otherPart);
-                    }
-                    else
-                    {
-                        Error($"Undeclared name {lex.Identifier} [E111]");
-                    }
-                }
-                else
-                {
-                    // ident | ident '(' args ')'
-                    if (vars.ContainsKey(lex.Identifier))
-                    {
-                        prim = vars[lex.Identifier];
-                    }
-                    else if (funcs.ContainsKey(lex.Identifier))
-                    {
-                        string name = lex.Identifier;
-                        List<Value> args = new List<Value>();
-                        GetNextToken();
-                        Match(Token.LParen);
-
-                    start:
-                        if (GetNextToken() != Token.RParen)
-                        {
-                            args.Add(Expr());
-                            if (lastToken == Token.Comma)
-                                goto start;
-                        }
-
-                        prim = funcs[name](this, args);
-                    }
-                    else if (collections.ContainsKey(firstPart))
-                    {
-                        prim = collections[firstPart].getValue(otherPart);
-                    }
-                    else
-                    {
-                        Error($"Undeclared variable {lex.Identifier} [E112]");
-                    }
-                }
-                */
 
                 // go to next token
                 GetNextToken();

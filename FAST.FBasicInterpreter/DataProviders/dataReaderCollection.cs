@@ -9,7 +9,7 @@ namespace FAST.FBasicInterpreter.DataProviders
     /// <typeparam name="TCallback">The type of FBASIC data adapter callback</typeparam>
     public abstract class dataReaderCollection<TReader, TCallback> : IBasicCollection
         where TReader : IDataReader
-        where TCallback : IfbasicDataAdapter
+        where TCallback : IFBasicDataAdapter
     {
         public bool _endOfData = false;
         public bool endOfData

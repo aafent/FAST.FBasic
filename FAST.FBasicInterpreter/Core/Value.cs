@@ -13,7 +13,7 @@ namespace FAST.FBasicInterpreter
         Object
     }
 
-    public struct Value
+    public struct Value : IComparable<Value>
     {
 
         /// <summary>
@@ -321,7 +321,52 @@ namespace FAST.FBasicInterpreter
         /// <returns></returns>
         public bool IsTrue() => !IsFalse();
 
+        /// <summary>
+        /// Check if the value is an Object
+        /// </summary>
+        /// <returns></returns>
         public bool IsObject() => this.Type == ValueType.Object;
+
+
+        /// <summary>
+        ///     Compares this instance with a specified Value and indicates whether this
+        ///     instance precedes, follows, or appears in the same position in the sort order
+        ///     as the specified System.Object.
+        /// </summary>
+        /// <returns>A 32-bit signed integer that indicates the comparison between two values as follows,
+        ///     Less than zero – This value is Less than  precedes value.
+        ///     Zero – This value is equal as second value.
+        ///     Greater than zero – This value if Greater than the value2..
+        ///</returns>
+        public int CompareTo(Value value2)
+        {
+            if ( this.Type != value2.Type )
+            {
+                throw new Exception($"Cannot compare different value types ({this.Type},{value2.Type}) [X000]");
+            }
+
+            switch(this.Type)
+            {
+                case ValueType.Real:
+                    if (this.Real == value2.Real ) return 0;
+                    if (this.Real < value2.Real ) return -1; 
+                    return 1;
+
+                case ValueType.String:
+                    return this.String.CompareTo(value2.String);
+
+                case ValueType.Object:
+                    if (this.Object.Equals(value2.Object)) return 0;
+                    if (this.Object is IComparable && value2.Object is IComparable) 
+                        return ((IComparable)this.Object).CompareTo(value2.Object);
+                    return int.MinValue;
+
+                default:
+                    throw new NotSupportedException();
+            }
+
+                
+        }
 
     }
 }

@@ -5,7 +5,6 @@
     /// </summary>
     public class ExecutionResult
     {
-
         /// <summary>
         /// The error message
         /// </summary>
@@ -32,6 +31,22 @@
         /// </summary>
         public Value value { get;set; }
 
+    #if DEBUG
+        /// <summary>
+        /// The exception, available only durring the DEBUG 
+        /// </summary>
+        public Exception exception=null;
+#endif
+
+        /// <summary>
+        /// The begin of the FBASIC program run
+        /// </summary>
+        public DateTime programStartWhen {  get; set; }
+
+        /// <summary>
+        /// The end of the FBASIC program run
+        /// </summary>
+        public DateTime programEndWhen { get; set; }
 
         /// <summary>
         /// The interpreters variables with the values, after the execution of the program
