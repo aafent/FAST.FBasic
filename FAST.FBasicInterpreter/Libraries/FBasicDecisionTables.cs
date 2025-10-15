@@ -274,7 +274,9 @@ namespace FAST.FBasicInterpreter
                 interpreter.GetNextToken();
 
                 cellValue factorValue=null;
-             CheckNextToken:
+                int valueFactor = 1;
+
+                CheckNextToken:
                 switch (interpreter.lastToken)
                 {
                     #region (+) CASE Operators
@@ -305,16 +307,22 @@ namespace FAST.FBasicInterpreter
                         goto CheckNextToken;
                     #endregion (+) CASE Operators
 
+                    case Token.Minus:
+                        valueFactor=(-1);
+                        interpreter.GetNextToken();
+                        goto CheckNextToken;
                     case Token.Value:
                         if (secondValue)
                         {
                             factorValue.value2=interpreter.lex.Value;
+                            if (factorValue.value2.Type == ValueType.Real) factorValue.value2.Real *= valueFactor;
                             factorValue.oper = operType.Between;
                             break;
                         }
                         else
                         {
                             factorValue = new cellValue(interpreter.lex.Value); // new instance
+                            if (factorValue.value.Type == ValueType.Real) factorValue.value.Real *= valueFactor;
                             break;
                         }
                     case Token.Identifier:
