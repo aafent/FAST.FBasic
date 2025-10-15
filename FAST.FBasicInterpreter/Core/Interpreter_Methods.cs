@@ -474,6 +474,26 @@ namespace FAST.FBasicInterpreter
             return true;
         }
 
+        public InterpretationState GetState()
+        {
+            return new InterpretationState()
+            {
+                lastToken = this.lastToken,
+                prevToken = this.prevToken,
+                lineMarker = this.lineMarker,
+                lexerState = this.lex.GetState()
+            };
+        }
+
+        public void SetState(InterpretationState state)
+        {
+            this.lastToken = state.lastToken;
+            this.prevToken = state.prevToken;
+            this.lineMarker = state.lineMarker;
+            this.lex.SetState(state.lexerState);
+        }
+
+
         #endregion (+) Program execution & control 
 
         #region (+) Other

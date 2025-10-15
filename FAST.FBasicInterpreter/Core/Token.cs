@@ -29,6 +29,7 @@
         Result,
         Dump,
         Call,
+        Chain,
         ForEach,
         EndForEach,
         SData,

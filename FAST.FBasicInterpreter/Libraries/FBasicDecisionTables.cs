@@ -6,7 +6,7 @@ namespace FAST.FBasicInterpreter
     /// Provides Decision Table functionality.
     /// 
     /// Statements:
-    /// DTDIM name, not_found_Value  ,[factor1], [factor2], ..., [factorN]
+    /// DTDIM name, not_found_Value,[factor1], [factor2], ..., [factorN]
     /// DTROW name, [factor1], [factor2], ..., [factorN], value
     /// DTFIND name, resultFactor, VariableForTheFoundValue, [factor1], [factor2], ..., [factorN]
     /// DTMAPPER name, not_found_value, key_factor, value_factor

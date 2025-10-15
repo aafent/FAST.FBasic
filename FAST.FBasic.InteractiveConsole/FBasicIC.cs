@@ -50,6 +50,7 @@ namespace FAST.FBasic.InteractiveConsole
             Console.WriteLine("DUMP | D  :: Dump the interpreter state");
             Console.WriteLine("HELP | H  :: Show this help");
             Console.WriteLine("QUIT | Q  :: Exit of the test console program");
+            Console.WriteLine("CLS  |    :: Clear the screen");
 
         }
 
@@ -69,6 +70,9 @@ namespace FAST.FBasic.InteractiveConsole
 
             switch (iCommand)
             {
+                case "CLS":
+                    for (int i = 0; i < 50; i++) Console.WriteLine();
+                    break;
                 case "R":
                 case "RUN":
                     runFBasicProgram();

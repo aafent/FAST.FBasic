@@ -5,19 +5,44 @@ namespace FAST.FBasicInterpreter
     /// <summary>
     /// Lexicographic analysis - Parser 
     /// </summary>
-    public class Lexer 
+    public class Lexer
     {
-        private readonly string source;
+        //private readonly string source;
+        private string source;
         private Marker sourceMarker; // current position in source string
-        public char lastChar {get; private set; }
+        public char lastChar { get; private set; }
+
         private List<string> statements = new();
-
         public delegate ErrorReturnClass ErrorHandler(string text);
-        private ErrorHandler Error=null;
+        private ErrorHandler Error = null;
 
+        /// <summary>
+        /// Current source instruction marker. 
+        /// </summary>
+        public Marker CurrentSourceMarker { get => sourceMarker; }
+
+        public Marker TokenMarker { get; set; }
+
+        public string Identifier { get; set; } // Last encountered identifier
+        public Value Value { get; set; } // Last number or string
+        public string AddOn { get; set; } // Last AddOn Statement found
+
+        public Lexer(string input, ErrorHandler error)
+        {
+            source = input;
+            this.Error = error;
+
+            sourceMarker = new Marker(0, 1, 1);
+            lastChar = source[0];
+
+        }
+
+        /// <summary>
+        /// Fatal error found, call the error handler if exists
+        /// </summary>
         private void FatalError(string text)
         {
-            if ( Error == null)
+            if (Error == null)
             {
                 throw new Exception(text);
             }
@@ -28,26 +53,6 @@ namespace FAST.FBasicInterpreter
             }
         }
 
-        /// <summary>
-        /// Current source instruction marker. 
-        /// </summary>
-        public Marker CurrentSourceMarker {  get => sourceMarker; }
-
-        public Marker TokenMarker { get; set; }
-
-        public string Identifier { get; set; } // Last encountered identifier
-        public Value Value { get; set; } // Last number or string
-        public string AddOn {  get; set; } // Last AddOn Statement found
-
-        public Lexer(string input, ErrorHandler error)
-        {
-            source = input;
-            this.Error = error;
-
-            sourceMarker = new Marker(0, 1, 1);
-            lastChar = source[0];
-            
-        }
 
         /// <summary>
         /// Restart the program's execution from the begin
@@ -64,7 +69,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="names">Array with the name of the statements</param>
         public void SetAddonStatements(string[] names)
         {
-            this.statements = names.Select(s=> s.ToUpper() ).ToList();
+            this.statements = names.Select(s => s.ToUpper()).ToList();
         }
 
         /// <summary>
@@ -73,7 +78,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="marker"></param>
         public void GoTo(Marker marker)
         {
-           this.sourceMarker = marker;
+            this.sourceMarker = marker;
             // (!) andreas: maybe here we should set the lastChar using the marker's pointer 
         }
 
@@ -125,7 +130,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="value">The value</param>
         public void SetLastChar(char value)
         {
-            lastChar=value;
+            lastChar = value;
         }
 
         /// <summary>
@@ -164,6 +169,7 @@ namespace FAST.FBasicInterpreter
                     case "GOSUB": return Token.Gosub;
                     case "RETURN": return Token.Return;
                     case "CALL": return Token.Call;
+                    case "CHAIN": return Token.Chain;
                     case "FOREACH": return Token.ForEach;
                     case "ENDFOREACH": return Token.EndForEach;
 
@@ -177,8 +183,8 @@ namespace FAST.FBasicInterpreter
                     case "RINPUT": return Token.RInput;
 
                     // (v) Collections
-                    case "SDATA":  return Token.SData;
-          
+                    case "SDATA": return Token.SData;
+
                     // (v) debugging statements
                     case "ASSERT": return Token.Assert;
                     case "DUMP": return Token.Dump;
@@ -192,9 +198,9 @@ namespace FAST.FBasicInterpreter
                         return GetToken();
                     default:
                         // (v) check for add on statement
-                        if (statements.Any(s=> s== identifierUpper) )
+                        if (statements.Any(s => s == identifierUpper))
                         {
-                            this.AddOn= identifierUpper;
+                            this.AddOn = identifierUpper;
                             return Token.AddOn;
                         }
 
@@ -236,13 +242,13 @@ namespace FAST.FBasicInterpreter
 
                 // (v) bracket identifiers [A.B], [table.column] etc
                 case '[':
-                    Identifier=string.Empty;  // (<) trying to parse [table.column] or [class.property] etc
-                    while ( GetChar()!=']' )
+                    Identifier = string.Empty;  // (<) trying to parse [table.column] or [class.property] etc
+                    while (GetChar() != ']')
                     {
                         switch (lastChar)
-                        { 
+                        {
                             case ']': break; // well done
-                            case '[': 
+                            case '[':
                                 FatalError("Found opening bracket but expected closing [X003]");
                                 break;
                             case '\n':
@@ -252,9 +258,9 @@ namespace FAST.FBasicInterpreter
 
                         Identifier += lastChar;
                     }
-                    var p1=Identifier.IndexOf('.');
-                    if ( p1<0) FatalError("Identifier inside brackets must contains a dot character [X005]");
-                    if (p1==0|| p1==Identifier.Length ) FatalError("Bracket Identifier cannot starts or ends with dot character [X006]");
+                    var p1 = Identifier.IndexOf('.');
+                    if (p1 < 0) FatalError("Identifier inside brackets must contains a dot character [X005]");
+                    if (p1 == 0 || p1 == Identifier.Length) FatalError("Bracket Identifier cannot starts or ends with dot character [X006]");
                     GetChar(); // move 1 character to bypass the ]
                     return Token.Identifier;
 
@@ -321,6 +327,13 @@ namespace FAST.FBasicInterpreter
             return this.source;
         }
 
+        public void SetSource(string sourceProgram)
+        {
+            this.source = sourceProgram;
+            sourceMarker = new Marker(0, 1, 1);
+            lastChar = source[0];
+        }
+
         /// <summary>
         /// Get a line (by number) from the source
         /// Do not use this method except for error presentation purposes 
@@ -351,7 +364,6 @@ namespace FAST.FBasicInterpreter
             return null;
         }
 
-
         /// <summary>
         /// Check if the token is a FBASIC statement
         /// </summary>
@@ -360,7 +372,7 @@ namespace FAST.FBasicInterpreter
         public static bool IsStatement(Token token)
         {
             switch (token)
-            { 
+            {
                 case Token.Print:
                 case Token.If:
                 case Token.EndIf:
@@ -381,6 +393,7 @@ namespace FAST.FBasicInterpreter
                 case Token.Result:
                 case Token.Dump:
                 case Token.Call:
+                case Token.Chain:
                 case Token.ForEach:
                 case Token.EndForEach:
                 case Token.SData:
@@ -392,6 +405,32 @@ namespace FAST.FBasicInterpreter
             };
 
         }
+
+        public LexerState GetState()
+        {
+            return new LexerState()
+            {
+                Source = this.source,
+                SourceMarker = new Marker(this.sourceMarker),
+                LastChar = this.lastChar,
+                TokenMarker = this.TokenMarker,
+                Identifier = this.Identifier,
+                Value = this.Value,
+                AddOn = this.AddOn
+            };
+        }
+
+        public void SetState(LexerState state)
+        {
+            this.source = state.Source;
+            this.sourceMarker = new Marker(state.SourceMarker);
+            this.lastChar = state.LastChar;
+            this.TokenMarker = state.TokenMarker;
+            this.Identifier = state.Identifier;
+            this.Value = state.Value;
+            this.AddOn = state.AddOn;
+        }
+
+        
     }
 }
-

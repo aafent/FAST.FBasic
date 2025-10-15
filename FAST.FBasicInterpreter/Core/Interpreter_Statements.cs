@@ -69,6 +69,7 @@ namespace FAST.FBasicInterpreter
             SetLastTokenToNewLine();
         }
 
+
         /// <summary>
         /// CALL
         /// </summary>
@@ -92,6 +93,35 @@ namespace FAST.FBasicInterpreter
             if (subResult.hasError) Error($"CALL return's error: {subResult.errorText} [E118]");
             this.SetVar("RESULTVALUE", subResult.value);
             this.Result = subResult.value;
+        }
+
+        /// <summary>
+        /// CHAIN
+        /// </summary>
+        void ChainStatement()
+        {
+            if (callHandler == null) Error("There is no handler for the CALL statement [E109]");
+
+            // (v) load the chain source program
+            string programFilename = Expr().ToString();
+            var srcCode = callHandler(programFilename);
+
+            // (v) save the current program state
+            var oldState = this.GetState();
+
+            //// (v) Set the new chain program and execute it
+            lex.SetSource(srcCode);
+            exit = false;
+            GetNextToken();
+            while (!exit) Line(); // do all lines
+            exit = false;
+
+            // (v) restore the old program state
+            this.SetState(oldState);
+
+            // (v) continue with the next instruction
+
+            return;
         }
 
         /// <summary>
