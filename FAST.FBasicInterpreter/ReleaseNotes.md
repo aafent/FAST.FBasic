@@ -9,7 +9,8 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
-| 2025-14-10 | Add execution time measurement to the interpreter.     |
+| 2025-10-15 | Add Mapping functionality to the FBasicDecisionTables library |
+| 2025-10-13 | Add execution time measurement to the interpreter.     |
 |     //     | Library FBasicDecisionTables, supporting decision tables.  |
 |     //     | IF...THEN...1-STATEMENT  In line if statements added. 
 |	  //     | Value now supporting Object as underlying type, allowing to store any .NET object. |

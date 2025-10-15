@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using System.Data.Common;
+
+namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Provides Decision Table functionality.
@@ -7,9 +9,13 @@
     /// DTDIM name, not_found_Value  ,[factor1], [factor2], ..., [factorN]
     /// DTROW name, [factor1], [factor2], ..., [factorN], value
     /// DTFIND name, resultFactor, VariableForTheFoundValue, [factor1], [factor2], ..., [factorN]
+    /// DTMAPPER name, not_found_value, key_factor, value_factor
+    /// 
+    /// map(DecTable,inValue) :: returns the mapped value or the default if not found
+    /// dtmap(DecTable,value,key_factor_name,value_factor_name) :: returns the mapped value or the default if not found
     /// 
     /// Variables:
-    /// FIND - TRUE if a matching row was found, otherwise FALSE, Value change from DTFIND statements
+    /// FIND - TRUE if a matching row was found, otherwise FALSE, Value change from DTFIND statement and the map(),dcmap() functions
     /// 
     /// </summary>
     public partial class FBasicDecisionTables : IFBasicLibraryWithMemory
@@ -23,8 +29,117 @@
             interpreter.AddStatement("DTDIM", DecisionTableDim);
             interpreter.AddStatement("DTROW", DecisionTableRow);
             interpreter.AddStatement("DTFIND", DecisionTableFind);
+            interpreter.AddStatement("DTMAPPER", DecisionTableMapper);
+
+            interpreter.AddFunction("map", DTMAPSimple);
+            interpreter.AddFunction("dtmap", DTMAPFull);
 
             interpreter.SetVar("FOUND",Value.False);
+        }
+
+        private Value DTMAPSimple(Interpreter interpreter, List<Value> args)
+        {
+            const string syntax = "map(DecTable,inValue)";
+            if (args.Count != 2)
+                return interpreter.Error("MAP", Errors.E125_WrongNumberOfArguments(2, syntax)).value;
+
+            if (args[0].Type != ValueType.String )
+                return interpreter.Error("MAP", Errors.E126_WrongArgumentType(syntax: syntax)).value;
+
+            string dcTable = args[0].String;
+            var inValue=args[1]; 
+
+            if (!decTables.TryGetValue(dcTable, out decTable table ))
+            {
+                return interpreter.Error("MAP", Errors.E112_UndeclaredEntity("DecisionTable",dcTable)).value;
+            }
+
+            // (v) Set the search criteria 
+            table.search.Clear();
+            foreach (var factor in table.factors)
+            {
+                if (factor == table.mapperKeyFactor)
+                {
+                    table.search.Add(factor, inValue);
+                }
+                else
+                {
+                    table.search.Add(factor, Value.Wildcard);
+                }
+            }
+
+            // Do the search for each table row 
+            foreach ( var item in table.data)
+            {
+                if (table.Match(table.mapperValueFactorIndex, item) )
+                {
+                    interpreter.SetVar("FOUND", Value.True);
+                    return item[table.mapperValueFactorIndex].value;
+                }
+            }
+            
+            interpreter.SetVar("FOUND",Value.False);
+            return table.mapperOtherwise;
+        }
+
+        private Value DTMAPFull(Interpreter interpreter, List<Value> args)
+        {
+            const string syntax = "dtmap(DTable,value,key_factor_name,value_factor_name)";
+            if (args.Count != 4)
+                return interpreter.Error("DTMAP", Errors.E125_WrongNumberOfArguments(4, syntax)).value;
+
+            if (args[0].Type != ValueType.String)
+                return interpreter.Error("DTMAP", Errors.E126_WrongArgumentType(syntax: syntax)).value;
+
+            string dcTable = args[0].String;
+            var inValue = args[1];
+
+            if (args[2].Type != ValueType.String)
+                return interpreter.Error("DTMAP", Errors.E126_WrongArgumentType(3, syntax)).value;
+            if (args[3].Type != ValueType.String)
+                return interpreter.Error("DTMAP", Errors.E126_WrongArgumentType(3, syntax)).value;
+
+            var keyFactor = args[2].String;
+            var valueFactor = args[3].String;
+
+            if (!decTables.TryGetValue(dcTable, out decTable table))
+            {
+                return interpreter.Error("DTMAP", Errors.E112_UndeclaredEntity("DecisionTable", dcTable)).value;
+            }
+
+            var valueFactorIndex = Array.IndexOf(table.factors, valueFactor);
+            if ( valueFactorIndex<0 )
+            {
+                return interpreter.Error("DTMAP", Errors.E112_UndeclaredEntity("Value search factor", valueFactor, "Check the spelling and the name capitalization")).value;
+            }
+
+
+            // (v) Set the search criteria 
+            table.search.Clear();
+            foreach (var factor in table.factors)
+            {
+                if (factor == keyFactor)
+                {
+                    table.search.Add(factor, inValue);
+                }
+                else
+                {
+                    table.search.Add(factor, Value.Wildcard);
+                }
+            }
+
+            // Do the search for each table row 
+            foreach (var item in table.data)
+            {
+                if (table.Match(valueFactorIndex, item))
+                {
+                    interpreter.SetVar("FOUND", Value.True);
+                    return item[valueFactorIndex].value;
+                }
+            }
+
+            interpreter.SetVar("FOUND", Value.False);
+            return table.mapperOtherwise;
         }
 
 
@@ -32,6 +147,7 @@
         {
             // Syntax   DTFIND name, resultFactor, VariableForTheFoundValue, [factor1], [factor2], ..., [factorN]
             //          DTFIND CreditCheck, Eligible, result, 30, 50000, "Permanent"
+            //          if a * provided as factor, it is acting as Wildcard, and practical means to igone the factor on search
             //
 
             // (v) argument: name
@@ -72,6 +188,10 @@
                     case Token.Identifier:
                         factorValue = interpreter.GetValue(interpreter.lex.Identifier);
                         break;
+                    case Token.Asterisk:
+                        factorValue = Value.Wildcard;
+                        break;
+
                     default:
                         interpreter.Match(Token.Value); // (<) will raise error
                         return;
@@ -326,8 +446,93 @@
             table.count = factors.Count;
             table.search = new();
             table.data = new();
+            table.mapperKeyFactor = table.factors[0];
+            table.mapperValueFactor = table.factors[1];
+            table.mapperKeyFactorIndex = Array.IndexOf(table.factors, table.mapperKeyFactor);
+            table.mapperValueFactorIndex= Array.IndexOf(table.factors, table.mapperValueFactor);
+            table.mapperOtherwise = table.otherwise;
             decTables.Add(dtName, table);
         }
+
+        private void DecisionTableMapper(Interpreter interpreter)
+        {
+            // Syntax DTMAPPER name, not_found_value, key_factor, value_factor
+            //        example: dtmapper M1, "", inValue, BuyerPower
+            //
+            Value otherwise;
+
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string dtName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Comma);
+            interpreter.GetNextToken();
+
+            // (v) argument: not_found_Value
+            switch (interpreter.lastToken)
+            {
+                case Token.Value:
+                    otherwise = interpreter.lex.Value;
+                    interpreter.GetNextToken();
+                    break;
+                case Token.Identifier:
+                    otherwise = interpreter.GetValue(interpreter.lex.Identifier);
+                    interpreter.GetNextToken();
+                    break;
+                case Token.Comma: // (<) the value is omitted
+                    otherwise = Value.Zero;
+                    break;
+                default:
+                    interpreter.Match(Token.Value); // (<) will raise error
+                    return;
+            }
+
+            interpreter.Match(Token.Comma);
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Identifier);
+            var keyFactor = interpreter.lex.Identifier;
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Comma);
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Identifier);
+            var valueFactor = interpreter.lex.Identifier;
+
+            interpreter.GetNextToken();
+
+
+            // (v) process arguments
+            if (!decTables.ContainsKey(dtName))
+            {
+                interpreter.Error("DTMAPPER", Errors.E133_AlreadyDefined($"Decision table {dtName}"));
+                return;
+            }
+
+            if (!decTables.TryGetValue(dtName, out decTable table))
+            {
+                interpreter.Error("DTMAPPER", Errors.E112_UndeclaredEntity("DecisionTable", dtName));
+                return; // just to satisfy the compiler
+            }
+
+            int keyFactorIndex = Array.IndexOf(table.factors, keyFactor);
+            int valueFactorIndex = Array.IndexOf(table.factors, valueFactor);
+
+            if ( (valueFactorIndex < 0) || (keyFactorIndex < 0) )
+            {
+                interpreter.Error("DTMAPPER", Errors.E112_UndeclaredEntity("Key or Value factor", keyFactor+"/"+valueFactor, "Check the spelling and the name capitalization"));
+                return; // just to satisfy the compiler
+            }
+
+
+            table.mapperKeyFactor = keyFactor;
+            table.mapperValueFactor = valueFactor;
+            table.mapperKeyFactorIndex = Array.IndexOf(table.factors, table.mapperKeyFactor);
+            table.mapperValueFactorIndex = Array.IndexOf(table.factors, table.mapperValueFactor);
+            table.mapperOtherwise = otherwise;
+        }
+
 
 
         /// <summary>

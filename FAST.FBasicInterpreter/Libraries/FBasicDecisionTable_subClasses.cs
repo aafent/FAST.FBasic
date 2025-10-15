@@ -1,7 +1,6 @@
 ﻿namespace FAST.FBasicInterpreter
 {
     public partial class FBasicDecisionTables 
-
     {
         private enum boType { decisionTable }
 
@@ -19,6 +18,8 @@
                 this.oper = operType.Equal; // default
             }
 
+            public cellValue() { }
+
             public override string ToString()
             {
                 if (oper == operType.Equal) return value.ToString();
@@ -35,8 +36,15 @@
             public Value otherwise;
             public Dictionary<string,Value> search;
             public List<cellValue[]> data;
-            
 
+            /// <summary>
+            /// Factor names and index for mapping results
+            /// </summary>
+            public string mapperKeyFactor = null;
+            public string mapperValueFactor = null;
+            public int mapperKeyFactorIndex;   // set value on each time set the name 
+            public int mapperValueFactorIndex; // set value on each time set the name 
+            public Value mapperOtherwise;      // initially is the "otherwise" value of the decision table
 
             public bool Match(string requestedFactorName, int dataIndex)
             {
@@ -66,6 +74,12 @@
                     {
                         match = false;  // no search value for this factor, can't compare
                         break;
+                    }
+
+                    if (searchValue.IsWildcard())
+                    {
+                        match = true; // wildcard matches anything
+                        continue;
                     }
 
                     bool exitForLoop = false;

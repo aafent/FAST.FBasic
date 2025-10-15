@@ -189,7 +189,8 @@ namespace FAST.FBasic.InteractiveConsole
             if (result!=null && result.exception!= null)
             {
                 Console.WriteLine($"Exception:");
-                Console.WriteLine(result.exception.StackTrace);
+                string modifiedTrace = StackTraceProcessor.ReplaceFilePathWithFileName(result.exception.StackTrace);
+                Console.WriteLine(modifiedTrace);
             }
             #endif
         }

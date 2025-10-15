@@ -46,6 +46,8 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public static readonly Value Empty = new Value(string.Empty);
 
+        public static readonly Value Wildcard = new Value("*"){ Real= FalseValue };
+
         /// <summary>
         /// Value for the boolean true
         /// </summary>
@@ -326,6 +328,12 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <returns></returns>
         public bool IsObject() => this.Type == ValueType.Object;
+
+        /// <summary>
+        /// Check if the value is a wildcard
+        /// </summary>
+        /// <returns>true or false</returns>
+        public bool IsWildcard() => this.Real == FalseValue && this.String == "*";
 
 
         /// <summary>
