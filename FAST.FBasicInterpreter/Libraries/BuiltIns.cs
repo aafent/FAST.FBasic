@@ -10,6 +10,7 @@
             interpreter.AddFunction("min", Min);
             interpreter.AddFunction("max", Max);
             interpreter.AddFunction("not", Not);
+            interpreter.AddFunction("empty", Empty);
 
             interpreter.AddStatement("LogInfo",LogInfo);
         }
@@ -60,6 +61,30 @@
                 return interpreter.Error("Not", Errors.E125_WrongNumberOfArguments(1)).value;
 
             return args[0].Real == Value.FalseValue ? Value.True: Value.False;
+        }
+
+        private static Value Empty(Interpreter interpreter, List<Value> args)
+        {
+            if (args.Count < 1)
+                return interpreter.Error("empty", Errors.E125_WrongNumberOfArguments(1)).value;
+
+            var value = args[0];
+
+            switch (value.Type)
+            { 
+                case ValueType.String:
+                    return string.IsNullOrEmpty(value.String)?Value.True : Value.False;
+                case ValueType.Real:
+                    return value.Real == 0 ? Value.True : Value.False;
+                case ValueType.Object:
+                    return value.Object == null ? Value.True : Value.False;
+                default:
+                    throw new NotImplementedException($"Empty() not implemented for type {value.Type.ToString()}");
+            }
+
+
+
+            return args[0].Real == Value.FalseValue ? Value.True : Value.False;
         }
 
         private static void LogInfo(Interpreter interpreter)

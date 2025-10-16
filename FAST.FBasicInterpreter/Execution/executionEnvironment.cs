@@ -159,15 +159,21 @@ namespace FAST.FBasicInterpreter
 
 
             // (v) install variables
-            foreach(var variable in  variables)
+            if (this.variables != null)
             {
-                interpreter.SetVar(variable.Key,variable.Value);
+                foreach (var variable in this.variables)
+                {
+                    interpreter.SetVar(variable.Key, variable.Value);
+                }
             }
 
             // (v) install libraries
-            foreach (var library in libraries)
+            if (this.libraries != null)
             {
-                interpreter.AddLibrary(library);
+                foreach (var library in this.libraries)
+                {
+                    interpreter.AddLibrary(library);
+                }
             }
         }
     }

@@ -51,7 +51,14 @@ namespace FAST.FBasic.InteractiveConsole
             Console.WriteLine("HELP | H  :: Show this help");
             Console.WriteLine("QUIT | Q  :: Exit of the test console program");
             Console.WriteLine("CLS  |    :: Clear the screen");
+            Console.WriteLine();
+            Console.WriteLine("BC1  |    :: Run Business Case 1 - Credit Scoring"); 
 
+        }
+
+        public void ClearScreen()
+        {
+            for (int i = 0; i < 50; i++) Console.WriteLine();
         }
 
         public void testEventHandler1(object sender, (string name, Stack<Value> args) e)
@@ -71,7 +78,7 @@ namespace FAST.FBasic.InteractiveConsole
             switch (iCommand)
             {
                 case "CLS":
-                    for (int i = 0; i < 50; i++) Console.WriteLine();
+                    ClearScreen();
                     break;
                 case "R":
                 case "RUN":
@@ -112,7 +119,7 @@ namespace FAST.FBasic.InteractiveConsole
                 case "LOAD":
                     while (true)
                     {
-                        Console.Write("Enter program name to load: ");
+                        Console.Write("Enter program name to load (q to exit): ");
                         var pname=Console.ReadLine();
                         if (pname.ToUpper()=="Q") break;
                         if (!pname.ToUpper().EndsWith(".BAS")) pname+=".bas";
@@ -138,6 +145,15 @@ namespace FAST.FBasic.InteractiveConsole
                     var src = FBasicSource.ToSource(program);
                     Console.WriteLine(src);
                     break;
+
+
+                case "BC1":
+                    ClearScreen();
+                    Console.WriteLine("Demonstrating: Business Case 1:");
+                    var BC1 = new BusinessCase1(this.programsFolder);
+                    BC1.Scenario();
+                    break;
+
                 default:
                     break;
             }

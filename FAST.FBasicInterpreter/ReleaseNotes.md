@@ -9,6 +9,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-10-16 | Package release 1.0.9.                                 |
 | 2025-10-15 | New statement CHAIN, similar to CALL but use the same interpreter (merge, include) |
 | 2025-10-15 | Add Mapping functionality to the FBasicDecisionTables library |
 | 2025-10-13 | Add execution time measurement to the interpreter.     |
