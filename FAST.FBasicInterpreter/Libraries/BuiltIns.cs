@@ -89,7 +89,7 @@
 
         private static void LogInfo(Interpreter interpreter)
         {
-            interpreter.log.info(interpreter.Expr().ToString());
+            interpreter.logger.info(interpreter.Expr().ToString());
         }
 
     }

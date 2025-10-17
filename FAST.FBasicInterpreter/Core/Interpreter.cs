@@ -9,58 +9,29 @@ namespace FAST.FBasicInterpreter
         #region (+) Handlers
 
         /// <summary>
-        /// The delegation type of the  printHandler
-        /// </summary>
-        /// <param name="text">The the to PRINT</param>
-        public delegate void PrintFunction(string text);
-
-        /// <summary>
-        /// The delegation type of the input handler
-        /// </summary>
-        /// <returns>The INPUT</returns>
-        public delegate string InputFunction();
-
-        /// <summary>
-        /// The delegation type of the load source for the CALL statement
-        /// </summary>
-        /// <param name="name">the name of the source program</param>
-        /// <returns>the source</returns>
-        public delegate string CallStatementLoader(string name);
-
-        /// <summary>
-        /// The delegation of object requesting
-        /// </summary>
-        /// <param name="context">The Context</param>
-        /// <param name="group">The group of names</param>
-        /// <param name="name">The name</param>
-        /// <returns>object</returns>
-        public delegate object RequestForObjectAction(string context, string group, string name );
-
-        /// <summary>
-        /// The delegation type of the  logHandler
-        /// </summary>
-        /// <param name="text">The the to PRINT</param>
-        public delegate void LogFunction(string text);
-
-        /// <summary>
         /// The delegation handler for the PRINT statement
         /// </summary>
-        public PrintFunction printHandler=null;
+        public FBasicPrintFunction printHandler=null;
 
         /// <summary>
         /// The delegation handler for the INPUT statement
         /// </summary>
-        public InputFunction inputHandler=null;
+        public FBasicInputFunction inputHandler=null;
 
         /// <summary>
         /// The delegation handler for the CALL statement
         /// </summary>
-        public CallStatementLoader callHandler = null;
+        public FBasicSourceProgramLoader callHandler = null;
 
         /// <summary>
         /// The delegation handler for Request for Object
         /// </summary>
-        public RequestForObjectAction requestForObjectHandler = null;
+        public FBasicRequestForObject requestForObjectHandler = null;
+
+        /// <summary>
+        /// Logger for the execution
+        /// </summary>
+        public IFBasicLogger logger = null;
 
         #endregion (+) Handlers
 
@@ -73,8 +44,8 @@ namespace FAST.FBasicInterpreter
         private Dictionary<string, Marker> loops; // for loops
         private Stack<Marker> instructionStack; // for return points
 
-        private Dictionary<string, BasicFunction> funcs; // all mapped functions
-        private Dictionary<string, BasicStatement> statements; // all mapped statements
+        private Dictionary<string, FBasicFunction> funcs; // all mapped functions
+        private Dictionary<string, FBasicStatement> statements; // all mapped statements
         private int ifCounter; // (NOT WORKING, TO RECHECK) counter used for matching "if" with "else"
                             
         private Marker lineMarker; // current line marker
@@ -82,67 +53,48 @@ namespace FAST.FBasicInterpreter
 
         #endregion (+) private working data properties & fields 
 
-        #region (+) public data properties & fields
-        /// <summary>
-        /// Latest interpreted token
-        /// </summary>
-        public Token lastToken; // last seen token
-        /// <summary>
-        /// Logger for the execution
-        /// </summary>
-        public IFBasicLogger log = null;
-        /// <summary>
-        /// The Lexer
-        /// </summary>
-        public Lexer lex;
+        #region (+) Public & Private data 
+
         /// <summary>
         /// Data adapters 
         /// </summary>
-        public readonly Dictionary<string, IFBasicDataAdapter> dataAdapters = new(); 
+        public readonly Dictionary<string, IFBasicDataAdapter> dataAdapters = new();
         /// <summary>
         /// Collection objects
         /// </summary>
         public readonly Dictionary<string, IBasicCollection> collections = new();
 
         /// <summary>
+        /// The result of the execution (statement: RESULT)
+        /// </summary>
+        public Value Result { get; set; }
+
+        /// <summary>
+        /// The GetNextToken handler, no need to be defined as the the interpreter uses the default built-in.
+        /// </summary>
+        public FBasicGetNextTokenMethod GetNextToken = null;
+
+        #endregion (+) Public & Private data 
+
+        #region (+) Parsing & Execution Elements
+
+        /// <summary>
+        /// Latest interpreted token
+        /// </summary>
+        public Token lastToken; // last seen token
+
+        /// <summary>
+        /// The Lexer
+        /// </summary>
+        public Lexer lex;
+
+        /// <summary>
         /// Libraries with memory
         /// </summary>
         public Dictionary<string, IFBasicLibraryWithMemory> librariesWithMemory; // libraries with memory
 
-        /// <summary>
-        /// The result of the execution (statement: RESULT)
-        /// </summary>
-        public Value Result { get; set; }
-        #endregion (+) public data properties & fields
+        #endregion (+) Parsing & Execution Elements
 
-        #region (+) Element delegates
-
-        /// <summary>
-        /// A new function delegate
-        /// </summary>
-        /// <param name="interpreter">The instance of this interpreter</param>
-        /// <param name="args">Arguments</param>
-        /// <returns>The function result</returns>
-        public delegate Value BasicFunction(Interpreter interpreter, List<Value> args);
-
-        /// <summary>
-        /// A new statement delegate
-        /// </summary>
-        /// <param name="interpreter">The instance of this interpreter</param>
-        public delegate void BasicStatement(Interpreter interpreter);
-
-        /// <summary>
-        /// Delegate type for GetNextToken Method
-        /// For future use
-        /// </summary>
-        /// <returns>Token</returns>
-        public delegate Token getNextTokenMethod();
-        /// <summary>
-        /// The GetNextToken handler
-        /// </summary>
-        public getNextTokenMethod GetNextToken = null;
-        
-        #endregion (+) Element delegates
 
     }
 }

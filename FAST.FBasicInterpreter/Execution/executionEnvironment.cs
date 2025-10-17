@@ -40,23 +40,23 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The handler for PRINT statement
         /// </summary>
-        public PrintFunction printHandler { get; set; } = null;
+        public FBasicPrintFunction printHandler { get; set; } = null;
 
         /// <summary>
         /// The handler for the INPUT statement 
         /// </summary>
-        public InputFunction inputHandler { get; set; } = null;
+        public FBasicInputFunction inputHandler { get; set; } = null;
 
         /// <summary>
         /// The handler for the CALL statement
         /// This used to load the source of the calling program
         /// </summary>
-        public CallStatementLoader callHandler = null;
+        public FBasicSourceProgramLoader callHandler = null;
 
         /// <summary>
         /// The handler of Request For Object mechanism 
         /// </summary>
-        public RequestForObjectAction requestForObjectHandler = null;
+        public FBasicRequestForObject requestForObjectHandler = null;
 
         #endregion (+) Handlers
 
@@ -155,7 +155,7 @@ namespace FAST.FBasicInterpreter
             if (this.inputHandler!=null) interpreter.inputHandler=this.inputHandler;
             if (this.callHandler!=null) interpreter.callHandler=this.callHandler;
             if (this.requestForObjectHandler!=null) interpreter.requestForObjectHandler=this.requestForObjectHandler;
-            if (this.executionLogger!=null) interpreter.log = this.executionLogger;
+            if (this.executionLogger!=null) interpreter.logger = this.executionLogger;
 
 
             // (v) install variables

@@ -49,7 +49,7 @@ namespace FAST.FBasicInterpreter
             this.labels = new Dictionary<string, Marker>();
             this.loops = new Dictionary<string, Marker>();
             this.instructionStack = new();
-            this.funcs = new Dictionary<string, BasicFunction>();
+            this.funcs = new Dictionary<string, FBasicFunction>();
             this.statements = new();
             this.ifCounter = 0;
             this.Result = new();
@@ -64,7 +64,7 @@ namespace FAST.FBasicInterpreter
         private void constructorEnvironment(bool installBuiltIns)
         {
             // (v) environment
-            if (this.log == null) this.log = new defaultExecutionLogger();
+            if (this.logger == null) this.logger = new defaultExecutionLogger();
             if (installBuiltIns)
             {
                 this.AddLibrary(new BuiltIns());

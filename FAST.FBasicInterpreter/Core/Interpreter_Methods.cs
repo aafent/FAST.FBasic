@@ -53,7 +53,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <param name="name">the name of the function</param>
         /// <param name="function">A reference to the function implementation</param>
-        public void AddFunction(string name, BasicFunction function)
+        public void AddFunction(string name, FBasicFunction function)
         {
             if (!funcs.ContainsKey(name)) funcs.Add(name, function);
             else funcs[name] = function;
@@ -64,7 +64,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         /// <param name="name">The name of the statement</param>
         /// <param name="statment">A reference to the statement method implementation</param>
-        public void AddStatement(string name, BasicStatement statement)
+        public void AddStatement(string name, FBasicStatement statement)
         {
             name = name.ToUpper(); // crucial to be upper
             if (!statements.ContainsKey(name)) statements.Add(name, statement);
@@ -505,16 +505,16 @@ namespace FAST.FBasicInterpreter
             Marker oldLineMarker = new(lineMarker); // save the marker
             while (true)
             {
-                log.info($"Line Maker.:  Line:{lineMarker.Line}, Column:{lineMarker.Column}, Pointer:{lineMarker.Pointer}");
-                log.info($"Token Maker:  Line:{lex.CurrentSourceMarker.Line}, Column:{lex.CurrentSourceMarker.Column}, Pointer:{lex.CurrentSourceMarker.Pointer}");
+                logger.info($"Line Maker.:  Line:{lineMarker.Line}, Column:{lineMarker.Column}, Pointer:{lineMarker.Pointer}");
+                logger.info($"Token Maker:  Line:{lex.CurrentSourceMarker.Line}, Column:{lex.CurrentSourceMarker.Column}, Pointer:{lex.CurrentSourceMarker.Pointer}");
 
-                log.info($"Token: Prev.: {prevToken}, Last:{lastToken}");
-                log.info($"Last Char.: {lex.lastChar}");
+                logger.info($"Token: Prev.: {prevToken}, Last:{lastToken}");
+                logger.info($"Last Char.: {lex.lastChar}");
 
-                log.info(lex.GetLine(lineMarker));
-                log.info(lex.GetLine(lex.CurrentSourceMarker));
+                logger.info(lex.GetLine(lineMarker));
+                logger.info(lex.GetLine(lex.CurrentSourceMarker));
 
-                log.info($"Variables: {vars.Count}, Labels: {labels.Count}, Loops: {loops.Count}, Instr.Stack: {instructionStack.Count}, If.Counter: {ifCounter}");
+                logger.info($"Variables: {vars.Count}, Labels: {labels.Count}, Loops: {loops.Count}, Instr.Stack: {instructionStack.Count}, If.Counter: {ifCounter}");
 
                 if (!interactive) break;
 
@@ -536,7 +536,7 @@ namespace FAST.FBasicInterpreter
                     case "D":
                         foreach (var item in vars)
                         {
-                            log.debug($"{item.Key}={item.Value}");
+                            logger.debug($"{item.Key}={item.Value}");
                         }
                         break;
                 }

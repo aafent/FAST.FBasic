@@ -617,10 +617,10 @@ namespace FAST.FBasicInterpreter
         {
             dumpInterpreter();
             string text = Expr().ToString();
-            log.debug($"{text} at line:{lineMarker.Line}");
+            logger.debug($"{text} at line:{lineMarker.Line}");
             foreach (var item in vars)
             {
-                log.debug($"{item.Key}={item.Value}");
+                logger.debug($"{item.Key}={item.Value}");
             }
 
         }
