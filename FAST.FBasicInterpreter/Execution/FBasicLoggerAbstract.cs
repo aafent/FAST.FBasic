@@ -11,10 +11,10 @@
         }
 
         /// <summary>
-        /// Write a line to the log
+        /// Write a line to the Console
         /// </summary>
         /// <param name="line">the text to write</param>
-        public void WriteLine(string line)
+        protected virtual void WriteLine(string line)
         {
             Console.WriteLine(line);
         }
@@ -35,6 +35,11 @@
         public void debug(string text)
         {
             this.WriteLine(logPrefix("DEBUG") + text);
+        }
+
+        public void error(string text)
+        {
+            this.WriteLine(logPrefix("ERROR") + text);
         }
     }
 

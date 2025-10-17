@@ -18,9 +18,9 @@
         void info(string text);
 
         /// <summary>
-        /// Write a line to the log
+        /// Log an error text
         /// </summary>
-        /// <param name="line">the text to write</param>
-        void WriteLine(string line);
+        /// <param name="text">Text to log</param>
+        void error(string text);
     }
 }

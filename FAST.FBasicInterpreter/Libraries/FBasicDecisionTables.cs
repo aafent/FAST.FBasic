@@ -6,16 +6,16 @@ namespace FAST.FBasicInterpreter
     /// Provides Decision Table functionality.
     /// 
     /// Statements:
-    /// DTDIM name, not_found_Value,[factor1], [factor2], ..., [factorN]
+    /// DTDIM name, not_found_Value,factor1[, factor2,] ... [,factorN]
     /// DTROW name, [factor1], [factor2], ..., [factorN], value
     /// DTFIND name, resultFactor, VariableForTheFoundValue, [factor1], [factor2], ..., [factorN]
     /// DTMAPPER name, not_found_value, key_factor, value_factor
     /// 
     /// map(DecTable,inValue) :: returns the mapped value or the default if not found
     /// dtmap(DecTable,value,key_factor_name,value_factor_name) :: returns the mapped value or the default if not found
-    /// 
+    /// See: https://github.com/aafent/FAST.FBasic/wiki/Language-Reference,-Decision-Tables
     /// Variables:
-    /// FIND - TRUE if a matching row was found, otherwise FALSE, Value change from DTFIND statement and the map(),dcmap() functions
+    /// FOUND - TRUE if a matching row was found, otherwise FALSE, Value change from DTFIND statement and the map(),dcmap() functions
     /// 
     /// </summary>
     public partial class FBasicDecisionTables : IFBasicLibraryWithMemory

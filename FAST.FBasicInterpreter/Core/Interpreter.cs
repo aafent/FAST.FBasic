@@ -37,6 +37,12 @@ namespace FAST.FBasicInterpreter
         public delegate object RequestForObjectAction(string context, string group, string name );
 
         /// <summary>
+        /// The delegation type of the  logHandler
+        /// </summary>
+        /// <param name="text">The the to PRINT</param>
+        public delegate void LogFunction(string text);
+
+        /// <summary>
         /// The delegation handler for the PRINT statement
         /// </summary>
         public PrintFunction printHandler=null;
@@ -45,13 +51,6 @@ namespace FAST.FBasicInterpreter
         /// The delegation handler for the INPUT statement
         /// </summary>
         public InputFunction inputHandler=null;
-
-        /// <summary>
-        /// The delegation type of the  logHandler
-        /// </summary>
-        /// <param name="text">The the to PRINT</param>
-        public delegate void LogFunction(string text);
-
 
         /// <summary>
         /// The delegation handler for the CALL statement
