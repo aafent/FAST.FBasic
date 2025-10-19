@@ -1,4 +1,5 @@
-﻿using FAST.FBasicInterpreter;
+﻿using FAST.FBasicInteractiveConsole;
+using FAST.FBasicInterpreter;
 using Microsoft.Extensions.Configuration;
 using System.Data.Odbc;
 using System.Runtime.InteropServices;
@@ -48,11 +49,13 @@ namespace FAST.FBasic.InteractiveConsole
             Console.WriteLine("DIR  |    :: List all .BAS files in the tests folder");
             Console.WriteLine("S    |    :: Show the reversed source of the last loaded program");
             Console.WriteLine("DUMP | D  :: Dump the interpreter state");
-            Console.WriteLine("HELP | H  :: Show this help");
+            Console.WriteLine("HELP | ?  :: Show this help");
             Console.WriteLine("QUIT | Q  :: Exit of the test console program");
             Console.WriteLine("CLS  |    :: Clear the screen");
             Console.WriteLine();
-            Console.WriteLine("BC1  |    :: Run Business Case 1 - Credit Scoring"); 
+            Console.WriteLine("BC1  |    :: Run Business Case 1 - Credit Scoring");
+            Console.WriteLine();
+            Console.WriteLine("TP   |    :: Run Experiment and test programs. Make sense only to the developers of the FBasic");
 
         }
 
@@ -80,8 +83,13 @@ namespace FAST.FBasic.InteractiveConsole
                 case "CLS":
                     ClearScreen();
                     break;
-                case "R":
+
+                case "TP": // test programs
+                    new TPRunner().Run();
+                    break;
+
                 case "RUN":
+                case "R":
                     runFBasicProgram();
                     break;
 
@@ -96,17 +104,21 @@ namespace FAST.FBasic.InteractiveConsole
                     Console.WriteLine($"LIST OF {this.startupName} LOADED ON THE LATEST RUN:");
                     Console.WriteLine( this.sourceProgram );
                     break;
-
-                case "H":
+             
                 case "HELP":
+                case "H":
+                case "?":
                     help();
                     break;
                 //case "B":
                 //spBuilder();
-                case "I":
+
+                
                 case "INFO":
+                case "I":   
                     internalInfo();
                     break;
+
                 case "DIR":
                     var files = Directory.GetFiles(programsFolder, "*.bas");
                     foreach(var fname in files)
@@ -114,9 +126,9 @@ namespace FAST.FBasic.InteractiveConsole
                         Console.WriteLine(Path.GetFileName(fname));
                     }
                     break;
-
-                case "L":
+                
                 case "LOAD":
+                case "L":
                     while (true)
                     {
                         Console.Write("Enter program name to load (q to exit): ");
@@ -187,6 +199,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicTextReplacer());
             env.AddLibrary(new FBasicStack());
             env.AddLibrary(new FBasicDecisionTables());
+            env.AddLibrary(new FBasic2DArrays());
 
             env.AddVariable("table.column", "myColumn1");
 

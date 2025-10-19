@@ -45,6 +45,7 @@ namespace FAST.FBasicInterpreter
 
         public void ResetInterpreter()
         {
+            this.arrays =new();
             this.vars = new Dictionary<string, Value>();
             this.labels = new Dictionary<string, Marker>();
             this.loops = new Dictionary<string, Marker>();

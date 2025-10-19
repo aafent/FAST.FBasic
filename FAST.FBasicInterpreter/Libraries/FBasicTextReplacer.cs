@@ -1,6 +1,7 @@
 ﻿using FAST.FBasicInterpreter;
 using FAST.FBasicInterpreter.DataProviders;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks.Dataflow;
 
 /// <summary>
 /// Statements Syntax:
@@ -406,6 +407,7 @@ public class FBasicTextReplacer : IFBasicLibrary
         return new Value(CountLongWords(str, size));
     }
 
+
     #endregion (+) FBASIC Functions
 
     #region (+) Public static methods 
@@ -469,6 +471,41 @@ public class FBasicTextReplacer : IFBasicLibrary
 
         return count;
     }
+
+
+    /// <summary>
+    /// Performs word frequency counting and filters the result based on 
+    /// a minimum character length and a minimum occurrence count.
+    /// </summary>
+    /// <param name="input">The input string</param>
+    /// <param name="minWordLength">The minimum length of a word</param>
+    /// <param name="minCount">The minimum count in the result dictionary</param>
+    /// <returns>Dictionary with the word as key and the count as an int. value</returns>
+    public static Dictionary<string, int> CalculateWordFrequency(string input, int minWordLength, int minCount)
+    {
+        char[] separators = { ' ', ',', '.', ':', ';', '?', '\t', '\r', '\n' };
+
+        // 1. Transformation (MAP) and Length Filtering:
+        var allWords = input
+            .ToLower()
+            .Split(separators, StringSplitOptions.RemoveEmptyEntries)
+            .Select(word => word.Trim())
+            // **NEW FILTER: Filter out words shorter than the specified minLength**
+            .Where(word => word.Length >= minWordLength);
+
+        // 2. Aggregation (REDUCE) and Frequency Filtering (HAVING equivalent):
+        var wordCounts = allWords
+            .GroupBy(word => word)
+            .Where(group => group.Count() >= minCount)
+            .ToDictionary(
+                group => group.Key,
+                group => group.Count()
+            );
+
+        return wordCounts;
+    }
+
+
     #endregion (+) Public static methods
 
 }

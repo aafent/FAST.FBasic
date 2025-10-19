@@ -64,7 +64,17 @@ namespace FAST.FBasicInterpreter
                 #if DEBUG
                 result.exception=e;
                 #endif
-    }
+            }
+            catch (IndexOutOfRangeException e1)
+            {
+                result.hasError = true;
+                result.errorText = Errors.E130_OutOfRange(interpreter.lex.Identifier);
+                result.lineOfError = interpreter.lex.CurrentSourceMarker.Line;
+                result.errorSourceLine = interpreter.lex.GetLine(result.lineOfError);
+                #if DEBUG
+                result.exception = e1;
+                #endif
+            }
             catch (Exception ex)
             {
                 result.hasError = true;
@@ -87,27 +97,14 @@ namespace FAST.FBasicInterpreter
         /// <returns>Value</returns>
         public static Value GetValue(this Interpreter interpreter, string name)
         {
-            string firstPart = null;
-            string otherPart = null;
-            if (name.Length>1 && name[0]=='[' && name[name.Length-1]==']')
+            var parser=new IdentifierNotationParser(name,  interpreter);
+            if (parser.IsArray)
             {
-                // (v) remove the surrounding []
-                name=name.Substring(1,name.Length-2);
-            }
-            var dotPosition = name.IndexOf('.');
-            if (dotPosition >= 0) // (v) collections dotted identifier [collection.item]
+                return interpreter.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataContainerName];
+            } 
+            else if (parser.IsCollection )
             {
-                firstPart = name.Substring(0, dotPosition);
-                otherPart = name.Substring(dotPosition + 1);
-
-                if (interpreter.collections.ContainsKey(firstPart))
-                {
-                    return interpreter.collections[firstPart].getValue(otherPart);
-                }
-                else
-                {
-                    return interpreter.Error(null,$"Undeclared name {name} [E111]").value;
-                }
+                return interpreter.collections[parser.DataContainerName].getValue(parser.DataElement);
             } 
             else
             {

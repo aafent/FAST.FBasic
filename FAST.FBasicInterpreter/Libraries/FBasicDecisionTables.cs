@@ -1,6 +1,4 @@
-﻿using System.Data.Common;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Provides Decision Table functionality.

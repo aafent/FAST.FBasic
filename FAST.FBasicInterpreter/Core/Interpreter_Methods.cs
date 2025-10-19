@@ -34,6 +34,47 @@ namespace FAST.FBasicInterpreter
         }
 
         /// <summary>
+        /// Check if an array is declared
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsArray(string name)
+        {
+            return this.arrays.ContainsKey(name);
+        }
+
+        /// <summary>
+        /// Get reference to a declared array 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public FBasicArray GetArray(string name)
+        {
+            if (!IsArray(name) )
+            {
+                Error(Errors.E112_UndeclaredEntity("Array",name));
+                return null; // unnecessary but the compiler will like it...
+            }
+            return this.arrays[name];
+        }
+
+        /// <summary>
+        /// Add new array to arrays
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="array"></param>
+        public void AddArray(string name, FBasicArray array)
+        {
+            if (IsArray(name))
+            {
+                Error(Errors.E133_AlreadyDefined("Array", name));
+                return; // unnecessary but the compiler will like it...
+            }
+            this.arrays.Add(name, array);
+        }
+
+
+        /// <summary>
         /// Get underlying variables and values 
         /// </summary>
         /// <returns>Dictionary, the key is the variable name</returns>
@@ -41,6 +82,7 @@ namespace FAST.FBasicInterpreter
         {
             return this.vars;
         }
+
 
         // (>) GetVar is at Program execution & control region. 
 
@@ -140,6 +182,16 @@ namespace FAST.FBasicInterpreter
             if (errorIfNull & (returnObject == null))
                 Error(context, $"Cannot get object for: ({context},{group},{name}) [E101]");
             return returnObject;
+        }
+
+        /// <summary>
+        /// Check if a name is function
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsFunction(string name)
+        {
+            return funcs.ContainsKey(name);
         }
 
         #endregion (+) Add elements 
@@ -474,6 +526,10 @@ namespace FAST.FBasicInterpreter
             return true;
         }
 
+        /// <summary>
+        /// Get the current state of the interpreter 
+        /// </summary>
+        /// <returns></returns>
         public InterpretationState GetState()
         {
             return new InterpretationState()
@@ -485,6 +541,10 @@ namespace FAST.FBasicInterpreter
             };
         }
 
+        /// <summary>
+        /// Set/reset the current state of the interpreter
+        /// </summary>
+        /// <param name="state"></param>
         public void SetState(InterpretationState state)
         {
             this.lastToken = state.lastToken;
@@ -502,7 +562,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public void dumpInterpreter(bool interactive = false)
         {
-            Marker oldLineMarker = new(lineMarker); // save the marker
+            var oldState=GetState();
             while (true)
             {
                 logger.info($"Line Maker.:  Line:{lineMarker.Line}, Column:{lineMarker.Column}, Pointer:{lineMarker.Pointer}");
@@ -514,8 +574,9 @@ namespace FAST.FBasicInterpreter
                 logger.info(lex.GetLine(lineMarker));
                 logger.info(lex.GetLine(lex.CurrentSourceMarker));
 
-                logger.info($"Variables: {vars.Count}, Labels: {labels.Count}, Loops: {loops.Count}, Instr.Stack: {instructionStack.Count}, If.Counter: {ifCounter}");
-
+                logger.info($"Variables: {vars.Count},   Functions: {funcs.Count}, Arrays: {arrays.Count}, Collections: {collections.Count}");
+                logger.info($"Labels: {labels.Count},    Loops: {loops.Count},     Instr.Stack: {instructionStack.Count}, If.Counter: {ifCounter}");
+                
                 if (!interactive) break;
 
                 Console.Write(">>>n=nextToken, r=restore. x=exit, d=dump >>>");
@@ -527,23 +588,37 @@ namespace FAST.FBasicInterpreter
                         GetNextToken();
                         break;
                     case "R":
-                        lineMarker = new(oldLineMarker); // restore the marker
+                        SetState(oldState);
                         break;
                     case "X":
                     case "Q":
                         exit = true;
                         break;
-                    case "D":
-                        foreach (var item in vars)
-                        {
-                            logger.debug($"{item.Key}={item.Value}");
-                        }
+                    case "VAR":
+                    case "V":
+                        logger.info("Variables:");
+                        foreach (var item in vars) logger.debug($"{item.Key}={item.Value}");
+                        break;
+                    case "ARR":
+                    case "A":
+                        logger.info("Arrays:");
+                        foreach (var item in arrays) logger.debug($"{item.Key}={item.Value.ToString()}");
+                        break;
+                    case "COL":
+                    case "C":
+                        logger.info("Collections:");
+                        foreach (var item in collections) logger.debug($"{item.Key}={item.Value.ToString()}");
+                        break;
+                    case "FUC":
+                    case "F":
+                        logger.info("Functions:");
+                        foreach (var item in funcs) logger.debug($"{item.Key}={item.Value.ToString()}");
                         break;
                 }
                 if (exit) break;
                 Console.WriteLine();
             }
-            lineMarker = new(oldLineMarker); // restore the marker
+            SetState(oldState);
         }
         #endregion (+) Other
 

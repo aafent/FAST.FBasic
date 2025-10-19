@@ -496,10 +496,28 @@ namespace FAST.FBasicInterpreter
             }
 
             string id = lex.Identifier;
+            if (id.IndexOf('.') >= 0 )
+            {
+                var parser=new IdentifierNotationParser(id,this);
+                if (parser.IsArray)
+                {
+                    var array = GetArray(parser.DataContainerName);
+                    GetNextToken();
+                    array[parser.ArrayIndex, parser.DataElement]=Expr();
+                }
+                else
+                {
+                    Error(Errors.E134_SquareBracketNotation($"Cannot assign value to {id}."));
+                    return;
+                }
+            }
+            else
+            {
+                GetNextToken();
+                SetVar(id, Expr());
 
-            GetNextToken();
+            }
 
-            SetVar(id, Expr());
         }
 
         /// <summary>

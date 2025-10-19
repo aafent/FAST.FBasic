@@ -136,6 +136,7 @@
             }
         }
 
+
         /// <summary>
         /// Get Identifier or Value or Collection or Function
         /// </summary>
@@ -143,7 +144,117 @@
         /// <param name="permitCollection">true if permit collection items</param>
         /// <param name="permitFunc">true if permit functions</param>
         /// <returns>Value</returns>
-        public Value GetIdentifierOrCF( bool permitIdentifier=true, 
+        public Value GetIdentifierOrCF(bool permitIdentifier = true,
+                                        bool permitCollection = true,
+                                        bool permitFunc = true)
+        {
+            var parser = new IdentifierNotationParser(lex.Identifier, this);
+            if (parser.IsArray)
+            {
+                return this.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataElement];
+            }
+            else if (parser.IsCollection)
+            {
+                if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection expressions")).value;
+                return this.collections[parser.DataContainerName].getValue(parser.DataElement);
+            }
+            else if (parser.IsFunction)
+            {
+                if (!permitFunc) return Error(Errors.E124_NotPermitted("Function")).value;
+                string name = lex.Identifier;
+                List<Value> args = new List<Value>();
+                GetNextToken();
+                Match(Token.LParen);
+
+                start:
+                if (GetNextToken() != Token.RParen)
+                {
+                    args.Add(Expr());
+                    if (lastToken == Token.Comma)
+                        goto start;
+                }
+                return funcs[name](this, args);
+            }
+            else
+            {
+                return this.GetVar(lex.Identifier);
+            }
+
+
+
+            string firstPart = null;
+            string otherPart = null;
+            var dotPosition = lex.Identifier.IndexOf('.');
+            if (dotPosition >= 0) // (v) collections dotted identifier [collection.item]
+            {
+                firstPart = lex.Identifier.Substring(0, dotPosition);
+                otherPart = lex.Identifier.Substring(dotPosition + 1);
+
+                if (collections.ContainsKey(firstPart))
+                {
+                    if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection expressions")).value;
+                    return collections[firstPart].getValue(otherPart);
+                }
+                else
+                {
+                    return Error($"Undeclared name {lex.Identifier} [E111].").value;
+                }
+            }
+            else
+            {
+                firstPart = lex.Identifier;
+                otherPart = "ITEM";
+
+                // syntax: ident | ident '(' args ')'
+                if (vars.ContainsKey(lex.Identifier)) // just ident
+                {
+                    if (!permitIdentifier) return Error(Errors.E124_NotPermitted("Identifier(Variable)")).value;
+                    return vars[lex.Identifier];
+                }
+                else if (funcs.ContainsKey(lex.Identifier))
+                {
+                    if (!permitFunc) return Error(Errors.E124_NotPermitted("Function")).value;
+                    string name = lex.Identifier;
+                    List<Value> args = new List<Value>();
+                    GetNextToken();
+                    Match(Token.LParen);
+
+                    start:
+                    if (GetNextToken() != Token.RParen)
+                    {
+                        args.Add(Expr());
+                        if (lastToken == Token.Comma)
+                            goto start;
+                    }
+                    return funcs[name](this, args);
+                }
+                else if (collections.ContainsKey(firstPart))
+                {
+                    if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection expressions")).value;
+                    return collections[firstPart].getValue(otherPart);
+                }
+                else if (arrays.ContainsKey(firstPart))
+                {
+                    if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection and array expressions")).value;
+                    throw new NotImplementedException();
+                }
+                else
+                {
+                    return Error(Errors.E112_UndeclaredEntity("variable", lex.Identifier)).value;
+                }
+            }
+
+            // (!>) a never-reach point of code, that's for no return statement here
+        }
+
+        /// <summary>
+        /// Get Identifier or Value or Collection or Function
+        /// </summary>
+        /// <param name="permitIdentifier">true if permit identifiers</param>
+        /// <param name="permitCollection">true if permit collection items</param>
+        /// <param name="permitFunc">true if permit functions</param>
+        /// <returns>Value</returns>
+        public Value oldGetIdentifierOrCF( bool permitIdentifier=true, 
                                         bool permitCollection=true,
                                         bool permitFunc=true )
         {
@@ -162,7 +273,7 @@
                 }
                 else
                 {
-                    return Error($"Undeclared name {lex.Identifier} [E111]").value;
+                    return Error($"Undeclared name {lex.Identifier} [E111].").value;
                 }
             }
             else
@@ -197,6 +308,11 @@
                 {
                     if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection expressions")).value;
                     return collections[firstPart].getValue(otherPart);
+                }
+                else if (arrays.ContainsKey(firstPart))
+                {
+                    if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection and array expressions")).value;
+                    throw new NotImplementedException();
                 }
                 else
                 {

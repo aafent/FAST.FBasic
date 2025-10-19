@@ -14,6 +14,10 @@
         public static string E107_LabelNotFound(string label)
             => $"Cannot find label named {label} [E107]";
 
+        public static string E111_UndeclareIdentifier(string name)
+        {
+            return $"Undeclared name {name} [E111]";
+        }
 
         public static string E117_CollectionIsNotSDATAType(string collectionName)
         {
@@ -91,6 +95,10 @@
             return $"{what} is already defined. {more} [E133]";
         }
 
+        public static string E134_SquareBracketNotation(string what)
+        {
+            return $"Notation error. {what} [E134]";
+        }
 
 
         public static string X007_OnlyUnaryOperationsOnNumbers()

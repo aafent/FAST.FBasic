@@ -40,6 +40,7 @@ namespace FAST.FBasicInterpreter
         private Token prevToken; // token before last one
         
         private Dictionary<string, Value> vars; // all variables are stored here
+        private Dictionary<string, FBasicArray> arrays;
         private Dictionary<string, Marker> labels; // already seen labels 
         private Dictionary<string, Marker> loops; // for loops
         private Stack<Marker> instructionStack; // for return points
