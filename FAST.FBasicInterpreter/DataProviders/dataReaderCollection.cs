@@ -140,5 +140,9 @@ namespace FAST.FBasicInterpreter.DataProviders
             }
         }
 
+        public void ClearCollection()
+        {
+            Reset();
+        }
     }
 }

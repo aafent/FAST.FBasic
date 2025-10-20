@@ -65,5 +65,11 @@
         {
             index= indexInitialValue;
         }
+
+        public void ClearCollection()
+        {
+            Reset();
+            data.Clear();
+        }
     }
 }

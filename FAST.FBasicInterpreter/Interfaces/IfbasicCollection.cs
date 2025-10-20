@@ -19,5 +19,11 @@ namespace FAST.FBasicInterpreter
         /// <returns>The Value</returns>
         Value getValue(string name);
 
+        /// <summary>
+        /// This method used to clear (empty) the collection
+        /// It is not the same with the Reset() from IEnumerator that it is used to jump to the first of the items.
+        /// </summary>
+        void ClearCollection();
+
     }
 }

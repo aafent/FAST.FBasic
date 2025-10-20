@@ -314,6 +314,12 @@ namespace FAST.FBasicInterpreter
             this.currentRow=0;
         }
 
+        public void ClearCollection()
+        {
+            Reset();
+            ResetArray();
+        }
+
 
         #endregion (+) IFBasicCollection Interface
     }

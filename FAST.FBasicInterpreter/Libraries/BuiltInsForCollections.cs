@@ -14,7 +14,9 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("SSET", SSET);
             interpreter.AddStatement("SCLEAR", SCLEAR);
         }
- 
+
+        #region (+) Statements & Functions for both Collections and Arrays
+
         private static Value EOD(Interpreter interpreter, List<Value> args)
         {
             if (args.Count != 1) throw new ArgumentException();
@@ -61,6 +63,36 @@ namespace FAST.FBasicInterpreter
             collection.endOfData=false;
         }
 
+        private static void SCLEAR(Interpreter interpreter)
+        {
+            // Syntax: SCLEAR collection
+            //  Used to RESET and then to CLEAR a collection
+            //
+            interpreter.Match(Token.Identifier);
+            string collectionName = interpreter.lex.Identifier;
+
+            interpreter.SetLastTokenToNewLine();
+
+            // (v) implementation
+            if (!interpreter.IsCollectionOrArray(collectionName))
+                interpreter.Error("SCLEAR", $"Collection/Array: ${collectionName} not found.");
+            var collection = interpreter.GetCollectionOrArray(collectionName);
+
+            // (v) reset the collection
+            collection.Reset();
+            collection.ClearCollection();
+            if (collection is staticDataCollection staticCollection)
+            {
+                // (v) clear the data of the collection
+                staticCollection.data.Clear();
+            }
+            collection.endOfData = false;
+        }
+
+        #endregion (+) Statements & Functions for both Collections and Arrays
+
+        #region (+) Statements & Functions for Collections only
+
         private static void SSET(Interpreter interpreter)
         {
             // Syntax: SSET collection index value
@@ -68,13 +100,13 @@ namespace FAST.FBasicInterpreter
             //
             interpreter.Match(Token.Identifier);
             string collectionName = interpreter.lex.Identifier;
-            
+
             interpreter.GetNextToken();
-            int index=-1;
-            switch(interpreter.lastToken)
+            int index = -1;
+            switch (interpreter.lastToken)
             {
                 case Token.Value:
-                    index=interpreter.lex.Value.ToInt();    
+                    index = interpreter.lex.Value.ToInt();
                     break;
                 case Token.Identifier:
                     var name = interpreter.lex.Identifier;
@@ -82,11 +114,11 @@ namespace FAST.FBasicInterpreter
                     break;
                 default:
                     interpreter.Match(Token.Value); // will produce error 
-                    return; 
+                    return;
             }
 
             interpreter.GetNextToken();
-            Value value=Value.Empty;
+            Value value = Value.Empty;
             switch (interpreter.lastToken)
             {
                 case Token.Value:
@@ -106,34 +138,8 @@ namespace FAST.FBasicInterpreter
             if (index < 0)
                 interpreter.Error("SSET", Errors.E130_OutOfRange($"Collection: {collectionName}", $"index={1 + index}"));
 
-            ((staticDataCollection)interpreter.collections[collectionName]).data[index]=value;
+            ((staticDataCollection)interpreter.collections[collectionName]).data[index] = value;
         }
-
-        private static void SCLEAR(Interpreter interpreter)
-        {
-            // Syntax: SCLEAR collection
-            //  Used to RESET and then to CLEAR a collection
-            //
-            interpreter.Match(Token.Identifier);
-            string collectionName = interpreter.lex.Identifier;
-
-            interpreter.SetLastTokenToNewLine();
-
-            // (v) implementation
-            if (!interpreter.collections.ContainsKey(collectionName))
-                interpreter.Error("SCLEAR", $"Collection: ${collectionName} not found.");
-            var collection = interpreter.collections[collectionName];
-
-            // (v) reset the collection
-            collection.Reset();
-            if (collection is staticDataCollection staticCollection)
-            {
-                // (v) clear the data of the collection
-                staticCollection.data.Clear();
-            }
-            collection.endOfData = false;
-        }
-
 
         /// <summary>
         /// SCI() : Static Collection Item
@@ -163,6 +169,7 @@ namespace FAST.FBasicInterpreter
             return new Value(value);
         }
 
+        #endregion (+) Statements & Functions for Collections only
     }
 
 
