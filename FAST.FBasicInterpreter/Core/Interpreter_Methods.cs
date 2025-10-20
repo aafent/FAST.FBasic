@@ -53,6 +53,22 @@ namespace FAST.FBasicInterpreter
             return this.collections.ContainsKey(name);  
         }
 
+
+        /// <summary>
+        /// Get reference to a declared Collection
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IBasicCollection GetCollection(string name)
+        {
+            if (!IsCollection(name))
+            {
+                Error(Errors.E112_UndeclaredEntity("Collection", name));
+                return null; // unnecessary but the compiler will like it...
+            }
+            return this.collections[name];
+        }
+
         /// <summary>
         /// Get reference to a declared array 
         /// </summary>

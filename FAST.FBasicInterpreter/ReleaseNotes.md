@@ -9,7 +9,8 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
-| 2025-10-21 | SCNT() changed to ubound() for arrays and collections  |
+| 2025-10-20 | Now Arrays are acting as collections (FOREACH,REST,etc)|
+| 2025-10-20 | SCNT() changed to ubound() for arrays and collections  |
 | 2025-10-20 | New Library: FBasic2DArrays                            |
 |     //     | Core support for Jagged arrays                         |
 | 2025-10-17 | Delegates moved out of the interpreter and renamed.    |

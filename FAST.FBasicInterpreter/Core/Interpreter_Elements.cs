@@ -160,7 +160,7 @@
             else if (parser.IsCollection)
             {
                 if (!permitCollection) return Error(Errors.E124_NotPermitted("Collection expressions")).value;
-                return this.collections[parser.DataContainerName].getValue(parser.DataElement);
+                return this.GetCollectionOrArray(parser.DataContainerName).getValue(parser.DataElement);
             }
             else if (parser.IsFunction)
             {

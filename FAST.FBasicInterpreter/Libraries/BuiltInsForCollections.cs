@@ -19,8 +19,8 @@ namespace FAST.FBasicInterpreter
         {
             if (args.Count != 1) throw new ArgumentException();
             string collection = args[0].String;
-            if (!interpreter.collections.ContainsKey(collection)) interpreter.Error("EOD", $"Collection:{collection} not found");
-            return new Value(interpreter.collections[collection].endOfData ? 1 : 0);
+            if (!interpreter.IsCollectionOrArray(collection)) interpreter.Error("EOD", $"Collection/Array:{collection} not found");
+            return new Value(interpreter.GetCollectionOrArray(collection).endOfData ? 1 : 0);
         }
 
         private static void FETCH(Interpreter interpreter)
@@ -34,9 +34,9 @@ namespace FAST.FBasicInterpreter
             interpreter.GetNextToken();
 
             // (v) do the work
-            if (!interpreter.collections.ContainsKey(collectionName) ) 
-                interpreter.Error("FETCH",$"Collection: ${collectionName} not found.");
-            var collection = interpreter.collections[collectionName];
+            if (!interpreter.IsCollectionOrArray(collectionName) ) 
+                interpreter.Error("FETCH",$"Collection/Array: ${collectionName} not found.");
+            var collection = interpreter.GetCollectionOrArray(collectionName);
 
             collection.endOfData=!collection.MoveNext();
         }
@@ -53,9 +53,9 @@ namespace FAST.FBasicInterpreter
             //interpreter.lastToken = Token.NewLine;
 
             // (v) implementation
-            if (!interpreter.collections.ContainsKey(collectionName))
-                interpreter.Error("RESET", $"Collection: ${collectionName} not found.");
-            var collection = interpreter.collections[collectionName];
+            if (!interpreter.IsCollectionOrArray(collectionName))
+                interpreter.Error("RESET", $"Collection/Array: ${collectionName} not found.");
+            var collection = interpreter.GetCollectionOrArray(collectionName);
 
             collection.Reset();
             collection.endOfData=false;

@@ -1,4 +1,5 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
 
 namespace FAST.FBasicInterpreter
 {
@@ -114,6 +115,29 @@ namespace FAST.FBasicInterpreter
 
         }
 
+        /// <summary>
+        /// Check if a name is collection or array
+        /// </summary>
+        /// <param name="interpreter"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+
+        public static bool IsCollectionOrArray(this Interpreter interpreter, string name)
+        {
+            return interpreter.IsCollection(name) || interpreter.IsArray(name);
+        }
+
+        /// <summary>
+        /// Return the basic collection for the array or the collection
+        /// </summary>
+        /// <param name="interpreter"></param>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public static IBasicCollection GetCollectionOrArray(this Interpreter interpreter, string name)
+        {
+            if (interpreter.IsCollection(name)) return interpreter.GetCollection(name);
+            return interpreter.GetArray(name);
+        }
 
         /// <summary>
         /// Dump the source line at the Market, for debugging purposes 

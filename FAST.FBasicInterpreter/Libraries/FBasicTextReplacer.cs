@@ -154,7 +154,7 @@ public class FBasicTextReplacer : IFBasicLibrary
         if (interpreter.IsArray(arrayName) )
         {
             array = interpreter.GetArray(arrayName);
-            array.Reset();
+            array.ResetArray();
         }
         else
         {

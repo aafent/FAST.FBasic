@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using System.Security;
+
+namespace FAST.FBasicInterpreter
 {
     public class JaggedArray2D<T>
     {
@@ -117,7 +119,7 @@
         /// <summary>
         /// Reset the array, delete all the content. 
         /// </summary>
-        public virtual void Reset()
+        public virtual void ResetArray()
         {
             m_values=null;
         }
@@ -127,7 +129,7 @@
     /// <summary>
     /// FBasic Array 
     /// </summary>
-    public class FBasicArray : JaggedArray2D<Value>
+    public class FBasicArray : JaggedArray2D<Value>, IBasicCollection
     {
         private string[] columnNames = new string[0] ;
 
@@ -277,14 +279,43 @@
         }
 
         /// <summary>
-        /// Reset the array, delete all the content. 
+        /// Reset the array, delete all the content. But not the columns
         /// </summary>
-        public override void Reset()
+        public override void ResetArray()
         {
             columnNames = new string[0];
-            base.Reset();
+            this.Reset(); // reset the IEnumerator part of the class
+            base.ResetArray();
         }
 
+
+        #region (+) IFBasicCollection Interface
+
+        private int currentRow = 0;
+
+        public bool endOfData { get => currentRow>this.Length ; set { } }
+
+        public object Current => m_values[currentRow-1];
+
+        public Value getValue(string name)=>this[currentRow,name]; 
+
+        public bool MoveNext()
+        {
+            currentRow++;
+            if (currentRow > this.Length )
+            {
+                currentRow = this.Length+1;
+            }
+            return endOfData;
+        }
+
+        public void Reset()
+        {
+            this.currentRow=0;
+        }
+
+
+        #endregion (+) IFBasicCollection Interface
     }
 
 }

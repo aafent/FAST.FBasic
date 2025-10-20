@@ -108,11 +108,11 @@ namespace FAST.FBasicInterpreter
             {
                 if (this.DataElement.ToUpper() != "ITEM")
                 {
-                    if (!interpreter.collections.ContainsKey(this.DataElement))
-                    {
-                        interpreter.Error("[]", Errors.E111_UndeclareIdentifier(this.DataElement));
-                        return;
-                    }
+                    //if (!interpreter.collections.ContainsKey(this.DataElement))
+                    //{
+                    //    interpreter.Error("[]", Errors.E111_UndeclareIdentifier(this.DataElement));
+                    //    return;
+                    //}
                 }
             }
 

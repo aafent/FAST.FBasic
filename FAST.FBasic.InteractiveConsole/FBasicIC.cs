@@ -2,7 +2,6 @@
 using FAST.FBasicInterpreter;
 using Microsoft.Extensions.Configuration;
 using System.Data.Odbc;
-using System.Runtime.InteropServices;
 
 namespace FAST.FBasic.InteractiveConsole
 {

@@ -217,7 +217,7 @@ namespace FAST.FBasicInterpreter
 
             this.Match(Token.Identifier);
             string collectionName = this.lex.Identifier;
-            if (!this.collections.ContainsKey(collectionName)) Error("FOREACH", "Collection: {collectionName} not found. [E110]");
+            if (!this.IsCollectionOrArray(collectionName)) Error("FOREACH", "Collection/Array: {collectionName} not found. [E110]");
 
             this.GetNextToken();
 
@@ -233,7 +233,7 @@ namespace FAST.FBasicInterpreter
             }
 
             // (v) FETCH
-            var collection = this.collections[collectionName];
+            var collection= this.GetCollectionOrArray(collectionName);
             collection.MoveNext();
             //collection.endOfData = !collection.MoveNext();
 
@@ -288,7 +288,7 @@ namespace FAST.FBasicInterpreter
             string collectionName = lex.Identifier;
             string endForEachLoop = collectionName + "$ENDFOREACH";
 
-            var collection = this.collections[collectionName];
+            var collection = this.GetCollectionOrArray(collectionName);
             if (collection.endOfData) // leave the EndForEach and go to the next command
             {
                 loops.Remove(collectionName);
