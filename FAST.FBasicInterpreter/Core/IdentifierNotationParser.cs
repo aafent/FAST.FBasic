@@ -50,6 +50,29 @@ namespace FAST.FBasicInterpreter
         public string DataElement {  get; private set; } = null;
 
         /// <summary>
+        /// Data element number, convert to number the data element
+        /// </summary>
+        public int DataElementAsNumber
+        {
+            get
+            {
+                return int.Parse(this.DataElement);
+            }
+        }
+
+        /// <summary>
+        /// Check if the data element is a numeric value
+        /// </summary>
+        public bool IsDataElementNumeric
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.DataElement)) return false;
+                return int.TryParse(this.DataElement, out _);
+            }
+        }
+
+        /// <summary>
         /// The function name if the expression is a function name
         /// </summary>
         public string FunctionName {  get; private set; } = null;

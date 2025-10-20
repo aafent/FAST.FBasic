@@ -1,7 +1,6 @@
 REM Test program for CALL and GOTO statements
 REM 
 REM
-
 text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do 
 eiusmod tempor incididunt ut labore et dolore magna aliqua. 
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip 
@@ -15,17 +14,14 @@ let minWordLength=2
 let minCount=2
 WORDFREQ words, text, minWordLength, minCount
 
-COLNAME words, 1, "a"
-COLNAME words, 2, "b"
-
 let cnt=ubound("words")
 print "Words found: "+cnt
 
 for i=1 To cnt
   print "Word: ";
-  print [words.a(i)];
+  print [words.1(i)];
   print " : ";
-  print [words.b(i)]
+  print [words.2(i)]
 next i
 
 halt

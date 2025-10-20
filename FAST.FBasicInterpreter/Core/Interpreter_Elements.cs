@@ -151,7 +151,11 @@
             var parser = new IdentifierNotationParser(lex.Identifier, this);
             if (parser.IsArray)
             {
-                return this.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataElement];
+                return parser.IsDataElementNumeric?
+                    this.GetArray(parser.DataContainerName)[parser.ArrayIndex-1, parser.DataElementAsNumber-1] // 0-base reference
+                    :
+                    this.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataElement] // 1-base reference
+                    ;
             }
             else if (parser.IsCollection)
             {
