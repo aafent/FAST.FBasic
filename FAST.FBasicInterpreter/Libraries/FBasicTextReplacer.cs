@@ -1,7 +1,6 @@
 ﻿using FAST.FBasicInterpreter;
 using FAST.FBasicInterpreter.DataProviders;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks.Dataflow;
 
 /// <summary>
 /// Statements Syntax:
@@ -11,6 +10,7 @@ using System.Threading.Tasks.Dataflow;
 /// PHREPLACE intext outtext        :: Perform a text replace to the intext giving the replaced text to the outtext. 
 /// PHSDATA colName intext          :: Create a SDATA type of collection with name colName with the collection names found in the intext. 
 /// PHVSDATA colName intext         :: Similar to PHSDATA but it is collection all the identifiers are used. 
+/// WORDFREQ array_name, input_text, min_word_length, min_count_to_result  :: Analyze the input_text, finding words frequency for the words that they have the minimum word length and results in the array_name, on the first index the word found and on the second the word's frequency. Reports only word that they have at least the min_count frequency. 
 /// 
 /// Functions Syntax:
 /// pcase(string)                   :: Converts the string to Proper Case (first letter upper rest lower)
@@ -42,6 +42,8 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.AddStatement("PHSDATA", PlaceHolderSData);
         interpreter.AddStatement("PHVSDATA", PlaceHolderVSData);
         interpreter.AddStatement("PHGOSUB", PlaceHolderGoSub);
+        interpreter.AddStatement("WORDFREQ", WordFrequency);
+
 
         interpreter.AddFunction("ucase", PCase); // Proper Case
         interpreter.AddFunction("words", Words); // words count
@@ -112,6 +114,64 @@ public class FBasicTextReplacer : IFBasicLibrary
         var output = substitutePlaceholders(interpreter, interpreter.GetVar(templateName).String);
         interpreter.SetVar(outputName, new Value(output));
     }
+
+    private static void WordFrequency(Interpreter interpreter)
+    {
+        //
+        // Syntax WORDFREQ array_name, input_text, min_word_length, min_count_to_result
+        //
+        //
+
+        interpreter.Match(Token.Identifier);
+        var arrayName=interpreter.lex.Identifier;
+
+        interpreter.GetNextToken();
+        interpreter.Match(Token.Comma);
+
+        interpreter.GetNextToken();
+        interpreter.Match(Token.Identifier);
+        Value value = interpreter.GetValue(interpreter.lex.Identifier);
+
+        interpreter.GetNextToken();
+        interpreter.Match(Token.Comma);
+
+        interpreter.GetNextToken();
+        interpreter.Match(Token.Identifier);
+        Value minWordLength = interpreter.GetValue(interpreter.lex.Identifier);
+
+        interpreter.GetNextToken();
+        interpreter.Match(Token.Comma);
+
+        interpreter.GetNextToken();
+        interpreter.Match(Token.Identifier);
+        Value minCount = interpreter.GetValue(interpreter.lex.Identifier);
+
+        interpreter.GetNextToken();
+
+        var result=CalculateWordFrequency(value.String, minWordLength.ToInt(), minCount.ToInt());
+
+        FBasicArray array;
+        if (interpreter.IsArray(arrayName) )
+        {
+            array = interpreter.GetArray(arrayName);
+            array.Reset();
+        }
+        else
+        {
+            array = new();
+            interpreter.AddArray(arrayName,array);
+        }
+                
+        int index = 0;
+        foreach (var word in result)
+        {
+            array[index,0]=new Value(word.Key);
+            array[index, 1] = new Value(word.Value);
+            index++;
+        }
+
+    }
+
 
     #endregion (+) FBASIC Statements
 
@@ -427,7 +487,6 @@ public class FBasicTextReplacer : IFBasicLibrary
         // 3. Combine and return.
         return firstCharUpper + restOfStringLower;
     }
-
 
 
     /// <summary>

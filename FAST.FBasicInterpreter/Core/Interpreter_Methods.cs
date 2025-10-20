@@ -44,6 +44,16 @@ namespace FAST.FBasicInterpreter
         }
 
         /// <summary>
+        /// Check if a collection is declared
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public bool IsCollection(string name)
+        {
+            return this.collections.ContainsKey(name);  
+        }
+
+        /// <summary>
         /// Get reference to a declared array 
         /// </summary>
         /// <param name="name"></param>

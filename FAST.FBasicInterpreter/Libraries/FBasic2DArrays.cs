@@ -30,7 +30,6 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("COLADD", ColumnAddName);
             interpreter.AddStatement("INDEXDELETE", IndexDelete);
 
-            interpreter.AddFunction("count", Count);
             interpreter.AddFunction("cnamescount", ColumnNamesCount);
             interpreter.AddFunction("cname", ColumnName);
             
@@ -199,18 +198,6 @@ namespace FAST.FBasicInterpreter
         }
 
 
-        private Value Count(Interpreter interpreter, List<Value> args)
-        {
-            string syntax = "count(array_name)";
-            if (args.Count != 1)
-                return interpreter.Error("Count", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
-
-            var arrayName = args[0].String;
-
-            FBasicArray array = interpreter.GetArray(arrayName);
-
-            return new Value(array.Length);
-        }
 
 
         private Value ColumnName(Interpreter interpreter, List<Value> args)

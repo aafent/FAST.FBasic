@@ -9,6 +9,7 @@ namespace FAST.FBasicInterpreter
     {
         /// <summary>
         /// Add a library with Functions and/or Statements
+        /// If the library already exists, nothing will done. 
         /// </summary>
         /// <param name="interpreter">The interpreter</param>
         /// <param name="library">The library to install</param>

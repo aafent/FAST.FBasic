@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using FAST.FBasicInterpreter.DataProviders;
+
+namespace FAST.FBasicInterpreter
 {
     internal class BuiltIns : IFBasicLibrary
     {
@@ -11,6 +13,7 @@
             interpreter.AddFunction("max", Max);
             interpreter.AddFunction("not", Not);
             interpreter.AddFunction("empty", Empty);
+            interpreter.AddFunction("ubound", UpperBound);
 
             interpreter.AddStatement("LogInfo",LogInfo);
         }
@@ -91,6 +94,35 @@
         {
             interpreter.logger.info(interpreter.Expr().ToString());
         }
+
+        private Value UpperBound(Interpreter interpreter, List<Value> args)
+        {
+            string syntax = "ubound(array_or_collection_name)";
+            if (args.Count != 1)
+                return interpreter.Error("ubound", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
+
+            var name = args[0].String;
+
+            if (interpreter.IsArray(name))
+            {
+                FBasicArray array = interpreter.GetArray(name);
+                return new Value(array.Length);
+            }
+            if (interpreter.IsCollection(name))
+            {
+                var collection = interpreter.collections[name];
+                if (!(collection is staticDataCollection))
+                {
+                    return interpreter.Error("ubound", Errors.E127_WrongArgumentReferredType("SDATA Collection")).value;
+                }
+                var count = ((staticDataCollection)interpreter.collections[name]).data.Count;
+                return new Value(count);
+            }
+
+            return interpreter.Error("ubound", Errors.E127_WrongArgumentReferredType("expecting Array or collection")).value;
+
+        }
+
 
     }
 

@@ -48,7 +48,7 @@ endInput:
 REM --- Sorting Algorithm (Bubble Sort) ---
 
 REM Get the size of the collection. (Assumption 3)
-let collectionSize = SCNT("names") 
+let collectionSize = ubound("names") 
 let i = 0 ' Initialize i to 0
 print ""
 print "Input complete. Starting sort process for "+collectionSize+" items..."

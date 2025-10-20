@@ -9,10 +9,16 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-10-21 | SCNT() changed to ubound() for arrays and collections  |
 | 2025-10-20 | New Library: FBasic2DArrays                            |
 |     //     | Core support for Jagged arrays                         |
 | 2025-10-17 | Delegates moved out of the interpreter and renamed.    |
 | 2025-10-16 | Package release 1.0.9.                                 |
+
+`Release notes before packge release 1.0.9`
+
+| When       | Description                                            |
+|------------|--------------------------------------------------------|
 | 2025-10-15 | New statement CHAIN, similar to CALL but use the same interpreter (merge, include) |
 | 2025-10-15 | Add Mapping functionality to the FBasicDecisionTables library |
 | 2025-10-13 | Add execution time measurement to the interpreter.     |
@@ -21,12 +27,12 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 |	  //     | Value now supporting Object as underlying type, allowing to store any .NET object. |
 |     //     | Value now implements IComparable, allowing sorting of collections of Values. |
 | 2025-10-08 | New statement SSET for setting values in static collections | 
-|     //     | New operators for strings: <, >, <= >= 
-|	  //	 | Bug with inline comments and newline, fixed | 
-| 2025-10-08 | Add to Math Functions: mod(), round() | 
-|            | Add to String Functions: instr()
+|     //     | New operators for strings: <, >, <= >=                 |
+|	  //	 | Bug with inline comments and newline, fixed            | 
+| 2025-10-08 | Add to Math Functions: mod(), round()                  | 
+|            | Add to String Functions: instr()                       |
 | 2025-10-07 | Package release 1.0.8.                                 |
-|            | Better remarks to .bas programs                                 |
+|            | Better remarks to .bas programs                        |
 |			 | Move examples to FAST.FBasicInteractiveConsole project. |
 | 2025-10-06 | New interface: IFBasicLibraryWithMemory, allowing libraries to manage their own memory. |
 |		     | New Library: FBasicStackLibrary, providing stack operations. |

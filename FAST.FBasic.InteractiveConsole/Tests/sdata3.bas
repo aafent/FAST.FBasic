@@ -18,11 +18,11 @@ endforeach Numbers
 assert lastItem = 999
 
 print "test:"
-print "Total items in collection: " + SCNT("Numbers")
-print "Item#0:" + SCI("Numbers", 0)
+print "Total items in collection: " + ubound("Numbers")
 print "Item#1:" + SCI("Numbers", 1)
+print "Item#2:" + SCI("Numbers", 2)
 
-let last=SCNT("Numbers")-1
+let last=ubound("Numbers")
 print "Item#Last" + ":" + SCI("Numbers", last)
 End
 

@@ -10,7 +10,7 @@ fetch words
 
 print "Welcome to Hangman!"
 
-let randomIndex = int(rnd() * SCNT("words"))
+let randomIndex = int(rnd() * ubound("words"))
 
 let wordToGuess = SCI("words",randomIndex)
 let wordLength = len(wordToGuess)

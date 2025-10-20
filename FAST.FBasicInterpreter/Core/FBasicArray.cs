@@ -2,8 +2,14 @@
 {
     public class JaggedArray2D<T>
     {
+        /// <summary>
+        /// The underling data
+        /// </summary>
         protected T[][] m_values=null;
 
+        /// <summary>
+        /// Initial number of columns
+        /// </summary>
         public int InitialNumberOfColumns = 0;
 
         /// <summary>
@@ -108,6 +114,13 @@
             }
         }
 
+        /// <summary>
+        /// Reset the array, delete all the content. 
+        /// </summary>
+        public virtual void Reset()
+        {
+            m_values=null;
+        }
     }
 
 
@@ -261,6 +274,15 @@
                 return;
             }
 
+        }
+
+        /// <summary>
+        /// Reset the array, delete all the content. 
+        /// </summary>
+        public override void Reset()
+        {
+            columnNames = new string[0];
+            base.Reset();
         }
 
     }
