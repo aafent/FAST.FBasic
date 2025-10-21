@@ -4,7 +4,7 @@ namespace FAST.FBasicInterpreter
 {
     internal class BuiltInsForCollections : IFBasicLibrary
     {
-        public void InstallAll(Interpreter interpreter)
+        public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddFunction("EOD", EOD);
             interpreter.AddFunction("SCI", StaticCollectionItem);
@@ -17,7 +17,7 @@ namespace FAST.FBasicInterpreter
 
         #region (+) Statements & Functions for both Collections and Arrays
 
-        private static Value EOD(Interpreter interpreter, List<Value> args)
+        private static Value EOD(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1) throw new ArgumentException();
             string collection = args[0].String;
@@ -25,7 +25,7 @@ namespace FAST.FBasicInterpreter
             return new Value(interpreter.GetCollectionOrArray(collection).endOfData ? 1 : 0);
         }
 
-        private static void FETCH(Interpreter interpreter)
+        private static void FETCH(IInterpreter interpreter)
         {
             // Syntax: FECH collection
             //  Used to FETCH next item of a collection
@@ -43,7 +43,7 @@ namespace FAST.FBasicInterpreter
             collection.endOfData=!collection.MoveNext();
         }
 
-        private static void RESET(Interpreter interpreter)
+        private static void RESET(IInterpreter interpreter)
         {
             // Syntax: RESET collection
             //  Used to RESET a collection
@@ -63,7 +63,7 @@ namespace FAST.FBasicInterpreter
             collection.endOfData=false;
         }
 
-        private static void SCLEAR(Interpreter interpreter)
+        private static void SCLEAR(IInterpreter interpreter)
         {
             // Syntax: SCLEAR collection
             //  Used to RESET and then to CLEAR a collection
@@ -93,7 +93,7 @@ namespace FAST.FBasicInterpreter
 
         #region (+) Statements & Functions for Collections only
 
-        private static void SSET(Interpreter interpreter)
+        private static void SSET(IInterpreter interpreter)
         {
             // Syntax: SSET collection index value
             //  Used to SSET a value at a specific index of a static collection
@@ -103,7 +103,7 @@ namespace FAST.FBasicInterpreter
 
             interpreter.GetNextToken();
             int index = -1;
-            switch (interpreter.lastToken)
+            switch (interpreter.LastToken)
             {
                 case Token.Value:
                     index = interpreter.lex.Value.ToInt();
@@ -119,7 +119,7 @@ namespace FAST.FBasicInterpreter
 
             interpreter.GetNextToken();
             Value value = Value.Empty;
-            switch (interpreter.lastToken)
+            switch (interpreter.LastToken)
             {
                 case Token.Value:
                     value = interpreter.lex.Value;
@@ -138,14 +138,14 @@ namespace FAST.FBasicInterpreter
             if (index < 0)
                 interpreter.Error("SSET", Errors.E130_OutOfRange($"Collection: {collectionName}", $"index={1 + index}"));
 
-            ((staticDataCollection)interpreter.collections[collectionName]).data[index] = value;
+            ((staticDataCollection)interpreter.GetCollection(collectionName)).data[index] = value;
         }
 
         /// <summary>
         /// SCI() : Static Collection Item
         /// </summary>
         /// <returns>Value, the selected value</returns>
-        private static Value StaticCollectionItem(Interpreter interpreter, List<Value> args)
+        private static Value StaticCollectionItem(IInterpreter interpreter, List<Value> args)
         {
             const string syntax= "SCI(SCollectionName,Item)";
             if (args.Count < 2)
@@ -160,12 +160,12 @@ namespace FAST.FBasicInterpreter
             if (item < 0)
                 return interpreter.Error("SCI", Errors.E130_OutOfRange($"Collection: {collectionName}",$"index={1+item}")).value;   
 
-            var collection=interpreter.collections[collectionName];
+            var collection=interpreter.GetCollection(collectionName);
             if (!(collection is staticDataCollection))
             {
                 return interpreter.Error("SCI",Errors.E127_WrongArgumentReferredType("SDATA Collection")).value;
             }
-            var value = ((staticDataCollection)interpreter.collections[collectionName]).data[item];
+            var value = ((staticDataCollection)interpreter.GetCollection(collectionName)).data[item];
             return new Value(value);
         }
 

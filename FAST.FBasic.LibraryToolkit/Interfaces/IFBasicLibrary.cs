@@ -6,6 +6,8 @@ namespace FAST.FBasicInterpreter
     /// </summary>
     public interface IFBasicLibrary
     {
-        void InstallAll(Interpreter interpreter);
+        void InstallAll(IInterpreter interpreter);
+
+        //abstract static IFBasicLibrary Library { get; }
     }
 }

@@ -36,7 +36,7 @@ using System.Text.RegularExpressions;
 /// </summary>
 public class FBasicTextReplacer : IFBasicLibrary
 {
-    public void InstallAll(Interpreter interpreter)
+    public void InstallAll(IInterpreter interpreter)
     {
         interpreter.AddStatement("PHREPLACE", placeHolderReplace);
         interpreter.AddStatement("PHSDATA", PlaceHolderSData);
@@ -51,7 +51,7 @@ public class FBasicTextReplacer : IFBasicLibrary
 
     #region (+) FBASIC Statments
 
-    private static void PlaceHolderGoSub(Interpreter interpreter)
+    private static void PlaceHolderGoSub(IInterpreter interpreter)
     {
         // Syntax PHGOSUB Identifier_with_label [ELSE label]
         //
@@ -93,9 +93,9 @@ public class FBasicTextReplacer : IFBasicLibrary
             }
         }
     }
-    private static void PlaceHolderSData(Interpreter interpreter)=>placeHolderFilter(interpreter,true);
-    private static void PlaceHolderVSData(Interpreter interpreter) => placeHolderFilter(interpreter,false);
-    private static void placeHolderReplace(Interpreter interpreter)
+    private static void PlaceHolderSData(IInterpreter interpreter)=>placeHolderFilter(interpreter,true);
+    private static void PlaceHolderVSData(IInterpreter interpreter) => placeHolderFilter(interpreter,false);
+    private static void placeHolderReplace(IInterpreter interpreter)
     {
         // Syntax: PLACEHOLDER input_identifier output_identifier
         //  input is the template, output the variable with the result after the replacing.
@@ -115,7 +115,7 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.SetVar(outputName, new Value(output));
     }
 
-    private static void WordFrequency(Interpreter interpreter)
+    private static void WordFrequency(IInterpreter interpreter)
     {
         //
         // Syntax WORDFREQ array_name, input_text, min_word_length, min_count_to_result
@@ -178,7 +178,7 @@ public class FBasicTextReplacer : IFBasicLibrary
 
     #region (+) Supporting methods 
 
-    private static void placeHolderFilter(Interpreter interpreter, bool dottedOnly)
+    private static void placeHolderFilter(IInterpreter interpreter, bool dottedOnly)
     {
         // Syntax: PHSDATA collectionName identifier_string_template
         //  
@@ -186,11 +186,11 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.Match(Token.Identifier);
         string collectionName = interpreter.lex.Identifier;
 
-        if (interpreter.collections.ContainsKey(collectionName))
+        if (interpreter.IsCollection(collectionName))
         {
-            if (interpreter.collections[collectionName] is staticDataCollection)
+            if (interpreter.GetCollection(collectionName) is staticDataCollection)
             {
-                collection = (staticDataCollection)interpreter.collections[collectionName];
+                collection = (staticDataCollection)interpreter.GetCollection(collectionName);
             }
             else
             {
@@ -228,7 +228,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// </summary>
     /// <param name="input">The string containing placeholders.</param>
     /// <returns>The string with placeholders substituted.</returns>
-    private static string substitutePlaceholders(Interpreter interpreter, string input)
+    private static string substitutePlaceholders(IInterpreter interpreter, string input)
     {
         if (input == null) return null;
 
@@ -360,7 +360,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// <summary>
     /// This method should be implemented to return the value of the placeholder.
     /// </summary>
-    private static string getValueForPlaceHolder(Interpreter interpreter, string placeHolderName)
+    private static string getValueForPlaceHolder(IInterpreter interpreter, string placeHolderName)
     {
 
         return interpreter.GetValue(placeHolderName).ToString();
@@ -436,7 +436,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// <summary>
     /// FBASIC Function PCase()
     /// </summary>
-    private static Value PCase(Interpreter interpreter, List<Value> args)
+    private static Value PCase(IInterpreter interpreter, List<Value> args)
     {
         string syntax = "PCASE(string)";
         if (args.Count != 1)
@@ -451,7 +451,7 @@ public class FBasicTextReplacer : IFBasicLibrary
     /// <param name="interpreter"></param>
     /// <param name="args"></param>
     /// <returns></returns>
-    private static Value Words(Interpreter interpreter, List<Value> args)
+    private static Value Words(IInterpreter interpreter, List<Value> args)
     {
         // Syntax: words(s,1) : counts the number of words in a string s that are at least 1 character long.
         // if the input string is empty returns 0, if the minWordSize is less than 1 it is set to 1

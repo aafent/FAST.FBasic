@@ -17,14 +17,16 @@
 //
 
 
-namespace FAST.FBasicInterpreter
+namespace FAST.FBasicInterpreter.TemplatingLibrary
 {
-    public partial class FBasic2DArrays  : IFBasicLibrary
+    public partial class FBasicTemplatingLibrary  : IFBasicLibrary
     {
-        public string uniqueName => "Arrays2D";
+        public string uniqueName => "TemplatingLibrary";
 
         public void InstallAll(IInterpreter interpreter)
         {
+            interpreter.AddLibrary(new FBasicTemplatingLibrary());
+
             interpreter.AddStatement("COLDIM", JaggedArrayDim);
             interpreter.AddStatement("COLNAME", ColumnName);
             interpreter.AddStatement("COLADD", ColumnAddName);
@@ -59,7 +61,7 @@ namespace FAST.FBasicInterpreter
 
                 columns.Add(colName);
 
-                if (interpreter.GetNextToken() == Token.NewLine) break;
+                if (IInterpreter.GetNextToken() == Token.NewLine) break;
             }
 
             // (v) process arguments
@@ -89,14 +91,14 @@ namespace FAST.FBasicInterpreter
 
             // (v) argument: column_number
             int columnNo=0;
-            switch (interpreter.GetNextToken())
+            switch (IInterpreter.GetNextToken())
             {
                 case Token.Value:
                     columnNo = interpreter.lex.Value.ToInt();
                     interpreter.GetNextToken();
                     break;
                 case Token.Identifier:
-                    columnNo = interpreter.GetValue(interpreter.lex.Identifier).ToInt();
+                    columnNo = interpreter.GetValue(IInterpreter.lex.Identifier).ToInt();
                     interpreter.GetNextToken();
                     break;
                 default:
@@ -107,14 +109,14 @@ namespace FAST.FBasicInterpreter
             // (v) argument: column_name
             interpreter.Match(Token.Comma);
             string colName="";
-            switch (interpreter.GetNextToken())
+            switch (IInterpreter.GetNextToken())
             {
                 case Token.Value:
                     colName= interpreter.lex.Value.String;
                     interpreter.GetNextToken();
                     break;
                 case Token.Identifier:
-                    colName = interpreter.GetValue(interpreter.lex.Identifier).String;
+                    colName = interpreter.GetValue(IInterpreter.lex.Identifier).String;
                     interpreter.GetNextToken();
                     break;
                 default:
@@ -144,12 +146,12 @@ namespace FAST.FBasicInterpreter
             // (v) argument: column_name
             interpreter.Match(Token.Comma);
             string colName = "";
-            switch (interpreter.GetNextToken())
+            switch (IInterpreter.GetNextToken())
             {
                 case Token.Value:
-                    if (interpreter.lex.Value.Type == ValueType.Real)
+                    if (IInterpreter.lex.Value.Type == ValueType.Real)
                     {
-                        colName = array.GetColumnName(interpreter.lex.Value.ToInt());
+                        colName = array.GetColumnName(IInterpreter.lex.Value.ToInt());
                     }
                     else
                     {
@@ -220,6 +222,8 @@ namespace FAST.FBasicInterpreter
             FBasicArray array = interpreter.GetArray(arrayName);
             return new Value(array.ColumnNamesCount);
         }
+
+
 
     }
 

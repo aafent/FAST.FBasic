@@ -17,7 +17,7 @@
         /// This is the place to add functions, statements and data providers to the interpreter
         /// </summary>
         /// <param name="interpreter">A reference to the interpreter</param>
-        void bind(Interpreter interpreter);
+        void bind(IInterpreter interpreter);
 
     }
 

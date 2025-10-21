@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using System.Runtime.CompilerServices;
+
+namespace FAST.FBasicInterpreter
 {
     /*
     Events:
@@ -13,7 +15,8 @@
         //       where sender: is the interpreter, e.name: is the event name and e.args: are the arguments
         public static event EventHandler<(string,Stack<Value>)> FBasicEventHandler = null;
 
-        public void InstallAll(Interpreter interpreter)
+
+        public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddStatement("RAISEEVENT", RaiseEvent);
         }
@@ -24,6 +27,8 @@
         /// </summary>
         public static bool Enabled {  get; set; } = true;
 
+        
+
         /// <summary>
         /// Reset the FBasicEventHandler
         /// </summary>
@@ -33,7 +38,7 @@
             FBasicEventHandler=null;
         }
 
-        private static void RaiseEvent(Interpreter interpreter)
+        private static void RaiseEvent(IInterpreter interpreter)
         {
             // Syntax: RAISEEVENT event_name [, parameter1,p2,p3...]
             //  
@@ -48,7 +53,7 @@
             {
                 interpreter.GetNextToken(); // move to next token
 
-                switch (interpreter.lastToken)
+                switch (interpreter.LastToken)
                 {
                     case Token.Comma:
                         continue; // fetch next token

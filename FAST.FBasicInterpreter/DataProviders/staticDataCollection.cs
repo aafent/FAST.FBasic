@@ -5,7 +5,7 @@
         public List<Value> data = null; 
         private const int indexInitialValue = (-1);
         private int index= indexInitialValue;
-        private readonly Interpreter interpreter=null;
+        private readonly IInterpreter interpreter=null;
 
         private int lastIndex
         {
@@ -24,7 +24,7 @@
             set { }
         }
 
-        public staticDataCollection(Interpreter interpreter)
+        public staticDataCollection(IInterpreter interpreter)
         {
             this.interpreter = interpreter;
             this.data=new();

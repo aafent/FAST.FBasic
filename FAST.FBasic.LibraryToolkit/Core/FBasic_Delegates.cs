@@ -38,13 +38,13 @@ namespace FAST.FBasicInterpreter
     /// <param name="interpreter">The instance of this interpreter</param>
     /// <param name="args">Arguments</param>
     /// <returns>The function result</returns>
-    public delegate Value FBasicFunction(Interpreter interpreter, List<Value> args);
+    public delegate Value FBasicFunction(IInterpreter interpreter, List<Value> args);
 
     /// <summary>
     /// A new statement delegate
     /// </summary>
     /// <param name="interpreter">The instance of this interpreter</param>
-    public delegate void FBasicStatement(Interpreter interpreter);
+    public delegate void FBasicStatement(IInterpreter interpreter);
 
     /// <summary>
     /// Delegate type for GetNextToken Method

@@ -4,41 +4,41 @@ namespace FAST.FBasicInterpreter
     /// <summary>
     /// The interpreter factory of the FBASIC
     /// </summary>
-    public partial class Interpreter : IFBasicError
+    public partial class Interpreter : IFBasicError, IInterpreter
     {
         #region (+) Handlers
 
         /// <summary>
         /// The delegation handler for the PRINT statement
         /// </summary>
-        public FBasicPrintFunction printHandler=null;
+        public FBasicPrintFunction printHandler { get;set; } = null;
 
         /// <summary>
         /// The delegation handler for the INPUT statement
         /// </summary>
-        public FBasicInputFunction inputHandler=null;
+        public FBasicInputFunction inputHandler { get; set; } = null;
 
         /// <summary>
         /// The delegation handler for the CALL statement
         /// </summary>
-        public FBasicSourceProgramLoader callHandler = null;
+        public FBasicSourceProgramLoader callHandler { get; set; } = null;
 
         /// <summary>
         /// The delegation handler for Request for Object
         /// </summary>
-        public FBasicRequestForObject requestForObjectHandler = null;
+        public FBasicRequestForObject requestForObjectHandler { get; set; } = null;
 
         /// <summary>
         /// Logger for the execution
         /// </summary>
-        public IFBasicLogger logger = null;
+        public IFBasicLogger logger { get; set; } = null;
 
         #endregion (+) Handlers
 
         #region (+) private working data properties & fields 
 
         private Token prevToken; // token before last one
-        
+
         private Dictionary<string, Value> vars; // all variables are stored here
         private Dictionary<string, FBasicArray> arrays;
         private Dictionary<string, Marker> labels; // already seen labels 
@@ -48,7 +48,7 @@ namespace FAST.FBasicInterpreter
         private Dictionary<string, FBasicFunction> funcs; // all mapped functions
         private Dictionary<string, FBasicStatement> statements; // all mapped statements
         private int ifCounter; // (NOT WORKING, TO RECHECK) counter used for matching "if" with "else"
-                            
+
         private Marker lineMarker; // current line marker
         private bool exit; // do we need to exit?
 
@@ -73,7 +73,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The GetNextToken handler, no need to be defined as the the interpreter uses the default built-in.
         /// </summary>
-        public FBasicGetNextTokenMethod GetNextToken = null;
+        public FBasicGetNextTokenMethod GetNextToken { get; set;} = null;
 
         #endregion (+) Public & Private data 
 
@@ -82,17 +82,18 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// Latest interpreted token
         /// </summary>
-        public Token lastToken; // last seen token
+        private Token lastToken; // last seen token
+        public Token LastToken {  get=>lastToken; }
 
         /// <summary>
         /// The Lexer
         /// </summary>
-        public Lexer lex;
+        public IInterpreterLexer lex { get; set; }
 
         /// <summary>
         /// Libraries with memory
         /// </summary>
-        public Dictionary<string, IFBasicLibraryWithMemory> librariesWithMemory; // libraries with memory
+        public Dictionary<string, IFBasicLibraryWithMemory> librariesWithMemory {get; set; } // libraries with memory
 
         #endregion (+) Parsing & Execution Elements
 

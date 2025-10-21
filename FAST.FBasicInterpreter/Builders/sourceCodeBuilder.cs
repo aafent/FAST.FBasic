@@ -68,7 +68,7 @@
                 } 
                 var prevElement = program.elements[prevIndex];
 
-                this.isStatement=Lexer.IsStatement(element.token);
+                this.isStatement=InterpreterHelper.IsStatement(element.token);
                 if (!this.isStatement) switch (element.token)
                 {
                     case Token.Plus:

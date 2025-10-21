@@ -36,7 +36,7 @@
      */
     public class FBasicMathFunctions : IFBasicLibrary
     {
-        public void InstallAll(Interpreter interpreter)
+        public void InstallAll(IInterpreter interpreter)
         {
             // (v) Trigonometric
             interpreter.AddFunction("sin", Sin);
@@ -66,7 +66,7 @@
 
 
 
-        private static Value DoMath2(string function, Interpreter interpreter, List<Value> args)
+        private static Value DoMath2(string function, IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 2)
                 return interpreter.Error(function, Errors.E125_WrongNumberOfArguments(2)).value;
@@ -87,7 +87,7 @@
         }
 
 
-        private static Value DoMath(string function, Interpreter interpreter, List<Value> args)
+        private static Value DoMath(string function, IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error(function, Errors.E125_WrongNumberOfArguments(1)).value;
@@ -128,7 +128,7 @@
         }
 
 
-        public static Value Rnd(Interpreter interpreter, List<Value> args)
+        public static Value Rnd(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 0)
                 return interpreter.Error("RND", Errors.E125_WrongNumberOfArguments(0)).value;
@@ -136,44 +136,44 @@
         }
 
 
-        public static Value Round(Interpreter interpreter, List<Value> args)
+        public static Value Round(IInterpreter interpreter, List<Value> args)
             => DoMath2("ROUND", interpreter, args);
 
-        public static Value Modulo(Interpreter interpreter, List<Value> args)
+        public static Value Modulo(IInterpreter interpreter, List<Value> args)
             => DoMath2("MOD", interpreter, args);
 
-        public static Value Cos(Interpreter interpreter, List<Value> args) 
+        public static Value Cos(IInterpreter interpreter, List<Value> args) 
             => DoMath("COS",interpreter, args);
 
-        public static Value Sin(Interpreter interpreter, List<Value> args)
+        public static Value Sin(IInterpreter interpreter, List<Value> args)
             => DoMath("SIN", interpreter, args);
 
-        public static Value Tan(Interpreter interpreter, List<Value> args)
+        public static Value Tan(IInterpreter interpreter, List<Value> args)
             => DoMath("TAN", interpreter, args);
 
-        public static Value Atn(Interpreter interpreter, List<Value> args)
+        public static Value Atn(IInterpreter interpreter, List<Value> args)
             => DoMath("ATN", interpreter, args);
 
 
-        public static Value Log(Interpreter interpreter, List<Value> args)
+        public static Value Log(IInterpreter interpreter, List<Value> args)
             => DoMath("LOG", interpreter, args);
 
-        public static Value Exp(Interpreter interpreter, List<Value> args)
+        public static Value Exp(IInterpreter interpreter, List<Value> args)
             => DoMath("EXP", interpreter, args);
 
 
-        public static Value Sgn(Interpreter interpreter, List<Value> args)
+        public static Value Sgn(IInterpreter interpreter, List<Value> args)
             => DoMath("SGN", interpreter, args);
 
 
-        public static Value Sqr(Interpreter interpreter, List<Value> args)
+        public static Value Sqr(IInterpreter interpreter, List<Value> args)
             => DoMath("SQR", interpreter, args);
 
 
-        public static Value IntFunction(Interpreter interpreter, List<Value> args)
+        public static Value IntFunction(IInterpreter interpreter, List<Value> args)
             => DoMath("INT", interpreter, args);
 
-        public static Value Fix(Interpreter interpreter, List<Value> args)
+        public static Value Fix(IInterpreter interpreter, List<Value> args)
             => DoMath("FIX", interpreter, args);
     }
 

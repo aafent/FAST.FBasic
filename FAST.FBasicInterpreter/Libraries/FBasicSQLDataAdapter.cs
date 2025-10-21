@@ -12,7 +12,7 @@ namespace FAST.FBasicInterpreter
      */
     public class FBasicSQLDataAdapter : IFBasicLibrary
     {
-        public void InstallAll(Interpreter interpreter)
+        public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddDataAdapter(new sqlFBasicDataProvider());
 

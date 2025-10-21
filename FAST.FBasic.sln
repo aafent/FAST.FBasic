@@ -13,6 +13,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAST.FBasic.TemplatingLibrary", "FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary.csproj", "{31103751-3B1D-4639-B119-DE7AAACF6DE1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FAST.FBasic.LibraryToolkit", "FAST.FBasic.LibraryToolkit\FAST.FBasic.LibraryToolkit.csproj", "{04FDACC9-434A-42EB-AB55-4522CC8A859A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,8 +31,19 @@ Global
 		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30EEF832-C237-412F-AD85-D1ED11239FA6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31103751-3B1D-4639-B119-DE7AAACF6DE1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31103751-3B1D-4639-B119-DE7AAACF6DE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31103751-3B1D-4639-B119-DE7AAACF6DE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31103751-3B1D-4639-B119-DE7AAACF6DE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04FDACC9-434A-42EB-AB55-4522CC8A859A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FDACC9-434A-42EB-AB55-4522CC8A859A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04FDACC9-434A-42EB-AB55-4522CC8A859A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04FDACC9-434A-42EB-AB55-4522CC8A859A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {C689E4DC-D64E-41F8-9D96-BE617C233E66}
 	EndGlobalSection
 EndGlobal

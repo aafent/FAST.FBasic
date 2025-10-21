@@ -22,7 +22,7 @@
 
         public string uniqueName => "DecisionTables";
 
-        public void InstallAll(Interpreter interpreter)
+        public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddStatement("DTDIM", DecisionTableDim);
             interpreter.AddStatement("DTROW", DecisionTableRow);
@@ -35,7 +35,7 @@
             interpreter.SetVar("FOUND",Value.False);
         }
 
-        private Value DTMAPSimple(Interpreter interpreter, List<Value> args)
+        private Value DTMAPSimple(IInterpreter interpreter, List<Value> args)
         {
             const string syntax = "map(DecTable,inValue)";
             if (args.Count != 2)
@@ -80,7 +80,7 @@
             return table.mapperOtherwise;
         }
 
-        private Value DTMAPFull(Interpreter interpreter, List<Value> args)
+        private Value DTMAPFull(IInterpreter interpreter, List<Value> args)
         {
             const string syntax = "dtmap(DTable,value,key_factor_name,value_factor_name)";
             if (args.Count != 4)
@@ -141,7 +141,7 @@
         }
 
 
-        private void DecisionTableFind(Interpreter interpreter)
+        private void DecisionTableFind(IInterpreter interpreter)
         {
             // Syntax   DTFIND name, resultFactor, VariableForTheFoundValue, [factor1], [factor2], ..., [factorN]
             //          DTFIND CreditCheck, Eligible, result, 30, 50000, "Permanent"
@@ -178,7 +178,7 @@
                 interpreter.GetNextToken();
 
                 Value factorValue;
-                switch (interpreter.lastToken)
+                switch (interpreter.LastToken)
                 {
                     case Token.Value:
                         factorValue = interpreter.lex.Value;
@@ -252,7 +252,7 @@
             }
         }
 
-        private void DecisionTableRow(Interpreter interpreter)
+        private void DecisionTableRow(IInterpreter interpreter)
         {
             // Syntax DTROW name, [factor1], [factor2], ..., [factorN], value
             //
@@ -275,7 +275,7 @@
                 int valueFactor = 1;
 
                 CheckNextToken:
-                switch (interpreter.lastToken)
+                switch (interpreter.LastToken)
                 {
                     #region (+) CASE Operators
                     case Token.Equal:
@@ -350,9 +350,9 @@
                 oper = operType.Equal;
                 secondValue=false;
 
-                var prevToken = interpreter.lastToken;
+                var prevToken = interpreter.LastToken;
                 if (interpreter.GetNextToken() == Token.NewLine) break;
-                if (interpreter.lastToken == Token.Colon && (prevToken == Token.Identifier || prevToken == Token.Value)  )
+                if (interpreter.LastToken == Token.Colon && (prevToken == Token.Identifier || prevToken == Token.Value)  )
                 {
                     interpreter.GetNextToken();
                     secondValue = true;
@@ -385,7 +385,7 @@
             table.data.Add(factorsValues.ToArray());
         }
 
-        private void DecisionTableDim(Interpreter interpreter)
+        private void DecisionTableDim(IInterpreter interpreter)
         {
             // Syntax DTDIM name, not_found_Value  ,[factor1], [factor2], ..., [factorN]
             //
@@ -399,7 +399,7 @@
             interpreter.GetNextToken();
 
             // (v) argument: not_found_Value
-            switch (interpreter.lastToken)
+            switch (interpreter.LastToken)
             {
                 case Token.Value:
                     otherwise = interpreter.lex.Value;
@@ -460,7 +460,7 @@
             decTables.Add(dtName, table);
         }
 
-        private void DecisionTableMapper(Interpreter interpreter)
+        private void DecisionTableMapper(IInterpreter interpreter)
         {
             // Syntax DTMAPPER name, not_found_value, key_factor, value_factor
             //        example: dtmapper M1, "", inValue, BuyerPower
@@ -475,7 +475,7 @@
             interpreter.GetNextToken();
 
             // (v) argument: not_found_Value
-            switch (interpreter.lastToken)
+            switch (interpreter.LastToken)
             {
                 case Token.Value:
                     otherwise = interpreter.lex.Value;

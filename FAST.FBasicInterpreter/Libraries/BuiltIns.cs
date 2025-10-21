@@ -4,7 +4,7 @@ namespace FAST.FBasicInterpreter
 {
     internal class BuiltIns : IFBasicLibrary
     {
-        public void InstallAll(Interpreter interpreter)
+        public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddFunction("str", Str);
             interpreter.AddFunction("num", Num);
@@ -18,7 +18,7 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("LogInfo",LogInfo);
         }
 
-        private static Value Str(Interpreter interpreter, List<Value> args)
+        private static Value Str(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 1)
                 return interpreter.Error("str",Errors.E125_WrongNumberOfArguments(1)).value;
@@ -26,7 +26,7 @@ namespace FAST.FBasicInterpreter
             return args[0].Convert(ValueType.String);
         }
 
-        private static Value Num(Interpreter interpreter, List<Value> args)
+        private static Value Num(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 1)
                 return interpreter.Error("num", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -34,7 +34,7 @@ namespace FAST.FBasicInterpreter
             return args[0].Convert(ValueType.Real);
         }
 
-        private static Value Abs(Interpreter interpreter, List<Value> args)
+        private static Value Abs(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 1)
                 return interpreter.Error("abs", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -42,7 +42,7 @@ namespace FAST.FBasicInterpreter
             return new Value(Math.Abs(args[0].Real));
         }
 
-        private static Value Min(Interpreter interpreter, List<Value> args)
+        private static Value Min(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 2)
                 return interpreter.Error("min", Errors.E125_WrongNumberOfArguments(2)).value;
@@ -50,7 +50,7 @@ namespace FAST.FBasicInterpreter
             return new Value(Math.Min(args[0].Real, args[1].Real));
         }
 
-        private static Value Max(Interpreter interpreter, List<Value> args)
+        private static Value Max(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 1)
                 return interpreter.Error("max", Errors.E125_WrongNumberOfArguments(2)).value;
@@ -58,7 +58,7 @@ namespace FAST.FBasicInterpreter
             return new Value(Math.Max(args[0].Real, args[1].Real));
         }
 
-        private static Value Not(Interpreter interpreter, List<Value> args)
+        private static Value Not(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 1)
                 return interpreter.Error("Not", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -66,7 +66,7 @@ namespace FAST.FBasicInterpreter
             return args[0].Real == Value.FalseValue ? Value.True: Value.False;
         }
 
-        private static Value Empty(Interpreter interpreter, List<Value> args)
+        private static Value Empty(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count < 1)
                 return interpreter.Error("empty", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -90,12 +90,12 @@ namespace FAST.FBasicInterpreter
             return args[0].Real == Value.FalseValue ? Value.True : Value.False;
         }
 
-        private static void LogInfo(Interpreter interpreter)
+        private static void LogInfo(IInterpreter interpreter)
         {
             interpreter.logger.info(interpreter.Expr().ToString());
         }
 
-        private Value UpperBound(Interpreter interpreter, List<Value> args)
+        private Value UpperBound(IInterpreter interpreter, List<Value> args)
         {
             string syntax = "ubound(array_or_collection_name)";
             if (args.Count != 1)
@@ -110,19 +110,18 @@ namespace FAST.FBasicInterpreter
             }
             if (interpreter.IsCollection(name))
             {
-                var collection = interpreter.collections[name];
+                var collection = interpreter.GetCollection(name);
                 if (!(collection is staticDataCollection))
                 {
                     return interpreter.Error("ubound", Errors.E127_WrongArgumentReferredType("SDATA Collection")).value;
                 }
-                var count = ((staticDataCollection)interpreter.collections[name]).data.Count;
+                var count = ((staticDataCollection)interpreter.GetCollection(name)).data.Count;
                 return new Value(count);
             }
 
             return interpreter.Error("ubound", Errors.E127_WrongArgumentReferredType("expecting Array or collection")).value;
 
         }
-
 
     }
 

@@ -93,7 +93,7 @@ namespace FAST.FBasicInterpreter
                 {
                 }
 
-                if (Lexer.IsStatement(item.token))
+                if (InterpreterHelper.IsStatement(item.token))
                 {
                     lineAnalysis(tokensCount);
                     if (hasLogicalOperators) src.Append("LOGICAL: ");

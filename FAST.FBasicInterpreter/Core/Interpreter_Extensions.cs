@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Runtime.CompilerServices;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Extensions to the class Interpreter 

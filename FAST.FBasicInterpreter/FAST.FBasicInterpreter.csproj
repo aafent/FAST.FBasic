@@ -17,6 +17,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FAST.FBasic.LibraryToolkit\FAST.FBasic.LibraryToolkit.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="ReleaseNotes.md">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>

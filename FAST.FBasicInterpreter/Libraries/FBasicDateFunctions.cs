@@ -19,7 +19,7 @@
     public class FBasicDateFunctions : IFBasicLibrary
     {
 
-        public void InstallAll(Interpreter interpreter)
+        public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddFunction("date", DateFunction);
             interpreter.AddFunction("isdate", IsDate);
@@ -39,14 +39,14 @@
 
         }
 
-        public static Value DateFunction(Interpreter interpreter, List<Value> args)
+        public static Value DateFunction(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 0)
                 return interpreter.Error("DATE", Errors.E125_WrongNumberOfArguments(0)).value;
  
             return new Value(DateTime.Now.ToString(Value.dateFormat));
         }
-        public static Value JtoD(Interpreter interpreter, List<Value> args)
+        public static Value JtoD(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("JTOD", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -65,7 +65,7 @@
 
             return new Value(value);
         }
-        public static Value DtoJ(Interpreter interpreter, List<Value> args)
+        public static Value DtoJ(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("DTOJ", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -82,7 +82,7 @@
             return new Value(value);
         }
 
-        public static Value IsDate(Interpreter interpreter, List<Value> args)
+        public static Value IsDate(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("ISDATE", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -92,7 +92,7 @@
             return Value.False;
         }
      
-        public static Value Day(Interpreter interpreter, List<Value> args)
+        public static Value Day(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("DAY", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -106,7 +106,7 @@
 
             return new Value(int.Parse(value) );
         }
-        public static Value Month(Interpreter interpreter, List<Value> args)
+        public static Value Month(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("MONTH", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -120,7 +120,7 @@
 
             return new Value(int.Parse(value));
         }
-        public static Value Year(Interpreter interpreter, List<Value> args)
+        public static Value Year(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("YEAR", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -135,7 +135,7 @@
             return new Value(int.Parse(value));
         }
 
-        public static Value TimeFunction(Interpreter interpreter, List<Value> args)
+        public static Value TimeFunction(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 0)
                 return interpreter.Error("TIME", Errors.E125_WrongNumberOfArguments(0)).value;
@@ -143,7 +143,7 @@
             return new Value(DateTime.Now.ToString(Value.timeFormat));
         }
 
-        public static Value Hour(Interpreter interpreter, List<Value> args)
+        public static Value Hour(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("HOUR", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -157,7 +157,7 @@
 
             return new Value(int.Parse(value));
         }
-        public static Value Minute(Interpreter interpreter, List<Value> args)
+        public static Value Minute(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("MINUTE", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -171,7 +171,7 @@
 
             return new Value(int.Parse(value));
         }
-        public static Value Second(Interpreter interpreter, List<Value> args)
+        public static Value Second(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
                 return interpreter.Error("SECOND", Errors.E125_WrongNumberOfArguments(1)).value;
@@ -186,7 +186,7 @@
             return new Value(int.Parse(value));
         }
 
-        public static Value DateDiff(Interpreter interpreter, List<Value> args)
+        public static Value DateDiff(IInterpreter interpreter, List<Value> args)
         {
             var syntax="datediff(unit, date1, date2)";
             if (args.Count != 3)
@@ -230,7 +230,7 @@
 
             }
         }
-        public static Value DateAdd(Interpreter interpreter, List<Value> args)
+        public static Value DateAdd(IInterpreter interpreter, List<Value> args)
         {
             var syntax = "dateAdd(unit, number, date)";
             if (args.Count != 3)

@@ -16,13 +16,13 @@ namespace FAST.FBasicInterpreter.DataProviders
             public string sqlText = "";
         }
 
-        private Interpreter interpreter = null;
+        private IInterpreter interpreter = null;
         public Dictionary<string, cursorProperties> cursors;
 
         public ErrorReturnClass Error(string source, string text) 
             => this.interpreter.Error(source, text);
 
-        public void bind(Interpreter interpreter)
+        public void bind(IInterpreter interpreter)
         {
             this.interpreter = interpreter;
             this.cursors = new();
@@ -71,7 +71,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             collection.channel.Close();
         }
 
-        public static void CURSOR(Interpreter interpreter)
+        public static void CURSOR(IInterpreter interpreter)
         {
             // Syntax: CURSOR name,sql_command
             //  Used to set the cursor and the sql command or to re-set the sql command
@@ -99,10 +99,10 @@ namespace FAST.FBasicInterpreter.DataProviders
             else
             {
                 adapter.cursors[name].sqlText = sql; //reset the sql command
-                interpreter.collections[name].Reset();
+                interpreter.GetCollection(name).Reset();
             }
         }
-        public static Value SQL(Interpreter interpreter, List<Value> args)
+        public static Value SQL(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
             {

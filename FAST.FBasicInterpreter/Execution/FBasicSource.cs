@@ -74,7 +74,7 @@
             var src = File.ReadAllText(fileName);
             Interpreter basic = new Interpreter(true, src);
             ProgramContainer program;
-            if ( basic.tryParseSourceCode(out program) ) return program;
+            if ( basic.TryParseSourceCode(out program) ) return program;
             return null;
         }
     }

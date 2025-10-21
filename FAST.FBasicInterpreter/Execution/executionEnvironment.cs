@@ -1,6 +1,4 @@
-﻿using static FAST.FBasicInterpreter.Interpreter;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// The base environment of an FBASIC Program
@@ -148,7 +146,7 @@ namespace FAST.FBasicInterpreter
         /// Setup Interpreter by adding libraries and variables
         /// </summary>
         /// <param name="interpreter"></param>
-        public void SetupInterpreter(Interpreter interpreter)
+        public void SetupInterpreter(IInterpreter interpreter)
         {
             // (v) setup handlers
             if (this.printHandler!=null) interpreter.printHandler=this.printHandler;

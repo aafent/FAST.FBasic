@@ -17,7 +17,7 @@ public class FBasicStack : IFBasicLibraryWithMemory
     private Stack<Value> stack = new();
     public string uniqueName => "Stack";
 
-    public void InstallAll(Interpreter interpreter)
+    public void InstallAll(IInterpreter interpreter)
     {
         interpreter.AddStatement("PUSH", StackPush);
         interpreter.AddStatement("POP", StackPop);
@@ -27,12 +27,12 @@ public class FBasicStack : IFBasicLibraryWithMemory
     }
 
 
-    private void StackPush(Interpreter interpreter)
+    private void StackPush(IInterpreter interpreter)
     {
         // Syntax PUSH identifier|value
         //
         Value value;
-        switch( interpreter.lastToken)
+        switch( interpreter.LastToken)
         {
             case Token.Identifier:
                 string name = interpreter.lex.Identifier;
@@ -51,7 +51,7 @@ public class FBasicStack : IFBasicLibraryWithMemory
         stack.Push(value);
     }
 
-    private void StackPop(Interpreter interpreter)
+    private void StackPop(IInterpreter interpreter)
     {
         // Syntax POP identifier
         //
@@ -70,7 +70,7 @@ public class FBasicStack : IFBasicLibraryWithMemory
 
     }
 
-    private void StackPeek(Interpreter interpreter)
+    private void StackPeek(IInterpreter interpreter)
     {
         // Syntax PEEK identifier
         //
@@ -91,7 +91,7 @@ public class FBasicStack : IFBasicLibraryWithMemory
     /// <summary>
     /// FBASIC Function stackcnt()
     /// </summary>
-    private Value StackCount(Interpreter interpreter, List<Value> args)
+    private Value StackCount(IInterpreter interpreter, List<Value> args)
     {
         string syntax = "stackcnt()";
         if (args.Count != 0)

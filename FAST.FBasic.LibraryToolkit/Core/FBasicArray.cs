@@ -1,6 +1,4 @@
-﻿using System.Security;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     public class JaggedArray2D<T>
     {

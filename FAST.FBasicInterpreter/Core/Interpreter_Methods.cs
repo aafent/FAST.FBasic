@@ -110,6 +110,30 @@ namespace FAST.FBasicInterpreter
         }
 
 
+        /// <summary>
+        /// Get a value of any name (variable, collection item)
+        /// </summary>
+        /// <param name="interpreter">the interpreter</param>
+        /// <param name="name">The name</param>
+        /// <returns>Value</returns>
+        public Value GetValue(string name)
+        {
+            var parser = new IdentifierNotationParser(name, this);
+            if (parser.IsArray)
+            {
+                return this.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataContainerName];
+            }
+            else if (parser.IsCollection)
+            {
+                return this.collections[parser.DataContainerName].getValue(parser.DataElement);
+            }
+            else
+            {
+                return this.GetVar(name);
+            }
+
+        }
+
         // (>) GetVar is at Program execution & control region. 
 
         #endregion (+) Add and more for variables
@@ -457,7 +481,7 @@ namespace FAST.FBasicInterpreter
         /// Create a program container
         /// </summary>
         /// <returns>The program container</returns>
-        public bool tryParseSourceCode(out ProgramContainer program)
+        public bool TryParseSourceCode(out ProgramContainer program)
         {
             program = new();
             List<ProgramElement> src = new();
