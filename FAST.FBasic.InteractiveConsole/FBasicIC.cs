@@ -1,11 +1,12 @@
 ﻿using FAST.FBasicInteractiveConsole;
 using FAST.FBasicInterpreter;
+using FAST.FBasicInterpreter.TemplatingLibrary;
 using Microsoft.Extensions.Configuration;
 using System.Data.Odbc;
 
 namespace FAST.FBasic.InteractiveConsole
 {
-    internal class FBasicIC
+    internal partial class FBasicIC
     {
         private readonly IConfiguration config;
         private string iCommand;
@@ -171,41 +172,6 @@ namespace FAST.FBasic.InteractiveConsole
             
         }
 
-        private void setupEnvironment()
-        {
-            string cs = "<connection string>";
-            //connectionAdapterForODBC connection = new(cs, dbDialectDetails.sql);
-
-            this.env = new();
-            env.DefaultEnvironment();
-            env.callHandler = (name) => { var filepath = Path.Combine(programsFolder, name); return File.ReadAllText(filepath); };
-            env.requestForObjectHandler = (context, group, name) =>
-            {
-                if ($"{context}.{group}.{name}" == "SQL.CONNECTION.DATA1") 
-                {
-                    string cs = "<replace with your CS hear>";
-                    var connection = new OdbcConnection(cs);
-                    return connection;
-                }
-                if ($"{context}.{group}.{name}" == "IN.TEST.NAME") return "THIS IS AN IN TEST!";
-                return null;
-            };
-            env.AddLibrary(new FBasicStringFunctions());
-            env.AddLibrary(new FBasicMathFunctions());
-            env.AddLibrary(new FBasicDateFunctions());
-            env.AddLibrary(new FBasicSQLDataAdapter());
-            env.AddLibrary(new FBasicEvents());
-            env.AddLibrary(new FBasicTextReplacer());
-            env.AddLibrary(new FBasicStack());
-            env.AddLibrary(new FBasicDecisionTables());
-            env.AddLibrary(new FBasic2DArrays());
-
-            env.AddVariable("table.column", "myColumn1");
-
-            FBasicEvents.Reset();
-            FBasicEvents.FBasicEventHandler += testEventHandler1!;
-            FBasicEvents.FBasicEventHandler += testEventHandler2!;
-        }
 
         private void internalInfo()
         {

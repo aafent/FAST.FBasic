@@ -121,7 +121,7 @@ namespace FAST.FBasicInterpreter
             var parser = new IdentifierNotationParser(name, this);
             if (parser.IsArray)
             {
-                return this.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataContainerName];
+                return this.GetArray(parser.DataContainerName)[parser.ArrayIndex, parser.DataElement];
             }
             else if (parser.IsCollection)
             {

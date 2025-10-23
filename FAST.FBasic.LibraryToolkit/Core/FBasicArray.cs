@@ -74,7 +74,7 @@
         /// <summary>
         /// The Length of the  array
         /// </summary>
-        public int Length => m_values.Length;
+        public int Length => m_values?.Length??0;
 
         /// <summary>
         /// Get the second's level item length
@@ -281,11 +281,29 @@
         /// </summary>
         public override void ResetArray()
         {
-            columnNames = new string[0];
+            ResetColumnNames(); // reset the column names
             this.Reset(); // reset the IEnumerator part of the class
-            base.ResetArray();
+            base.ResetArray(); // reset the jagged array
         }
 
+        /// <summary>
+        /// Reset column names
+        /// </summary>
+        public void ResetColumnNames()
+        {
+            columnNames = new string[0];
+        }
+
+        /// <summary>
+        /// The current row within a FOREACH loop (only) 
+        /// </summary>
+        /// <returns>1-based index</returns>
+        public int GetCurrentRow()
+        {
+            if (this.currentRow < 1) return 1;
+            if (this.currentRow > this.Length) return this.Length;
+            return this.currentRow;
+        }
 
         #region (+) IFBasicCollection Interface
 

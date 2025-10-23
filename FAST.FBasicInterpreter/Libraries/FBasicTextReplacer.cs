@@ -9,12 +9,13 @@ using System.Text.RegularExpressions;
 ///                                     then the flow will GOSUB to the ELSE label.
 /// PHREPLACE intext outtext        :: Perform a text replace to the intext giving the replaced text to the outtext. 
 /// PHSDATA colName intext          :: Create a SDATA type of collection with name colName with the collection names found in the intext. 
-/// PHVSDATA colName intext         :: Similar to PHSDATA but it is collection all the identifiers are used. 
+/// PHVSDATA array intext           :: Create an array with two columns the `name` and the `ph`. Name contain the variable that it is used in the placeholder and ph is the placeholder as it in the text.
 /// WORDFREQ array_name, input_text, min_word_length, min_count_to_result  :: Analyze the input_text, finding words frequency for the words that they have the minimum word length and results in the array_name, on the first index the word found and on the second the word's frequency. Reports only word that they have at least the min_count frequency. 
 /// 
 /// Functions Syntax:
 /// pcase(string)                   :: Converts the string to Proper Case (first letter upper rest lower)
 /// words(s, 1)                     :: counts the number of words in a string s that are at least 1 character long. if the input string is empty returns 0, if the minWordSize is less than 1 it is set to 1. The word delimiters are space, tab, newline and carriage-return. Consequent delimiters are treated as one.
+/// phtoname(s)                     :: from a placeholder keeps only the variable name (simple or squear bracket) 
 
 
 /// 
@@ -44,9 +45,9 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.AddStatement("PHGOSUB", PlaceHolderGoSub);
         interpreter.AddStatement("WORDFREQ", WordFrequency);
 
-
         interpreter.AddFunction("ucase", PCase); // Proper Case
         interpreter.AddFunction("words", Words); // words count
+        interpreter.AddFunction("phtoname",ToName);
     }
 
     #region (+) FBASIC Statments
@@ -180,31 +181,27 @@ public class FBasicTextReplacer : IFBasicLibrary
 
     private static void placeHolderFilter(IInterpreter interpreter, bool dottedOnly)
     {
-        // Syntax: PHSDATA collectionName identifier_string_template
+        // Syntax: PHSDATA array identifier_string_template
         //  
-        staticDataCollection collection = null;
+        FBasicArray array=null;
+
         interpreter.Match(Token.Identifier);
-        string collectionName = interpreter.lex.Identifier;
+        string name = interpreter.lex.Identifier;
 
-        if (interpreter.IsCollection(collectionName))
+        if (interpreter.IsArray(name))
         {
-            if (interpreter.GetCollection(collectionName) is staticDataCollection)
-            {
-                collection = (staticDataCollection)interpreter.GetCollection(collectionName);
-            }
-            else
-            {
-                interpreter.Error("PHxSDATA",Errors.E117_CollectionIsNotSDATAType(collectionName));
-                return; // not necessary as Error is exception
-            }
-
+            array = interpreter.GetArray(name);
+            array.Reset();
+            array.ResetArray();
         }
         else
         {
-            collection = new(interpreter);
-            collection.Reset();
-            interpreter.AddCollection(collectionName, collection);
+            array = new();
+            interpreter.AddArray(name,array);
         }
+        array.ResetColumnNames();
+        array.SetColumnName(1,"ph");
+        array.SetColumnName(2, "name");
 
         interpreter.GetNextToken(); // move to the first item of the collection
 
@@ -213,11 +210,27 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.GetNextToken(); 
 
         var list=getUniquePlaceholders(getValueForPlaceHolder(interpreter,templateName), dottedOnly: dottedOnly, leftPartOnly:true);
-
+        
+        List<string> unique=new();
+        int index = 0;
         foreach (var item in list)
         {
-            if (!collection.data.Any(i=>i.String==item))
-                collection.data.Add(new Value(item) );
+            if (!unique.Any(i => i == item))
+            {
+                unique.Add(item);
+                array[index, 0] = new Value(item);  // set the item
+                int p1 = item.IndexOf(':');
+                if (p1 >= 0)
+                {
+                    array[index, 1] = new Value(item.Substring(0, p1));
+                }
+                else
+                {
+                    array[index, 1] = new Value(item);
+                }
+            }
+
+            index++;
         }
 
         return;
@@ -243,115 +256,12 @@ public class FBasicTextReplacer : IFBasicLibrary
         {
             var placeholder = match.Groups[1].Value;
 
-            // Check for formatter: {name:specifier,modifiers}
             string name = placeholder;
-            int minSize = 0, maxSize = 0;
-            string modifiers = null;
-
-            #region (+) Parse for arguments (sizes,modifiers,etc)
-            if (placeholder.Contains(":"))
-            {
-                var parts = placeholder.Split(new[] { ':' }, 2);
-                name = parts[0];
-                var rightPart = parts[1];
-
-                // Specifier and modifiers
-                string specifier = rightPart;
-                if (rightPart.Contains(","))
-                {
-                    var specParts = rightPart.Split(',');
-                    // SpecParts[0] is min, [1] is max, [2] (optional) is modifiers
-                    if (specParts.Length >= 2)
-                    {
-                        int.TryParse(specParts[0], out minSize);
-                        int.TryParse(specParts[1], out maxSize);
-
-                        if (specParts.Length >= 3)
-                            modifiers = specParts[2];
-                    }
-                }
-                else
-                {
-                    // If only modifiers are present (no min/max)
-                    modifiers = rightPart;
-                }
-            }
-            #endregion (+) Parse for arguments (sizes,modifiers,etc)
-
+            int p1=name.IndexOf(':');
+            if (p1>=0) name=name.Substring(0,p1);
             string value = getValueForPlaceHolder(interpreter, name) ?? "";
+            return ToolKitHelper.FormatStringValue(value, placeholder);
 
-            #region (+) Apply value changing modifiers
-            if (!string.IsNullOrEmpty(modifiers))
-            {
-                if (modifiers.Contains("c"))
-                {
-                    Double.TryParse(value, out double numValue);
-                    {
-                        value = numValue.ToString("C");
-                    }
-                }
-                if (modifiers.Contains("N"))
-                {
-                    Double.TryParse(value, out double numValue);
-                    {
-                        value = numValue.ToString("#,##0.#########");
-                    }
-                }
-
-
-                if (modifiers.Contains("U")) value = value.ToUpper();
-                if (modifiers.Contains("L")) value = value.ToLower();
-                if (modifiers.Contains("P")) value = ToProperCase(value);
-                if (modifiers.Contains("T")) value = value.Trim();
-            }
-            #endregion (+) Apply value changing modifiers
-
-            // (v) Padding character
-            char leftPadChar = ' ';
-            char rightPadChar = ' ';
-            if (!string.IsNullOrEmpty(modifiers))
-            {
-                if (modifiers.Contains("0")) leftPadChar = '0';
-            }
-
-
-            #region (+) Work with sizes and Alignments
-            if (maxSize > 0)
-            {
-                // Truncate if longer than maxSize
-                if (value.Length > maxSize) value = value.Substring(0, maxSize);
-
-                if (minSize > 0 && value.Length < minSize)
-                {
-                    int padLen = minSize - value.Length;
-                    if (modifiers.Contains("l")  && modifiers.Contains("r")) // center
-                    {
-                        int leftPad = padLen / 2;
-                        int rightPad = padLen - leftPad;
-                        value = new string(leftPadChar, leftPad) + value + new string(rightPadChar, rightPad);
-                    }
-                    else if (modifiers.Contains("r")) // align right
-                    {
-                        value = new string(leftPadChar, padLen) + value;
-                    }
-                    else if (modifiers.Contains("l")) // align left
-                    {
-                        value = value + new string(rightPadChar, padLen);
-                    }
-                }
-            }
-            else // maxSize <= 0
-            {
-                if (minSize > 0 && value.Length < minSize)
-                {
-                    // Default left align
-                    value = value + new string(rightPadChar, minSize - value.Length);
-                }
-            }
-            #endregion (+) Work with sizes and Alignments
-
-
-            return value;
         });
 
         return result;
@@ -433,6 +343,8 @@ public class FBasicTextReplacer : IFBasicLibrary
 
     #region (+) FBASIC Functions
 
+
+
     /// <summary>
     /// FBASIC Function PCase()
     /// </summary>
@@ -441,7 +353,7 @@ public class FBasicTextReplacer : IFBasicLibrary
         string syntax = "PCASE(string)";
         if (args.Count != 1)
             return interpreter.Error("PCASE", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
-        var value= ToProperCase(args[0].String);
+        var value= ToolKitHelper.ToProperCase(args[0].String);
         return new Value(value);
     }
 
@@ -467,26 +379,27 @@ public class FBasicTextReplacer : IFBasicLibrary
         return new Value(CountLongWords(str, size));
     }
 
+    private static Value ToName(IInterpreter interpreter, List<Value> args)
+    {
+        string syntax = "phtoname(string)";
+        if (args.Count != 1)
+            return interpreter.Error("phtoname", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
+
+        string str = args[0].Convert(FAST.FBasicInterpreter.ValueType.String).String;
+        int p1=str.IndexOf(":");
+        if (p1>=0)
+        { // (v) remove the placeholder formatter 
+            return new Value(str.Substring(0,p1));
+        }
+        else
+        {
+            return args[0];
+        }
+    }
 
     #endregion (+) FBASIC Functions
 
     #region (+) Public static methods 
-    /// <summary>
-    /// Converts the input string to Proper Case (first letter uppercase, rest lowercase).
-    /// </summary>
-    /// <param name="input">The input string</param>
-    /// <returns>String</returns>
-    public static string ToProperCase(string input)
-    {
-        if (string.IsNullOrEmpty(input)) return input;
-
-        // 1. Capitalize the first character.
-        char firstCharUpper = char.ToUpper(input[0]);
-        // 2. Lowercase the rest of the string.
-        string restOfStringLower = input.Substring(1).ToLower();
-        // 3. Combine and return.
-        return firstCharUpper + restOfStringLower;
-    }
 
 
     /// <summary>
@@ -566,5 +479,6 @@ public class FBasicTextReplacer : IFBasicLibrary
 
 
     #endregion (+) Public static methods
+
 
 }

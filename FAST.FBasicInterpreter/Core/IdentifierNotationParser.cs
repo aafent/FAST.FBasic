@@ -37,7 +37,29 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The index for the array
         /// </summary>
-        public int ArrayIndex {  get; private set; } = -1;
+        private int _arraryIndex = -1;
+        public int ArrayIndex
+        {
+            get
+            {
+                if (_arraryIndex < 1 )
+                {
+                    if (this.IsArray)
+                    {
+                        if (this.interpreter != null)
+                        {
+                            var array=interpreter.GetArray(this.DataContainerName);
+                            _arraryIndex = array.GetCurrentRow();
+                        }
+                    }
+                }
+                return _arraryIndex;
+            }
+            set
+            {
+               _arraryIndex=value;            }
+        }
+
 
         /// <summary>
         /// The data container/provider such Collection, Array, etc
@@ -174,9 +196,16 @@ namespace FAST.FBasicInterpreter
                 this.DataContainerName=expression.Substring(0,dotPosition );
                 this.DataElement = expression.Substring(dotPosition + 1);
             
-                if (!this.IsArray)
+                if (!this.IsArray) // here is not array because does not look like array-no parenthesis
                 {
-                    if (interpreter.IsFunction(this.DataContainerName))
+                    if (interpreter.IsArray(this.DataContainerName)) // now check if it is a real array
+                    {
+                        // (v) promotion to array
+                        this.IsArray=true;
+                        //
+                        //if (this.ArrayIndex<1) this.ArrayIndex=GetArr;
+                    } 
+                    else if (interpreter.IsFunction(this.DataContainerName))
                     {
                         this.IsFunction=true;   
                         this.FunctionName=this.DataContainerName;

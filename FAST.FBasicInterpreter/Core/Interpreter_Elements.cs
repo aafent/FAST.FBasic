@@ -122,14 +122,15 @@
 
             return lhs;
         }
-        public Value ValueOrIdentifier()
+        public Value ValueOrIdentifier(bool doMatch=false)
         {
-            switch(lastToken)
+            if (doMatch) this.MatchAndThenNextToken(Token.Identifier, Token.Value);
+            switch (lastToken)
             {
                 case Token.Value:
                     return this.lex.Value;
                 case Token.Identifier:
-                    return Value.Error; // TODO
+                    return GetValue(this.lex.Identifier); 
                 default:
                     Error($"Expecting Value or Identifier, got {lastToken.ToString()} [E123]");
                     return Value.Error;

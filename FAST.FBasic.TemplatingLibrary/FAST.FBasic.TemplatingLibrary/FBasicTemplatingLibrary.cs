@@ -1,230 +1,124 @@
-﻿//
-// Statements: 
-// COLDIM name, [ColumnName1], [ColumnName2], ..., [ColumnNameN]
-// COLNAME array_name, column_number, column_name
-// ADDCOL array_name, column_name
-// INDEXDELETE array_name, index
-//
-// Functions:
-// count(array_name)
-// cname(array_name,column_index)
-// colnamescount(array_name)
-// 
-// Reference:
-// [array.column(index)] 
-// 
-// index and column_number is 1-base number
-//
+﻿using FAST.FBasic.TemplatingLibrary;
 
+//
+// Stream Statements: 
+//
+// EXTRACTWORDBODY file_stream_name, identifier 
+// REPALCEWORDBODY input_stream, output_stream, array
+//
 
 namespace FAST.FBasicInterpreter.TemplatingLibrary
 {
-    public partial class FBasicTemplatingLibrary  : IFBasicLibrary
+    public class FBasicTemplatingLibrary  : IFBasicLibraryWithMemory
     {
+        private const string valueStamp = "_$$Stream$$_";
+        private IInterpreter inter;
+        //private readonly IFBasicFileManagementLayer fileManager=null;
+
         public string uniqueName => "TemplatingLibrary";
+
+        public FBasicTemplatingLibrary()
+        {
+            //IFBasicFileManagementLayer fileManager=new zzzzzzz();
+            //this.fileManager=fileManager;
+        }
+
 
         public void InstallAll(IInterpreter interpreter)
         {
-            interpreter.AddLibrary(new FBasicTemplatingLibrary());
-
-            interpreter.AddStatement("COLDIM", JaggedArrayDim);
-            interpreter.AddStatement("COLNAME", ColumnName);
-            interpreter.AddStatement("COLADD", ColumnAddName);
-            interpreter.AddStatement("INDEXDELETE", IndexDelete);
-
-            interpreter.AddFunction("cnamescount", ColumnNamesCount);
-            interpreter.AddFunction("cname", ColumnName);
-            
+            this.inter = interpreter;
+            interpreter.AddStatement("EXTRACTWORDBODY", ExtractWordBody);
+            interpreter.AddStatement("REPALCEWORDBODY", ReplaceWordBody);
 
         }
 
-        private void JaggedArrayDim(IInterpreter interpreter)
+        private void ExtractWordBody(IInterpreter interpreter)
         {
             //
-            // Syntax JADIM name, [ColumnName1], [ColumnName2], ..., [ColumnNameN]
+            // Syntax: EXTRACTWORDBODY file_stream_name, identifier 
             //
-
             // (v) argument: name
             interpreter.Match(Token.Identifier);
-            string arrayName = interpreter.lex.Identifier;
+            string name = interpreter.lex.Identifier;
             interpreter.GetNextToken();
 
-            // (v) arguments: column1...columnN
-            var columns= new List<string>();
-            while (true)
-            {
-                interpreter.Match(Token.Comma);
 
-                interpreter.GetNextToken();
-                interpreter.Match(Token.Identifier);
-                var colName = interpreter.lex.Identifier;
+            interpreter.MatchAndThenNextToken(Token.Comma);
 
-                columns.Add(colName);
-
-                if (IInterpreter.GetNextToken() == Token.NewLine) break;
-            }
-
-            // (v) process arguments
-            FBasicArray array = new();
-            int colNo=0;
-            foreach(var col in columns )
-            {
-                colNo++;
-                array.SetColumnName(colNo, col);
-            }
-            interpreter.AddArray(arrayName, array);
-            
-            return;
-        }
-
-        private void ColumnName(IInterpreter interpreter)
-        {
-            //
-            // Syntax COLNAME array_name, column_number, column_name
-            //
-
-            // (v) argument: array_name
             interpreter.Match(Token.Identifier);
-            string arrayName = interpreter.lex.Identifier;
+            var variableToSave = interpreter.lex.Identifier;
             interpreter.GetNextToken();
-            interpreter.Match(Token.Comma);
 
-            // (v) argument: column_number
-            int columnNo=0;
-            switch (IInterpreter.GetNextToken())
-            {
-                case Token.Value:
-                    columnNo = interpreter.lex.Value.ToInt();
-                    interpreter.GetNextToken();
-                    break;
-                case Token.Identifier:
-                    columnNo = interpreter.GetValue(IInterpreter.lex.Identifier).ToInt();
-                    interpreter.GetNextToken();
-                    break;
-                default:
-                    interpreter.Match(Token.Value); // (<) will raise error
-                    return;
-            }
+            var stream=interpreter.GetVar(name);
+            checkForStream(interpreter, stream);
 
-            // (v) argument: column_name
-            interpreter.Match(Token.Comma);
-            string colName="";
-            switch (IInterpreter.GetNextToken())
-            {
-                case Token.Value:
-                    colName= interpreter.lex.Value.String;
-                    interpreter.GetNextToken();
-                    break;
-                case Token.Identifier:
-                    colName = interpreter.GetValue(IInterpreter.lex.Identifier).String;
-                    interpreter.GetNextToken();
-                    break;
-                default:
-                    interpreter.Match(Token.Value); // (<) will raise error
-                    return;
-            }
+            var text= new WordProcessor().ExtractAllText(((Stream)stream.Object));
 
-            // (v) process arguments
-            FBasicArray array = interpreter.GetArray(arrayName);
-            array.SetColumnName(columnNo, colName);
-
-            return;
+            interpreter.SetVar(variableToSave,new Value(text) );
         }
 
-        private void ColumnAddName(IInterpreter interpreter)
+        private void ReplaceWordBody(IInterpreter interpreter)
         {
             //
-            // Syntax ADDCOL array_name, column_name
+            // Syntax: REPALCEWORDBODY input_stream, output_stream, array
             //
-
-            // (v) argument: array_name
+            // (v) argument: input_stream
             interpreter.Match(Token.Identifier);
-            string arrayName = interpreter.lex.Identifier;
-            FBasicArray array = interpreter.GetArray(arrayName);
+            string inputName = interpreter.lex.Identifier;
             interpreter.GetNextToken();
 
-            // (v) argument: column_name
-            interpreter.Match(Token.Comma);
-            string colName = "";
-            switch (IInterpreter.GetNextToken())
-            {
-                case Token.Value:
-                    if (IInterpreter.lex.Value.Type == ValueType.Real)
-                    {
-                        colName = array.GetColumnName(IInterpreter.lex.Value.ToInt());
-                    }
-                    else
-                    {
-                        colName = interpreter.lex.Value.String;
-                    }
+            interpreter.MatchAndThenNextToken(Token.Comma);
 
-                    interpreter.GetNextToken();
-                    break;
-                case Token.Identifier:
-                    colName = interpreter.lex.Identifier;
-                    interpreter.GetNextToken();
-                    break;
-                default:
-                    interpreter.Match(Token.Value); // (<) will raise error
-                    return;
+            // (v) argument: output_stream
+            interpreter.Match(Token.Identifier);
+            string outputName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            // (v) argument: array
+            interpreter.Match(Token.Identifier);
+            var arrayName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            // (v) error checking
+
+            if (!interpreter.IsArray(arrayName) )
+            {
+                interpreter.Error("REPALCEWORDBODY",Errors.E112_UndeclaredEntity("Array",arrayName));
+                return;
             }
 
-            // (v) process arguments
-            
-            array.SetColumnName(array.ColumnNamesCount + 1, colName);
+            var stream = interpreter.GetVar(inputName);
+            checkForStream(interpreter, stream);
 
-            return;
+            var array = interpreter.GetArray(arrayName);
+
+            // (v) implementation
+            var replacements=array.ConvertToDictionary<string,string>(0,1);
+            foreach (var item in replacements)
+            {
+                replacements[item.Key] = ToolKitHelper.FormatStringValue(item.Key, interpreter.GetValue(item.Value).ToString());
+            }
+            var mStream = new WordProcessor().ReplacePlaceholders(((Stream)stream.Object), replacements, "{", "}");
+
+            interpreter.SetVar(outputName, new Value(mStream,valueStamp));
         }
 
-        private void IndexDelete(IInterpreter interpreter)
+
+
+        private void checkForStream(IInterpreter interpreter, Value value)
         {
-            //
-            // Syntax ROWDELETE array_name, row_number
-            //
-
-            // (v) argument: array_name
-            interpreter.Match(Token.Identifier);
-            string arrayName = interpreter.lex.Identifier;
-            FBasicArray array = interpreter.GetArray(arrayName);
-            interpreter.GetNextToken();
-
-            // (v) argument: column_name
-            interpreter.Match(Token.Comma);
-            interpreter.GetNextToken();
-
-            var row=interpreter.Expr().ToInt();
-
-            // (v) process arguments
-            array.DeleteRow(row);
-            return;
+            if (value.Type != ValueType.Object)
+            {
+                interpreter.Error("STREAM",Errors.E127_WrongArgumentReferredType("STREAM"));
+                return;
+            }
         }
 
-        private Value ColumnName(IInterpreter interpreter, List<Value> args)
+        public void ClearMemory()
         {
-            string syntax = "cname(array_name,column_index)";
-            if (args.Count != 2)
-                return interpreter.Error("cname", Errors.E125_WrongNumberOfArguments(2, syntax)).value;
-
-            var arrayName = args[0].String;
-            FBasicArray array = interpreter.GetArray(arrayName);
-
-            var index = args[1].ToInt();
-            return new Value(array.GetColumnName(index));
         }
-
-        private Value ColumnNamesCount(IInterpreter interpreter, List<Value> args)
-        {
-            string syntax = "colnamescount(array_name)";
-            if (args.Count != 1)
-                return interpreter.Error("colnamescount", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
-
-            var arrayName = args[0].String;
-            FBasicArray array = interpreter.GetArray(arrayName);
-            return new Value(array.ColumnNamesCount);
-        }
-
-
-
     }
 
 }

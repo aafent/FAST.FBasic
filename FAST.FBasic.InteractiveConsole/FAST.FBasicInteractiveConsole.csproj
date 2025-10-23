@@ -14,10 +14,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FAST.FBasicInterpreter\FAST.FBasicInterpreter.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="FBasicSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -25,6 +21,11 @@
 
   <ItemGroup>
     <Folder Include="BusinessCases\Scoring\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary.csproj" />
+    <ProjectReference Include="..\FAST.FBasicInterpreter\FAST.FBasicInterpreter.csproj" />
   </ItemGroup>
 
 </Project>

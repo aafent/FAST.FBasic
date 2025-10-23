@@ -4,6 +4,19 @@
 	  <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+
+	  <Title>FAST FBasic Library Toolkit</Title>
+	  <Description>The toolkit to build new libraries to adapt the functionality of FBasic to the application's needs.</Description>
+	  <Copyright>Global Cloud Services EOOD</Copyright>
+	  <PackageOutputPath>.\Packages</PackageOutputPath>
+	  <PackageId>FAST.FBasicLibraryToolkit</PackageId>
+	  <Version>1.0.0</Version>
+	  <Authors>GCS</Authors>
+	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
+	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
+	  <RootNamespace>FAST.FBasicInterpreter</RootNamespace>
+
+
   </PropertyGroup>
 
 </Project>

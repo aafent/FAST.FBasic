@@ -68,5 +68,47 @@
             Console.WriteLine(line);
         }
 
+
+        /// <summary>
+        /// Match any of the input tokens, return the matching token or create error
+        /// </summary>
+        /// <param name="interpreter"></param>
+        /// <param name="tokens">array of at least one token</param>
+        /// <returns>Matched token</returns>
+        public static Token MatchAndThenNextToken(this IInterpreter interpreter, params Token[] tokens)
+        {
+            var last=interpreter.LastToken;
+            foreach (var token in tokens)
+            {
+                if (token == last)
+                {
+                    interpreter.GetNextToken();
+                    return token;
+                }
+            }
+            interpreter.Match(tokens[0]); // will create error
+            return tokens[0];
+        }
+
+        /// <summary>
+        /// Match any of the tokens or error
+        /// </summary>
+        /// <param name="interpreter"></param>
+        /// <param name="tokens"></param>
+        /// <returns>Token that match</returns>
+        public static Token MatchAny(this IInterpreter interpreter, params Token[] tokens)
+        {
+            var last = interpreter.LastToken;
+            foreach (var token in tokens)
+            {
+                if (token == last)
+                {
+                    return token;
+                }
+            }
+            interpreter.Match(tokens[0]); // will create error
+            return tokens[0];
+        }
+
     }
 }

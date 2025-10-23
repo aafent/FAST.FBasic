@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using System.Reflection.Emit;
+
+namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Extensions to the class Interpreter 
@@ -83,6 +85,24 @@
                 #if DEBUG
                 result.exception = ex;
                 #endif
+            }
+            finally
+            {
+                foreach (var lib in interpreter.librariesWithMemory)
+                {
+                    if (lib.Value is IDisposable)
+                    {
+                        try // do not produce errors from Dispose
+                        {
+                            ((IDisposable)lib.Value).Dispose();
+                        }
+                        catch
+                        {
+                        }
+
+                    }
+                }
+
             }
             return result;
         }
