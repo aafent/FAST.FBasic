@@ -3,8 +3,10 @@
 //
 // Stream Statements: 
 //
-// EXTRACTWORDBODY file_stream_name, identifier 
-// REPALCEWORDBODY input_stream, output_stream, array
+// WORDEXTRACTBODY file_stream_name, identifier 
+// WORDREPALCEBODY input_stream, output_stream, array
+// WORDAPPEND stream_to_append, destination_stream
+// WORDPAGEBREAK stream
 //
 
 namespace FAST.FBasicInterpreter.TemplatingLibrary
@@ -27,12 +29,65 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
         public void InstallAll(IInterpreter interpreter)
         {
             this.inter = interpreter;
-            interpreter.AddStatement("EXTRACTWORDBODY", ExtractWordBody);
-            interpreter.AddStatement("REPALCEWORDBODY", ReplaceWordBody);
+            interpreter.AddStatement("WORDEXTRACTBODY", WordExtractBody);
+            interpreter.AddStatement("WORDREPALCEBODY", WordReplaceBody);
+            interpreter.AddStatement("WORDAPPEND", WordMergeDocuments);
+            interpreter.AddStatement("WORDPAGEBREAK", WordPageBreak);
+        }
+
+
+
+        private void WordPageBreak(IInterpreter interpreter)
+        {
+            // WORDPAGEBREAK stream
+            //
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string toAppendName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+
+            var streamToAppend = interpreter.GetVar(toAppendName);
+            checkForStream(interpreter, streamToAppend);
+
+            var append = ((Stream)streamToAppend.Object);
+            new WordProcessor().AddPageBreak(append);
 
         }
 
-        private void ExtractWordBody(IInterpreter interpreter)
+
+
+
+        private void WordMergeDocuments(IInterpreter interpreter)
+        {
+            // WORDAPPEND stream_to_append, destination_stream
+            //
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string toAppendName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            interpreter.Match(Token.Identifier);
+            var destName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            var streamToAppend = interpreter.GetVar(toAppendName);
+            checkForStream(interpreter, streamToAppend);
+
+            var destStream = interpreter.GetVar(destName);
+            checkForStream(interpreter, destStream);
+
+            var dest= ((Stream)destStream.Object);
+            var append = ((Stream)streamToAppend.Object);
+            new WordDocumentMerger().AppendDocument(dest, append ) ;
+
+        }
+
+
+
+        private void WordExtractBody(IInterpreter interpreter)
         {
             //
             // Syntax: EXTRACTWORDBODY file_stream_name, identifier 
@@ -57,7 +112,7 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             interpreter.SetVar(variableToSave,new Value(text) );
         }
 
-        private void ReplaceWordBody(IInterpreter interpreter)
+        private void WordReplaceBody(IInterpreter interpreter)
         {
             //
             // Syntax: REPALCEWORDBODY input_stream, output_stream, array

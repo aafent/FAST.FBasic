@@ -43,14 +43,15 @@ namespace FAST.FBasicInterpreter.DataProviders
                 }
 
                 collection.channel = connectionObject as DbConnection; // to support all the types of connections (sql,odbc,etc)
-
-                using var command = collection.channel.CreateCommand();
                 collection.channel.Open();
+
+                collection.command = collection.channel.CreateCommand();
                 // (>) maybe to do something for the transactions here (see sqlChannel.executeAndGetReader() of FAST, maybe not.
-                command.CommandText = cursors[cursorName].sqlText;
-                command.CommandType = System.Data.CommandType.Text; // (!) check if need to do something different here 
-                                                                    // (>) if pass parameters, this is a nice time to do it
-                collection.reader = command.ExecuteReader();
+                collection.command.CommandText = cursors[cursorName].sqlText;
+                collection.command.CommandType = System.Data.CommandType.Text; // (!) check if need to do something different here 
+                // (>) if pass parameters, this is a nice time to do it
+                collection.reader = collection.command.ExecuteReader();
+
             } 
             catch (FBasicException)
             {
@@ -62,7 +63,9 @@ namespace FAST.FBasicInterpreter.DataProviders
                 return interpreter.Error(name,Errors.X012_GeneralException(name, ex)).falseError;
             }
 
-            return !errorFound; //!collection.channel.hasError;
+            if (errorFound) return false; // No open due errors
+
+            return !collection.reader.IsClosed;
         }
 
         public void closeCursor(string cursorName, cursorCollection collection)

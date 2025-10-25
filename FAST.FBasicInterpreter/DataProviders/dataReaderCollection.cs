@@ -20,7 +20,7 @@ namespace FAST.FBasicInterpreter.DataProviders
 
         public abstract string title { get; }
 
-        public TReader reader;
+        public TReader reader {get; set; }
 
         private bool isOpen = false;
         protected TCallback callback;
@@ -78,7 +78,8 @@ namespace FAST.FBasicInterpreter.DataProviders
 
         public Value getValue(string name)
         {
-            if (!this.columnsMap.ContainsKey(name)) callback.Error(title, $"Name: {name} is missing from {cursorName} [S003]");
+            if (this.columnsMap==null) return callback.Error(title, $"All names for {cursorName} are missing. Requested is: {name} [S003]").value;
+            if (!this.columnsMap.ContainsKey(name)) return callback.Error(title, $"Name: {name} is missing from {cursorName} [S003]").value;
             var value = reader[name];
             var isNumeric = columnsMap[name].Item3;
             if (isNumeric)
@@ -105,8 +106,9 @@ namespace FAST.FBasicInterpreter.DataProviders
             if (reader == null) { throw new ArgumentNullException("Class isn't yet bind with a DbDataReader object"); }
 
             Dictionary<string, Tuple<int, Type, bool>> map = new();
+            var fields=reader.FieldCount;
 
-            for (int field = 0; field < reader.FieldCount; field++)
+            for (int field = 0; field < fields; field++)
             {
                 var type = reader.GetFieldType(field);
                 map.Add(reader.GetName(field), new Tuple<int, Type, bool>(field, type, isNumericType(type)));

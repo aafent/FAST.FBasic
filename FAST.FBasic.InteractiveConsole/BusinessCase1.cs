@@ -70,7 +70,7 @@ namespace FAST.FBasic.InteractiveConsole
         {
             ExecutionEnvironment env= new ExecutionEnvironment();
 
-            env.DefaultEnvironment();
+            env.DefaultEnvironment(this.programsFolder);
             env.callHandler = (name) => File.ReadAllText(Path.Combine(this.programsFolder, name));
 
             env.AddLibrary(new FBasicDateFunctions());

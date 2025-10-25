@@ -97,7 +97,14 @@
         /// <summary>
         /// The delegation handler for the CALL statement
         /// </summary>
+        [Obsolete("Use the FileHandler instead")]
         public FBasicSourceProgramLoader callHandler { get; set; }
+
+        /// <summary>
+        /// The file handler. 
+        /// For source program and in-program files
+        /// </summary>
+        public FBasicFileManagement FileHandler { get; set; } 
 
         /// <summary>
         /// The delegation handler for Request for Object

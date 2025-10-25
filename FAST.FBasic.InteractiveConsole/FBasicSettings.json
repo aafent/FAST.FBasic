@@ -1,6 +1,6 @@
 {
   "Settings": {
-    "ProgramsFolder": "~\\..\\..\\..\\..\\FAST.FBasic.InteractiveConsole\\Tests", // ~ stands for current directory
+    "ProgramsFolder": "~\\..\\..\\..\\..\\..\\FAST.FBasic.InteractiveConsole\\Tests", // ~ stands for current directory
     "Startup": "helloWorld.bas"
   },
   "ConnectionStrings": {

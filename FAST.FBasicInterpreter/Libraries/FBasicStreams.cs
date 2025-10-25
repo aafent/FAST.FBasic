@@ -80,13 +80,11 @@ namespace FAST.FBasicInterpreter
             switch (direction)
             {
                 case "IN":
-                    // todo: file manager
-                    var inputStream = new FileStream(file.FileName, FileMode.Open, FileAccess.Read);
+                    var inputStream = interpreter.FileHandler(file).ReadOnlyFileStream();
                     value = new Value(inputStream, valueStamp);
                     break;
                 case "OUT":
-                    // todo: file manager
-                    var outputStream = File.Create(file.FileName);
+                    var outputStream = interpreter.FileHandler(file).OutputFileStream(FileShare.ReadWrite);
                     value = new Value(outputStream, valueStamp);
                     break;
                 default:

@@ -1,7 +1,7 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.Text;
+
 
 namespace FAST.FBasic.TemplatingLibrary
 {
@@ -16,7 +16,6 @@ namespace FAST.FBasic.TemplatingLibrary
                 return body.InnerText;
             }
         }
-
 
 
         /// <summary>
@@ -238,9 +237,27 @@ namespace FAST.FBasic.TemplatingLibrary
             public int EndIndex { get; set; }
             public string ReplacementText { get; set; }
         }
+
+        public void AddPageBreak(Stream documentStream)
+        {
+            // Ensure stream is at the beginning
+            documentStream.Position = 0;
+
+            using (WordprocessingDocument doc = WordprocessingDocument.Open(documentStream, true))
+            {
+                var body = doc.MainDocumentPart.Document.Body;
+
+                // Add a page break
+                body.AppendChild(new Paragraph(new Run(new Break() { Type = BreakValues.Page })));
+
+                doc.MainDocumentPart.Document.Save();
+            }
+
+            // Reset position for further use
+            documentStream.Position = 0;
+        }
     }
 
 
 
 }
-

@@ -20,7 +20,15 @@ namespace FAST.FBasicInterpreter
     /// </summary>
     /// <param name="name">the name of the source program</param>
     /// <returns>the source</returns>
+    [Obsolete("Use the IFBasicFileManagementLayer instead")]
     public delegate string FBasicSourceProgramLoader(string name);
+
+    /// <summary>
+    /// The delegation type of any file request
+    /// </summary>
+    /// <param name="file">The requested file</param>
+    /// <returns>The file management layer</returns>
+    public delegate IFBasicFileManagementLayer FBasicFileManagement(IFBasicFileDescriptor file);
 
     /// <summary>
     /// The delegation of object requesting

@@ -75,15 +75,23 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         void CallStatement()
         {
-            if (callHandler == null) Error("There is no handler for the CALL statement [E109]");
+            if (FileHandler== null)
+            {
+                Error(Errors.E109_NoFileHandlerInstalled("Cannot load program file."));
+                return;
+            }
 
             string name = Expr().ToString();
-            var src = callHandler(name);
+
+            var file = new FBasicSourceProgramFile(name);
+            var src=FileHandler(file).GetSourceProgram();
+
             Interpreter sub = new(false, src); // BuiltIns will passed with funcs and statements
 
             sub.printHandler = this.printHandler;
             sub.inputHandler = this.inputHandler;
             sub.callHandler = this.callHandler;
+            sub.FileHandler = this.FileHandler;
             sub.requestForObjectHandler = this.requestForObjectHandler;
             sub.funcs = this.funcs;
             sub.statements = this.statements;
@@ -100,11 +108,17 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         void ChainStatement()
         {
-            if (callHandler == null) Error("There is no handler for the CALL statement [E109]");
+            if (FileHandler == null)
+            {
+                Error(Errors.E109_NoFileHandlerInstalled("Cannot load program file."));
+                return;
+            }
 
             // (v) load the chain source program
             string programFilename = Expr().ToString();
-            var srcCode = callHandler(programFilename);
+
+            var file = new FBasicSourceProgramFile(programFilename);
+            var srcCode = FileHandler(file).GetSourceProgram();
 
             // (v) save the current program state
             var oldState = this.GetState();

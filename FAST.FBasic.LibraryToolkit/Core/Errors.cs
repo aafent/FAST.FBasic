@@ -14,6 +14,7 @@
         public static string E107_LabelNotFound(string label)
             => $"Cannot find label named {label} [E107]";
 
+        public static string E109_NoFileHandlerInstalled(string more="")=>$"There is no File Handler Installed. {more} [E109]";
         public static string E111_UndeclareIdentifier(string name)
         {
             return $"Undeclared name {name} [E111]";

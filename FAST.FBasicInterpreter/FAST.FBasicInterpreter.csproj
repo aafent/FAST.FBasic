@@ -14,7 +14,12 @@
 	  <Authors>GCS</Authors>
 	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
+	  <Platforms>AnyCPU;x64</Platforms>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="Core\FBasicSourceProgramFile.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\FAST.FBasic.LibraryToolkit\FAST.FBasic.LibraryToolkit.csproj" />

@@ -1,34 +1,39 @@
 REM Word Templating  
 REM 
 
-FILESTREAM src, in, "lib", "path", "test.docx"
-FILESTREAM dst, out, "lib", "path", "dst.docx"
+FILESTREAM src, in, "", "other", "LoanTemplate.docx"    ' Streams Library
+FILESTREAM dst, out, "", "Output", "a.docx"
 loginfo "Reading the file"
-EXTRACTWORDBODY src, text
-
-print text
+WORDEXTRACTBODY src, text   ' Templating Library
 
 rem Orchestrate the needed data
 rem extract metadata
 print "Load data on demand..."
-PHVSDATA allNames text
-PHSdata cnames text
+PHVSDATA allNames text          ' TextReplacer Library
+PHSdata cnames text             ' TextReplacer Library
 
-let n1=1234543.1234 
+let LoanAmount=25000
 let s1="abCD12345fghijk"
 
-foreach cnames
+foreach cnames 
    loginfo "Setting up...."+[cnames.ph]
-   phgosub [cnames.ph] else notfound
+   phgosub [cnames.ph] else notfound ' TextReplacer Library
 endforeach cnames
 
 
 
 rem Do the replacement and save the document
 loginfo "Creating the new document"
-REPALCEWORDBODY src, newdoc, allNames
-SCOPY newdoc,dst
+WORDREPALCEBODY src, newdoc, allNames   ' Templating Library
 
+rem (v) Append Consent 
+FILESTREAM Consent, in, "", "other", "Consent.docx"
+'WORDPAGEBREAK newdoc
+WORDAPPEND Consent, newdoc
+
+
+
+SCOPY newdoc,dst    ' Streams Library
 
 
 
@@ -39,14 +44,14 @@ rem ...............SETUP COLLECTIONS...................
 rem 
 Days:
 loginfo "Loading Data for Days"
-sdata Days "Sat","Mon","Thu","The","Wes","Fri","Sat"
+sdata Days "Sat","Mon","Thu","The","Wes","Fri","Sat" 
 reset Days
 fetch Days
 return
 
 Cust:
 loginfo "Loading Customers"
-CURSOR Cust, "select synal,epvnymia,afm from sy_synal where synal='0031'"
+CURSOR Cust, "select CustomerID,Name,VatNumber,Email,Address,City from Customers"   ' SQLData Adapter 
 reset Cust
 fetch Cust
 

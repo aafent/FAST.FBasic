@@ -11,6 +11,7 @@ namespace FAST.FBasicInterpreter.DataProviders
         }
 
         public DbConnection channel = null;
+        public DbCommand command = null;
 
         protected override bool readerHasRows => reader.HasRows;
 

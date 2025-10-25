@@ -49,7 +49,14 @@
         /// The handler for the CALL statement
         /// This used to load the source of the calling program
         /// </summary>
+        [Obsolete("Use the FileHandler instead")]
         public FBasicSourceProgramLoader callHandler = null;
+
+        /// <summary>
+        /// The file handler. 
+        /// For source program and in-program files
+        /// </summary>
+        public FBasicFileManagement FileHandler { get; set; } = null;
 
         /// <summary>
         /// The handler of Request For Object mechanism 
@@ -152,6 +159,7 @@
             if (this.printHandler!=null) interpreter.printHandler=this.printHandler;
             if (this.inputHandler!=null) interpreter.inputHandler=this.inputHandler;
             if (this.callHandler!=null) interpreter.callHandler=this.callHandler;
+            if (this.FileHandler!=null) interpreter.FileHandler=this.FileHandler;
             if (this.requestForObjectHandler!=null) interpreter.requestForObjectHandler=this.requestForObjectHandler;
             if (this.executionLogger!=null) interpreter.logger = this.executionLogger;
 
@@ -188,15 +196,22 @@
         /// Use this code as example of initialization.
         /// </summary>
         /// <returns></returns>
-        public static void DefaultEnvironment(this ExecutionEnvironment env)
+        public static void DefaultEnvironment(this ExecutionEnvironment env, string rootFolder=null)
         {
             env.printHandler = Console.Write;
             env.inputHandler = Console.ReadLine;
             env.callHandler = (name) => { var filepath = Path.Combine(".", name); return File.ReadAllText(filepath); };
             env.requestForObjectHandler = (context, group, name) => null;
 
+            if (!string.IsNullOrEmpty(rootFolder) )
+            {
+                env.FileHandler = new DefaultFileManagementLayer(rootFolder).Handler;
+            }
+            
+
             return;
         }
+
     }
 
 }

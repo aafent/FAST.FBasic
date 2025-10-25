@@ -15,6 +15,7 @@
 	  <RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
 	  <PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
 	  <RootNamespace>FAST.FBasicInterpreter</RootNamespace>
+	  <Platforms>AnyCPU;x64</Platforms>
 
 
   </PropertyGroup>

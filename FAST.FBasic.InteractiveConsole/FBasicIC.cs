@@ -22,11 +22,7 @@ namespace FAST.FBasic.InteractiveConsole
         {
             this.iCommand = "RUN";
             this.config=config;
-            this.programsFolder = config.GetValue<string>("Settings:ProgramsFolder")!;
-            if (string.IsNullOrEmpty(programsFolder)) programsFolder= @"~\\..\\..\\..\\..\\FAST.FBasic.InteractiveConsole\\Tests";
-            if (programsFolder.Contains("~")) 
-                programsFolder = programsFolder.Replace("~", Environment.CurrentDirectory);
-
+            this.programsFolder=getProgramsFolder();
             this.startupName = config.GetValue<string>("Settings:Startup")!;
             if (string.IsNullOrEmpty(startupName)) startupName = "helloWorld.bas";
         }
@@ -61,17 +57,10 @@ namespace FAST.FBasic.InteractiveConsole
 
         public void ClearScreen()
         {
-            for (int i = 0; i < 50; i++) Console.WriteLine();
+            //for (int i = 0; i < 50; i++) Console.WriteLine();
+            Console.Clear();
         }
 
-        public void testEventHandler1(object sender, (string name, Stack<Value> args) e)
-        {
-            Console.WriteLine($"1st Listener for event: {e.name} triggered. Stack contains {e.args.Count} arguments");
-        }
-        public void testEventHandler2(object sender, (string name, Stack<Value> args) e)
-        {
-            Console.WriteLine($"2nd Listener for event: {e.name} triggered. Stack contains {e.args.Count} arguments");
-        }
 
         public void run(string iCommandArg)
         {
@@ -193,6 +182,19 @@ namespace FAST.FBasic.InteractiveConsole
             #endif
         }
 
+
+        private string getProgramsFolder()
+        {
+            var progFolder = config.GetValue<string>("Settings:ProgramsFolder")!;
+            if (string.IsNullOrEmpty(progFolder)) progFolder = @"~\\..\\..\\..\\..\\FAST.FBasic.InteractiveConsole\\Tests";
+            if (progFolder.Contains("~"))
+                progFolder = progFolder.Replace("~", Environment.CurrentDirectory);
+            //return progFolder;
+            return Path.GetFullPath(progFolder);
+        }
+
+
+
         private void runFBasicProgram()
         {
             
@@ -223,7 +225,7 @@ namespace FAST.FBasic.InteractiveConsole
             if (env == null) // in case the no environment, set the default environment. 
             {
                 env = new();
-                env.DefaultEnvironment();
+                env.DefaultEnvironment(programsFolder);
             }
             this.sourceProgram = File.ReadAllText(basProgramFile);
             basic = new Interpreter(env.installBuiltIns, this.sourceProgram);

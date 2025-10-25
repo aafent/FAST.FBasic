@@ -9,6 +9,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-10-25 | Demo Database, Major Improvements, Word Templating     | 
 | 2025-10-20 | Now Arrays are acting as collections (FOREACH,REST,etc)|
 | 2025-10-20 | SCNT() changed to ubound() for arrays and collections  |
 | 2025-10-20 | New Library: FBasic2DArrays                            |
