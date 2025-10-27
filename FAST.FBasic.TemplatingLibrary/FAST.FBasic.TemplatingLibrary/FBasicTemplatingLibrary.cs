@@ -10,10 +10,10 @@
 // WORDPAGEBREAK stream
 // WORDAPPENDROW stream, marker
 // WORDDELETEROW stream, marker
-
-//
 // WORDEXTRACTPART input_stream_name, output_stream_name, begin_marker, end_market 
-//
+// WORDDELETEPART input_stream_name, begin_marker, end_market 
+// 
+// todo: WORDREPALCEPART input_stream_name, input_part_name, marker
 
 namespace FAST.FBasicInterpreter.TemplatingLibrary
 {
@@ -46,6 +46,7 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             interpreter.AddStatement("WORDDELETEROW", WordDeleteRow);
 
             interpreter.AddStatement("WORDEXTRACTPART", WordExtractPart);
+            interpreter.AddStatement("WORDDELETEPART", WordDeletePart);
 
         }
 
@@ -95,6 +96,40 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
         }
 
 
+        private void WordDeletePart(IInterpreter interpreter)
+        {
+            //
+            // Syntax: WORDDELETEPART input_stream_name, begin_marker, end_market 
+            //
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string inputName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var beginMarker = interpreter.ValueOrVariable(doMatch: true);
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var endMarker = interpreter.ValueOrVariable(doMatch: true);
+            interpreter.GetNextToken();
+
+            // (v) implement 
+            var inputStreamVar = interpreter.GetVar(inputName);
+            checkForStream(interpreter, inputStreamVar);
+
+            new WordMarker(markerPrefix, markerSuffix).RemoveContentBetweenMarkers(
+                                    ((Stream)inputStreamVar.Object),
+                                    beginMarker.String,
+                                    endMarker.String,
+                                    out bool found
+                                );
+            interpreter.SetVar("FOUND", new Value(found));
+        }
+
+
 
         private void WordExtractPart(IInterpreter interpreter)
         {
@@ -126,19 +161,16 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             var inputStreamVar = interpreter.GetVar(inputName);
             checkForStream(interpreter, inputStreamVar);
 
-            var ooo = new MemoryStream();
-            WordDocumentExtractor.ExtractContentBetweenMarkers(
+            var outStream = new MemoryStream();
+            new WordMarker(markerPrefix,markerSuffix).ExtractContentBetweenMarkers(
                                     ((Stream)inputStreamVar.Object),
-                                    ooo,
+                                    outStream,
                                     beginMarker.String,
                                     endMarker.String,
-                                    "[<",
-                                    ">]",
                                     out bool found
                                 );
-
             interpreter.SetVar("FOUND",new Value(found));
-            if (found) interpreter.SetVar(outputName, new Value(ooo, valueStamp)  );
+            if (found) interpreter.SetVar(outputName, new Value(outStream, valueStamp)  );
 
         }
 

@@ -34,6 +34,9 @@ MEMSTREAM part
 WORDEXTRACTPART Templates, part, "CopyrightBegin", "CopyrightEnd"
 WORDAPPEND part, CustList
 
+rem (v) Remove a part of the document
+WORDDELETEPART CustList, "DeleteBegin", "DeleteEnd"
+
 
 rem (v) Create the output document
 scopy CustList, dst

@@ -1,6 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter.Builders
 {
-    public abstract class sourceCodeBuilderAbstract : IsourceCodeBuilder
+    public abstract class SourceCodeBuilderAbstract : ISourceCodeBuilder
     {
         private Dictionary<Token,int> tokenReferences =new();
 

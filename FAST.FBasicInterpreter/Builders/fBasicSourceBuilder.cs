@@ -1,8 +1,8 @@
 ﻿using System.Text;
 
-namespace FAST.FBasicInterpreter
+namespace FAST.FBasicInterpreter.Builders
 {
-    public class fBasicSourceBuilder : sourceCodeBuilderAbstract
+    public class FBasicSourceBuilder : SourceCodeBuilderAbstract
     {
         private string source=null;
 

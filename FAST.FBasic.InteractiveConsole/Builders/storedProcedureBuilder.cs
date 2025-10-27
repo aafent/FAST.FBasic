@@ -1,8 +1,9 @@
-﻿using System.Text;
+﻿using FAST.FBasicInterpreter.Builders;
+using System.Text;
 
 namespace FAST.FBasicInterpreter
 {
-    public class storedProcedureBuilder : sourceCodeBuilderAbstract
+    public class storedProcedureBuilder : SourceCodeBuilderAbstract
     {
         private string source=null;
         protected override ProgramContainer program { get; set; }

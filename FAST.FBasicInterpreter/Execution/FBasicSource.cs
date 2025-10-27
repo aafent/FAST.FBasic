@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using FAST.FBasicInterpreter.Builders;
+
+namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// FBasic source program helper
@@ -12,7 +14,7 @@
         /// <returns>string, the source program</returns>
         public static string ToSource(ProgramContainer program)
         {
-            IsourceCodeBuilder builder = new fBasicSourceBuilder();
+            ISourceCodeBuilder builder = new FBasicSourceBuilder();
             builder.Build(program);
             return builder.GetSource();
         }

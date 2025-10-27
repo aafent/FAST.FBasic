@@ -1,6 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter.Builders
 {
-    public interface IsourceCodeBuilder
+    public interface ISourceCodeBuilder
     {
         void Build(ProgramContainer program);
         string GetSource();
