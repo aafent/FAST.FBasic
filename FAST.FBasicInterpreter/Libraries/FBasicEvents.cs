@@ -67,7 +67,7 @@ namespace FAST.FBasicInterpreter
                         break;
 
                     case Token.Value:
-                        args.Push(interpreter.ValueOrIdentifier());
+                        args.Push(interpreter.ValueOrVariable());
                         break;
                     default:
                         break;

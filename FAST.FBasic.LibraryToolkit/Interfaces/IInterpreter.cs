@@ -27,7 +27,7 @@
         T GetDataAdapter<T>(string name) where T : IFBasicDataAdapter;
         Value GetVar(string name);
         Dictionary<string, Value> GetVariables();
-        Value ValueOrIdentifier(bool doMatch=false);
+        Value ValueOrVariable(bool doMatch=false);
         Value GetIdentifierOrCF(bool permitIdentifier = true, bool permitCollection = true, bool permitFunc = true);
 
         /// <summary>

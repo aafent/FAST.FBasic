@@ -1,12 +1,18 @@
 ﻿using FAST.FBasic.TemplatingLibrary;
 
-//
+// package: DocumentFormat.OpenXml
 // Stream Statements: 
 //
-// WORDEXTRACTBODY file_stream_name, identifier 
-// WORDREPALCEBODY input_stream, output_stream, array
+// WORDEXTRACTBODY input_stream_name, identifier 
+// WORDREPALCEBODY stream, ALL|FIRST, array
 // WORDAPPEND stream_to_append, destination_stream
+// WORDEMPTYDOC stream
 // WORDPAGEBREAK stream
+// WORDAPPENDROW stream, marker
+// WORDDELETEROW stream, marker
+
+//
+// WORDEXTRACTPART input_stream_name, output_stream_name, begin_marker, end_market 
 //
 
 namespace FAST.FBasicInterpreter.TemplatingLibrary
@@ -14,15 +20,16 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
     public class FBasicTemplatingLibrary  : IFBasicLibraryWithMemory
     {
         private const string valueStamp = "_$$Stream$$_";
+        private const string markerPrefix = "[<";
+        private const string markerSuffix = ">]";
+        private const string placeHolderPrefix = "{";
+        private const string placeHolderSuffix = "}";
         private IInterpreter inter;
-        //private readonly IFBasicFileManagementLayer fileManager=null;
 
         public string uniqueName => "TemplatingLibrary";
 
         public FBasicTemplatingLibrary()
         {
-            //IFBasicFileManagementLayer fileManager=new zzzzzzz();
-            //this.fileManager=fileManager;
         }
 
 
@@ -33,7 +40,123 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             interpreter.AddStatement("WORDREPALCEBODY", WordReplaceBody);
             interpreter.AddStatement("WORDAPPEND", WordMergeDocuments);
             interpreter.AddStatement("WORDPAGEBREAK", WordPageBreak);
+            
+            interpreter.AddStatement("WORDEMPTYDOC", WordEmptyDocument);
+            interpreter.AddStatement("WORDAPPENDROW", WordAppendRow);
+            interpreter.AddStatement("WORDDELETEROW", WordDeleteRow);
+
+            interpreter.AddStatement("WORDEXTRACTPART", WordExtractPart);
+
         }
+
+
+        private void WordAppendRow(IInterpreter interpreter)
+        {
+            // WORDAPPENDROW stream, marker
+
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string name = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var marker = interpreter.ValueOrVariable(doMatch: true).String;
+            interpreter.GetNextToken();
+
+            // (v) implementation 
+            var streamVar = interpreter.GetVar(name);
+            checkForStream(interpreter, streamVar);
+
+            new WordMarker(markerPrefix, markerSuffix).DuplicateRowWithMarker(((Stream)streamVar.Object), marker, out bool found);
+            interpreter.SetVar("FOUND",new Value(found));
+        }
+
+        private void WordDeleteRow(IInterpreter interpreter)
+        {
+            // WORDDELETEROW stream, marker
+
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string name = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var marker = interpreter.ValueOrVariable(doMatch: true).String;
+            interpreter.GetNextToken();
+
+            // (v) implementation 
+            var streamVar = interpreter.GetVar(name);
+            checkForStream(interpreter, streamVar);
+
+            new WordMarker(markerPrefix,markerSuffix).RemoveRowsByMarker(((Stream)streamVar.Object), marker, out bool found);
+            interpreter.SetVar("FOUND", new Value(found));
+        }
+
+
+
+        private void WordExtractPart(IInterpreter interpreter)
+        {
+            //
+            // Syntax: WORDEXTRACTPART input_stream_name, output_stream_name, begin_marker, end_market 
+            //
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string inputName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            interpreter.Match(Token.Identifier);
+            var outputName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var beginMarker = interpreter.ValueOrVariable(doMatch: true);
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var endMarker = interpreter.ValueOrVariable(doMatch: true);
+            interpreter.GetNextToken();
+
+            // (v) implement 
+            var inputStreamVar = interpreter.GetVar(inputName);
+            checkForStream(interpreter, inputStreamVar);
+
+            var ooo = new MemoryStream();
+            WordDocumentExtractor.ExtractContentBetweenMarkers(
+                                    ((Stream)inputStreamVar.Object),
+                                    ooo,
+                                    beginMarker.String,
+                                    endMarker.String,
+                                    "[<",
+                                    ">]",
+                                    out bool found
+                                );
+
+            interpreter.SetVar("FOUND",new Value(found));
+            if (found) interpreter.SetVar(outputName, new Value(ooo, valueStamp)  );
+
+        }
+
+
+        private void WordEmptyDocument(IInterpreter interpreter)
+        {
+            // WORDEMPTYDOC stream
+            //
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string name = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            var stream = new WordPlaceHolder().CreateEmptyWordDocument();
+            
+            interpreter.SetVar(name,new Value(stream,valueStamp ) );
+        }
+        
 
 
 
@@ -51,7 +174,7 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             checkForStream(interpreter, streamToAppend);
 
             var append = ((Stream)streamToAppend.Object);
-            new WordProcessor().AddPageBreak(append);
+            new WordPlaceHolder().AddPageBreak(append);
 
         }
 
@@ -107,7 +230,7 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             var stream=interpreter.GetVar(name);
             checkForStream(interpreter, stream);
 
-            var text= new WordProcessor().ExtractAllText(((Stream)stream.Object));
+            var text= new WordPlaceHolder().ExtractAllText(((Stream)stream.Object));
 
             interpreter.SetVar(variableToSave,new Value(text) );
         }
@@ -115,18 +238,26 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
         private void WordReplaceBody(IInterpreter interpreter)
         {
             //
-            // Syntax: REPALCEWORDBODY input_stream, output_stream, array
+            // Syntax: REPALCEWORDBODY word_stream, array
             //
-            // (v) argument: input_stream
+            // (v) argument: word_stream
             interpreter.Match(Token.Identifier);
             string inputName = interpreter.lex.Identifier;
             interpreter.GetNextToken();
 
             interpreter.MatchAndThenNextToken(Token.Comma);
 
-            // (v) argument: output_stream
             interpreter.Match(Token.Identifier);
-            string outputName = interpreter.lex.Identifier;
+            var policy = interpreter.lex.Identifier.ToUpper();
+            switch (policy)
+            {
+                case "ALL":
+                case "FIRST":
+                    break;
+                default:
+                    interpreter.Error(Errors.E106_ExpectingKeyword(policy),"Expecting ALL or FIRST" );
+                    return;
+            }
             interpreter.GetNextToken();
 
             interpreter.MatchAndThenNextToken(Token.Comma);
@@ -155,10 +286,12 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
             {
                 replacements[item.Key] = ToolKitHelper.FormatStringValue(item.Key, interpreter.GetValue(item.Value).ToString());
             }
-            var mStream = new WordProcessor().ReplacePlaceholders(((Stream)stream.Object), replacements, "{", "}");
+            new WordPlaceHolder(placeHolderPrefix,placeHolderSuffix).ReplacePlaceholders(((Stream)stream.Object), replacements, policy);
 
-            interpreter.SetVar(outputName, new Value(mStream,valueStamp));
+            return;
         }
+
+
 
 
 

@@ -35,6 +35,7 @@ namespace FAST.FBasicInterpreter
         /// <returns>the results</returns>
         public static ExecutionResult ExecWithResult(this Interpreter interpreter,bool copyOfTheVariables=false)
         {
+            bool exception=false;
             ExecutionResult result = new();
             try
             {
@@ -65,6 +66,7 @@ namespace FAST.FBasicInterpreter
                 #if DEBUG
                 result.exception=e;
                 #endif
+                exception=true;
             }
             catch (IndexOutOfRangeException e1)
             {
@@ -75,19 +77,22 @@ namespace FAST.FBasicInterpreter
                 #if DEBUG
                 result.exception = e1;
                 #endif
+                exception = true;
             }
             catch (Exception ex)
             {
                 result.hasError = true;
-                result.errorText = ex.ToString();
                 result.lineOfError = interpreter.lex.CurrentSourceMarker.Line;
+                result.errorText = Errors.X012_GeneralException("",ex, $" Near line {result.lineOfError}");
                 result.errorSourceLine = interpreter.lex.GetLine(result.lineOfError);
                 #if DEBUG
                 result.exception = ex;
                 #endif
+                exception = true;
             }
             finally
             {
+                if (exception) result.programEndWhen = DateTime.Now;
                 foreach (var lib in interpreter.librariesWithMemory)
                 {
                     if (lib.Value is IDisposable)
@@ -99,10 +104,8 @@ namespace FAST.FBasicInterpreter
                         catch
                         {
                         }
-
                     }
                 }
-
             }
             return result;
         }

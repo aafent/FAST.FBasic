@@ -1,10 +1,14 @@
-REM Word Templating  
-REM 
+REM Word Templating - example1
+REM Create a Loan Application Form by populating with data the template and 
+REM attaching a second document at the end of the first. The example demonstrating
+REM how to retrieve only the necessary for the template data from the database.
+REM
 
-FILESTREAM src, in, "", "other", "LoanTemplate.docx"    ' Streams Library
-FILESTREAM dst, out, "", "Output", "a.docx"
+
+FILESTREAM template, in, "", "other", "LoanTemplate.docx"    ' Streams Library
+FILESTREAM final, out, "", "Output", "example1.docx"
 loginfo "Reading the file"
-WORDEXTRACTBODY src, text   ' Templating Library
+WORDEXTRACTBODY template, text   ' Templating Library
 
 rem Orchestrate the needed data
 rem extract metadata
@@ -13,7 +17,6 @@ PHVSDATA allNames text          ' TextReplacer Library
 PHSdata cnames text             ' TextReplacer Library
 
 let LoanAmount=25000
-let s1="abCD12345fghijk"
 
 foreach cnames 
    loginfo "Setting up...."+[cnames.ph]
@@ -21,21 +24,16 @@ foreach cnames
 endforeach cnames
 
 
-
-rem Do the replacement and save the document
+rem (v) Do the replacement and save the document
 loginfo "Creating the new document"
-WORDREPALCEBODY src, newdoc, allNames   ' Templating Library
+WORDREPALCEBODY template, newdoc, allNames   ' Templating Library
 
 rem (v) Append Consent 
 FILESTREAM Consent, in, "", "other", "Consent.docx"
 'WORDPAGEBREAK newdoc
 WORDAPPEND Consent, newdoc
 
-
-
-SCOPY newdoc,dst    ' Streams Library
-
-
+SCOPY newdoc,final    ' Streams Library
 
 halt
 

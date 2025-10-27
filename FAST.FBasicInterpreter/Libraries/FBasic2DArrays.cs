@@ -13,7 +13,7 @@
 // Reference:
 // [array.column(index)] 
 // 
-// index and column_number is 1-base number
+// index and column_number are 1-base number
 //
 
 

@@ -1,4 +1,6 @@
-﻿namespace FAST.FBasicInterpreter
+﻿using System.ComponentModel.Design;
+
+namespace FAST.FBasicInterpreter
 {
     public static class Errors
     {
@@ -127,10 +129,15 @@
             return $"Cannot convert {fromType} to {toType}. [X011]";
         }
 
-        public static string X012_GeneralException(string source, Exception ex)
+        public static string X012_GeneralException(string source, Exception ex, string more=null)
         {
-            string msg = $"FATAL Error ({source}) {ex.Message}. ";
-            if (ex.InnerException !=null) msg+=$"{ex.InnerException.Message} [X012]";
+            string msg;
+            if (string.IsNullOrEmpty(source)) 
+                msg = $"FATAL ERROR: {ex.Message} ";
+            else 
+                msg = $"FATAL ERROR: ({source}) {ex.Message} ";
+            if (ex.InnerException !=null) msg+=$"{ex.InnerException.Message}";
+            msg+= $"  {more} [X012].";
             return msg;
         }
 

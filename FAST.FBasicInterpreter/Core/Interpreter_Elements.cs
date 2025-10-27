@@ -122,9 +122,10 @@
 
             return lhs;
         }
-        public Value ValueOrIdentifier(bool doMatch=false)
+
+        public Value ValueOrVariable(bool doMatch=false)
         {
-            if (doMatch) this.MatchAndThenNextToken(Token.Identifier, Token.Value);
+            if (doMatch) this.MatchAny(Token.Identifier, Token.Value);
             switch (lastToken)
             {
                 case Token.Value:
