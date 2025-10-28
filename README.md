@@ -21,7 +21,7 @@ Latest NuGet package:
 
 | Solution activity |
 |:----------------- |
-| [![NuGet](https://img.shields.io/github/last-commit/aafent/FAST.FBasic)](https://img.shields.io/github/last-commit/aafent/FAST.FBasic)] |
+| [![NuGet](https://img.shields.io/github/last-commit/aafent/FAST.FBasic)](https://img.shields.io/github/last-commit/aafent/FAST.FBasic) |
 
 [More about installation](https://github.com/aafent/FAST.FBasic/wiki/Installation)
 
