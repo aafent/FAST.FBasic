@@ -14,9 +14,14 @@ In today’s rapidly evolving digital landscape, enterprises are confronted with
 ------------
 Latest NuGet package:
 
-| NuGet Package | Version | Download | Activity |
+| NuGet Package | Version | Download | Activity | 
 | --- | --- | --- | --- |
-| FAST.FBasicInterpreter | [![NuGet](https://img.shields.io/nuget/v/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasicInterpreter) | [![Nuget](https://img.shields.io/nuget/dt/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasicInterpreter) | [![Last Commit](https://img.shields.io/github/last-commit/aafent/FAST.FBasic)](https://github.com/aafent/FAST.FBasic/commits/main) |
+| FAST.FBasicInterpreter | [![NuGet](https://img.shields.io/nuget/v/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasicInterpreter) | [![Nuget](https://img.shields.io/nuget/dt/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasicInterpreter) | [![Last Commit](https://img.shields.io/github/last-commit/aafent/FAST.FBasic/main?label=Latest%20Project%20Commit&path=FAST.FBasicInterpreter)](https://github.com/aafent/FAST.FBasic/commits/main) |
+| FAST.FBasic.LibraryToolKit | [![NuGet](https://img.shields.io/nuget/v/FAST.FBasic.LibraryToolKit.svg)](https://www.nuget.org/packages/FAST.FBasic.LibraryToolKit) | [![Nuget](https://img.shields.io/nuget/dt/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasic.LibraryToolKit) | [![Last Commit](https://img.shields.io/github/last-commit/aafent/FAST.FBasic/main?label=Project%20Commit&path=FAST.FBasic.LibraryToolKit)](https://github.com/aafent/FAST.FBasic/commits/main) |
+
+| Solution activity |
+|:----------------- |
+| ![NuGet](https://img.shields.io/github/last-commit/aafent/FAST.FBasic)](https://img.shields.io/github/last-commit/aafent/FAST.FBasic) |
 
 [More about installation](https://github.com/aafent/FAST.FBasic/wiki/Installation)
 
