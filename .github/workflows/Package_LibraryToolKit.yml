@@ -1,0 +1,34 @@
+name: Publish NuGet Package FBasic LibraryToolkit
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags like v1.2.3
+  workflow_dispatch: # Allows manual trigger from the GitHub UI
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version:
+            8.0.x
+            9.0.x
+
+
+      - name: Restore dependencies
+        run: dotnet restore FAST.FBasic.LibraryToolkit/FAST.FBasic.LibraryToolkit.csproj
+
+      - name: Build project
+        run: dotnet build FAST.FBasic.LibraryToolkit/FAST.FBasic.LibraryToolkit.csproj --configuration Release --no-restore
+
+      - name: Pack NuGet package
+        run: dotnet pack FAST.FBasic.LibraryToolkit/FAST.FBasic.LibraryToolkit.csproj --configuration Release --no-build --output ./nuget
+
+      - name: Publish package to NuGet.org
+        run: dotnet nuget push ./nuget/*.nupkg --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json
