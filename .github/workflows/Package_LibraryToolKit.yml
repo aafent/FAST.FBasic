@@ -1,4 +1,4 @@
-name: Publish NuGet Package FBasic LibraryToolkit
+name: Publish Package LibraryToolkit
 
 on:
   push:
