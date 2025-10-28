@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary.csproj" />
+    <ProjectReference Include="..\FAST.FBasic.TemplatingLibrary\FAST.FBasic.TemplatingLibrary.csproj" />
     <ProjectReference Include="..\FAST.FBasicInterpreter\FAST.FBasicInterpreter.csproj" />
   </ItemGroup>
 

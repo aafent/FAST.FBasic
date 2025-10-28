@@ -1,8 +1,6 @@
 ﻿using FAST.FBasicInteractiveConsole;
 using FAST.FBasicInterpreter;
-using FAST.FBasicInterpreter.TemplatingLibrary;
 using Microsoft.Extensions.Configuration;
-using System.Data.Odbc;
 
 namespace FAST.FBasic.InteractiveConsole
 {

@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FAST.FBasic.LibraryToolkit\FAST.FBasic.LibraryToolkit.csproj" />
+    <ProjectReference Include="..\FAST.FBasic.LibraryToolkit\FAST.FBasic.LibraryToolkit.csproj" />
   </ItemGroup>
 
 </Project>

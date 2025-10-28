@@ -1,6 +1,4 @@
-﻿using FAST.FBasic.TemplatingLibrary;
-
-// package: DocumentFormat.OpenXml
+﻿// package: DocumentFormat.OpenXml
 // Stream Statements: 
 //
 // WORDEXTRACTBODY input_stream_name, identifier 
@@ -15,7 +13,9 @@
 // 
 // todo: WORDREPALCEPART input_stream_name, input_part_name, marker
 
-namespace FAST.FBasicInterpreter.TemplatingLibrary
+using FAST.FBasicInterpreter;
+
+namespace FAST.FBasic.TemplatingLibrary
 {
     public class FBasicTemplatingLibrary  : IFBasicLibraryWithMemory
     {
@@ -326,10 +326,9 @@ namespace FAST.FBasicInterpreter.TemplatingLibrary
 
 
 
-
         private void checkForStream(IInterpreter interpreter, Value value)
         {
-            if (value.Type != ValueType.Object)
+            if (value.Type != FBasicInterpreter.ValueType.Object)
             {
                 interpreter.Error("STREAM",Errors.E127_WrongArgumentReferredType("STREAM"));
                 return;
