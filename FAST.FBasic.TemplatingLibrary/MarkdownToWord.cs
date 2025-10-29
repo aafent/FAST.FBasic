@@ -1,273 +1,524 @@
 ﻿using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
-using System.Text;
+using System.Text.RegularExpressions;
 
-/// <summary>
-/// Provides a utility method to convert a simple Markdown text stream into a Word (.docx) document stream.
-/// This version addresses the compiler error for 'ParagraphStyle' by using 'Style', which may be required
-/// in some environments, and uses the confirmed type 'SpaceProcessingModeValues'.
-/// </summary>
-public static class MarkdownToWordConverter
+internal static class MarkdownToWordConverter
 {
-    // The OpenXML Document Model (OXML) is verbose. This custom method focuses on converting basic
-    // block-level elements: H1, H2, standard paragraphs, and tables.
-
-    /// <summary>
-    /// Converts an input stream containing Markdown text into a Word Document stored in a MemoryStream.
-    /// </summary>
-    /// <param name="markdownStream">The input stream containing Markdown formatted text.</param>
-    /// <returns>A MemoryStream containing the generated Word (.docx) document.</returns>
-    /// <exception cref="ArgumentNullException">Thrown if the input stream is null.</exception>
-    public static MemoryStream ConvertMarkdownToWord(Stream markdownStream)
+    public static Stream ConvertMarkdownToWord(string markdownText)
     {
-        if (markdownStream == null)
+        var stream = new MemoryStream();
+
+        using (var wordDocument = WordprocessingDocument.Create(stream, WordprocessingDocumentType.Document, true))
         {
-            throw new ArgumentNullException(nameof(markdownStream), "Markdown input stream cannot be null.");
-        }
-
-        // 1. Read the Markdown content
-        string markdownContent;
-        using (var reader = new StreamReader(markdownStream, Encoding.UTF8))
-        {
-            markdownContent = reader.ReadToEnd();
-        }
-
-        // Split content into lines, removing empty entries initially
-        var lines = markdownContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-        // 2. Initialize the OpenXML document in memory
-        var memoryStream = new MemoryStream();
-
-        // WordprocessingDocumentType.Document creates a standard DOCX structure
-        using (var wordDocument = WordprocessingDocument.Create(memoryStream, WordprocessingDocumentType.Document))
-        {
-            // Add the main document part
-            MainDocumentPart mainPart = wordDocument.AddMainDocumentPart();
+            var mainPart = wordDocument.AddMainDocumentPart();
             mainPart.Document = new Document();
-            Body body = mainPart.Document.AppendChild(new Body());
+            var body = mainPart.Document.AppendChild(new Body());
 
-            // 3. Process each line of Markdown using an index-based loop for multi-line elements (like tables)
-            for (int i = 0; i < lines.Length; i++)
+            // Define styles
+            AddStyles(mainPart);
+
+            // Parse and convert markdown
+            var lines = markdownText.Split(new[] { "\r\n", "\r", "\n" }, StringSplitOptions.None);
+            int i = 0;
+
+            while (i < lines.Length)
             {
-                var trimmedLine = lines[i].Trim();
-                if (string.IsNullOrEmpty(trimmedLine))
+                var line = lines[i];
+
+                // Skip empty lines
+                if (string.IsNullOrWhiteSpace(line))
+                {
+                    body.AppendChild(new Paragraph());
+                    i++;
                     continue;
-
-                OpenXmlElement elementToAdd = null;
-
-                // --- Table Detection (Requires Header + Separator) ---
-                if (IsPotentialHeader(trimmedLine) && i + 1 < lines.Length && IsSeparatorRow(lines[i + 1]))
-                {
-                    // Found a table structure (Header + Separator). Parse the whole block.
-                    int nextIndex;
-                    elementToAdd = CreateTable(lines, i, out nextIndex);
-                    i = nextIndex - 1; // Set index to the line before the next element (loop will increment it)
-                }
-                // -----------------------------------------------------
-                else if (trimmedLine.StartsWith("# "))
-                {
-                    // H1 Heading
-                    elementToAdd = CreateParagraphWithStyle("Heading1", trimmedLine.Substring(2));
-                }
-                else if (trimmedLine.StartsWith("## "))
-                {
-                    // H2 Heading
-                    elementToAdd = CreateParagraphWithStyle("Heading2", trimmedLine.Substring(3));
-                }
-                else
-                {
-                    // Standard Paragraph
-                    elementToAdd = CreateParagraphWithText(trimmedLine);
                 }
 
-                if (elementToAdd != null)
+                // Check for tables
+                if (line.TrimStart().StartsWith("|"))
                 {
-                    body.AppendChild(elementToAdd);
+                    i = ProcessTable(body, lines, i);
+                    continue;
                 }
+
+                // Check for horizontal rule
+                if (Regex.IsMatch(line.Trim(), @"^(\*{3,}|-{3,}|_{3,})$"))
+                {
+                    AddHorizontalLine(body);
+                    i++;
+                    continue;
+                }
+
+                // Check for headers
+                var headerMatch = Regex.Match(line, @"^(#{1,6})\s+(.+)$");
+                if (headerMatch.Success)
+                {
+                    var level = headerMatch.Groups[1].Value.Length;
+                    var text = headerMatch.Groups[2].Value;
+                    AddHeading(body, text, level);
+                    i++;
+                    continue;
+                }
+
+                // Check for unordered list
+                var ulMatch = Regex.Match(line, @"^(\s*)[-*+]\s+(.+)$");
+                if (ulMatch.Success)
+                {
+                    i = ProcessList(body, lines, i, false, mainPart);
+                    continue;
+                }
+
+                // Check for ordered list
+                var olMatch = Regex.Match(line, @"^(\s*)\d+\.\s+(.+)$");
+                if (olMatch.Success)
+                {
+                    i = ProcessList(body, lines, i, true, mainPart);
+                    continue;
+                }
+
+                // Check for blockquote
+                if (line.TrimStart().StartsWith(">"))
+                {
+                    i = ProcessBlockquote(body, lines, i);
+                    continue;
+                }
+
+                // Regular paragraph
+                AddParagraph(body, line);
+                i++;
             }
 
-            // 4. Save and close the document
             mainPart.Document.Save();
-        } // The 'using' statement closes the document and flushes content to the MemoryStream
-
-        // 5. Reset stream position and return
-        memoryStream.Position = 0;
-        return memoryStream;
-    }
-
-    /// <summary>
-    /// Helper to determine if a line could be a table header.
-    /// </summary>
-    private static bool IsPotentialHeader(string line)
-    {
-        var trimmed = line.Trim();
-        // Must start and end with '|' and contain at least one other pipe to separate columns
-        return trimmed.StartsWith("|") && trimmed.EndsWith("|") && trimmed.IndexOf('|', 1) > 0;
-    }
-
-    /// <summary>
-    /// Helper to determine if a line is a table separator row (e.g., |---|---|).
-    /// </summary>
-    private static bool IsSeparatorRow(string line)
-    {
-        var trimmed = line.Trim();
-        if (!trimmed.StartsWith("|") || !trimmed.EndsWith("|")) return false;
-
-        // A separator row should consist mostly of hyphens and pipe characters
-        return trimmed.Split('|', StringSplitOptions.RemoveEmptyEntries)
-            // Checks that each column separator part only contains hyphens or colons (for alignment flags, which we ignore but validate)
-            .All(col => col.Trim().All(c => c == '-' || c == ':'));
-    }
-
-    /// <summary>
-    /// Parses a block of Markdown lines into an OpenXML Table element.
-    /// </summary>
-    private static Table CreateTable(string[] lines, int startIndex, out int endIndex)
-    {
-        var table = new Table();
-
-        // 1. Table Properties (Mandatory for formatting, including borders)
-        TableProperties tableProps = new TableProperties(
-            new TableBorders(
-                new TopBorder() { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 4 },
-                new BottomBorder() { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 4 },
-                new LeftBorder() { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 4 },
-                new RightBorder() { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 4 },
-                new InsideHorizontalBorder() { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 4 },
-                new InsideVerticalBorder() { Val = new EnumValue<BorderValues>(BorderValues.Single), Size = 4 }
-            ),
-            // Set table width to 100% (using 5000 Dxa units for percentage)
-            new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct }
-        );
-        table.AppendChild(tableProps);
-
-        // 2. Parse all rows (Header, Separator, Data)
-        var rowLines = new System.Collections.Generic.List<string>();
-        int i = startIndex;
-
-        // Collect Header (i) and Separator (i+1)
-        if (i < lines.Length) rowLines.Add(lines[i]);
-        i++;
-        if (i < lines.Length && IsSeparatorRow(lines[i])) rowLines.Add(lines[i]);
-        i++;
-
-        // Collect Data rows until an empty line or end of document, or a line not starting with '|'
-        for (; i < lines.Length; i++)
-        {
-            var trimmed = lines[i].Trim();
-            if (string.IsNullOrEmpty(trimmed) || !trimmed.StartsWith("|"))
-            {
-                break; // End of table block
-            }
-            rowLines.Add(lines[i]);
         }
-        endIndex = i; // The index of the line after the table block
 
-        // 3. Convert parsed rows to OpenXML TableRows (skipping the separator row [1])
-        for (int rowIndex = 0; rowIndex < rowLines.Count; rowIndex++)
+        stream.Position = 0;
+        return stream;
+    }
+
+    private static void AddStyles(MainDocumentPart mainPart)
+    {
+        var stylesPart = mainPart.AddNewPart<StyleDefinitionsPart>();
+        var styles = new Styles();
+
+        // Heading styles
+        for (int i = 1; i <= 6; i++)
         {
-            if (rowIndex == 1) continue; // Skip the separator row (index 1)
+            var headingStyle = new Style()
+            {
+                Type = StyleValues.Paragraph,
+                StyleId = $"Heading{i}",
+                CustomStyle = false
+            };
 
-            bool isHeader = (rowIndex == 0);
-            TableRow tableRow = new TableRow();
+            headingStyle.AppendChild(new Name() { Val = $"Heading {i}" });
+            headingStyle.AppendChild(new BasedOn() { Val = "Normal" });
+            headingStyle.AppendChild(new NextParagraphStyle() { Val = "Normal" });
 
-            // Split line by '|' and skip the first and last empty elements caused by leading/trailing pipes
-            var cells = rowLines[rowIndex].Split('|', StringSplitOptions.None)
+            var styleRunProperties = new StyleRunProperties();
+            styleRunProperties.AppendChild(new Bold());
+            styleRunProperties.AppendChild(new FontSize() { Val = (32 - i * 2).ToString() });
+            headingStyle.AppendChild(styleRunProperties);
+
+            var styleParagraphProperties = new StyleParagraphProperties();
+            styleParagraphProperties.AppendChild(new SpacingBetweenLines()
+            {
+                Before = "240",
+                After = "120"
+            });
+            headingStyle.AppendChild(styleParagraphProperties);
+
+            styles.AppendChild(headingStyle);
+        }
+
+        // Quote style
+        var quoteStyle = new Style()
+        {
+            Type = StyleValues.Paragraph,
+            StyleId = "Quote",
+            CustomStyle = true
+        };
+        quoteStyle.AppendChild(new Name() { Val = "Quote" });
+
+        var quoteParagraphProperties = new StyleParagraphProperties();
+        quoteParagraphProperties.AppendChild(new Indentation() { Left = "720" });
+        var quoteBorders = new ParagraphBorders();
+        quoteBorders.AppendChild(new LeftBorder()
+        {
+            Val = BorderValues.Single,
+            Color = "CCCCCC",
+            Size = 12,
+            Space = 4
+        });
+        quoteParagraphProperties.AppendChild(quoteBorders);
+        quoteStyle.AppendChild(quoteParagraphProperties);
+
+        var quoteRunProperties = new StyleRunProperties();
+        quoteRunProperties.AppendChild(new Italic());
+        quoteRunProperties.AppendChild(new Color() { Val = "666666" });
+        quoteStyle.AppendChild(quoteRunProperties);
+
+        styles.AppendChild(quoteStyle);
+
+        stylesPart.Styles = styles;
+    }
+
+    private static void AddHeading(Body body, string text, int level)
+    {
+        var paragraph = body.AppendChild(new Paragraph());
+        var paragraphProperties = new ParagraphProperties();
+        paragraphProperties.ParagraphStyleId = new ParagraphStyleId() { Val = $"Heading{level}" };
+        paragraph.AppendChild(paragraphProperties);
+
+        AddFormattedText(paragraph, text);
+    }
+
+    private static void AddParagraph(Body body, string text)
+    {
+        var paragraph = body.AppendChild(new Paragraph());
+        AddFormattedText(paragraph, text);
+    }
+
+    private static void AddFormattedText(Paragraph paragraph, string text)
+    {
+        // Parse inline formatting: bold, italic, code
+        var pattern = @"(\*\*\*|___|__|\*\*|\*|_|~~|`)(.*?)\1|(\[([^\]]+)\]\(([^\)]+)\))";
+        var lastIndex = 0;
+        var matches = Regex.Matches(text, pattern);
+
+        if (matches.Count == 0)
+        {
+            // No formatting, just add the text
+            paragraph.AppendChild(CreateRun(text, false, false, false, false));
+            return;
+        }
+
+        foreach (Match match in matches)
+        {
+            // Add text before match
+            if (match.Index > lastIndex)
+            {
+                var beforeText = text.Substring(lastIndex, match.Index - lastIndex);
+                paragraph.AppendChild(CreateRun(beforeText, false, false, false, false));
+            }
+
+            if (!string.IsNullOrEmpty(match.Groups[3].Value)) // Link
+            {
+                var linkText = match.Groups[4].Value;
+                var linkUrl = match.Groups[5].Value;
+                paragraph.AppendChild(CreateRun(linkText, false, false, false, false));
+            }
+            else
+            {
+                var delimiter = match.Groups[1].Value;
+                var content = match.Groups[2].Value;
+
+                bool isBold = delimiter == "**" || delimiter == "***" || delimiter == "__" || delimiter == "___";
+                bool isItalic = delimiter == "*" || delimiter == "_" || delimiter == "***" || delimiter == "___";
+                bool isStrikethrough = delimiter == "~~";
+                bool isCode = delimiter == "`";
+
+                paragraph.AppendChild(CreateRun(content, isBold, isItalic, isStrikethrough, isCode));
+            }
+
+            lastIndex = match.Index + match.Length;
+        }
+
+        // Add remaining text
+        if (lastIndex < text.Length)
+        {
+            var remainingText = text.Substring(lastIndex);
+            paragraph.AppendChild(CreateRun(remainingText, false, false, false, false));
+        }
+    }
+
+    private static Run CreateRun(string text, bool bold, bool italic, bool strikethrough, bool code)
+    {
+        var run = new Run();
+        var runProperties = new RunProperties();
+
+        if (bold)
+            runProperties.AppendChild(new Bold());
+
+        if (italic)
+            runProperties.AppendChild(new Italic());
+
+        if (strikethrough)
+            runProperties.AppendChild(new Strike());
+
+        if (code)
+        {
+            runProperties.AppendChild(new RunFonts() { Ascii = "Courier New" });
+            runProperties.AppendChild(new Shading()
+            {
+                Val = ShadingPatternValues.Clear,
+                Color = "auto",
+                Fill = "F0F0F0"
+            });
+        }
+
+        if (runProperties.HasChildren)
+            run.AppendChild(runProperties);
+
+        run.AppendChild(new Text(text) { Space = SpaceProcessingModeValues.Preserve });
+        return run;
+    }
+
+    private static int ProcessList(Body body, string[] lines, int startIndex, bool isOrdered, MainDocumentPart mainPart)
+    {
+        var i = startIndex;
+        GetOrCreateNumbering(mainPart);
+        var numId = isOrdered ? 2 : 1;
+
+        while (i < lines.Length)
+        {
+            var line = lines[i];
+
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                i++;
+                break;
+            }
+
+            Match match;
+            if (isOrdered)
+                match = Regex.Match(line, @"^(\s*)\d+\.\s+(.+)$");
+            else
+                match = Regex.Match(line, @"^(\s*)[-*+]\s+(.+)$");
+
+            if (!match.Success)
+                break;
+
+            var indent = match.Groups[1].Value.Length / 2;
+            var text = match.Groups[2].Value;
+
+            var paragraph = body.AppendChild(new Paragraph());
+            var paragraphProperties = new ParagraphProperties();
+
+            var numberingProperties = new NumberingProperties();
+            numberingProperties.AppendChild(new NumberingLevelReference() { Val = indent });
+            numberingProperties.AppendChild(new NumberingId() { Val = numId });
+            paragraphProperties.AppendChild(numberingProperties);
+
+            paragraph.AppendChild(paragraphProperties);
+            AddFormattedText(paragraph, text);
+
+            i++;
+        }
+
+        return i;
+    }
+
+    private static void GetOrCreateNumbering(MainDocumentPart mainPart)
+    {
+        if (mainPart.NumberingDefinitionsPart != null)
+            return;
+
+        var numberingPart = mainPart.AddNewPart<NumberingDefinitionsPart>();
+        var numbering = new Numbering();
+
+        // Bullet list
+        var abstractNum0 = new AbstractNum() { AbstractNumberId = 0 };
+        for (int i = 0; i < 9; i++)
+        {
+            var level = new Level() { LevelIndex = i };
+            level.AppendChild(new NumberingFormat() { Val = NumberFormatValues.Bullet });
+            level.AppendChild(new LevelText() { Val = "•" });
+            level.AppendChild(new LevelJustification() { Val = LevelJustificationValues.Left });
+
+            var previousParagraphProperties = new PreviousParagraphProperties();
+            previousParagraphProperties.AppendChild(new Indentation()
+            {
+                Left = (720 * (i + 1)).ToString(),
+                Hanging = "360"
+            });
+            level.AppendChild(previousParagraphProperties);
+
+            abstractNum0.AppendChild(level);
+        }
+        numbering.AppendChild(abstractNum0);
+
+        // Numbered list
+        var abstractNum1 = new AbstractNum() { AbstractNumberId = 1 };
+        for (int i = 0; i < 9; i++)
+        {
+            var level = new Level() { LevelIndex = i };
+            level.AppendChild(new StartNumberingValue() { Val = 1 });
+            level.AppendChild(new NumberingFormat() { Val = NumberFormatValues.Decimal });
+            level.AppendChild(new LevelText() { Val = $"%{i + 1}." });
+            level.AppendChild(new LevelJustification() { Val = LevelJustificationValues.Left });
+
+            var previousParagraphProperties = new PreviousParagraphProperties();
+            previousParagraphProperties.AppendChild(new Indentation()
+            {
+                Left = (720 * (i + 1)).ToString(),
+                Hanging = "360"
+            });
+            level.AppendChild(previousParagraphProperties);
+
+            abstractNum1.AppendChild(level);
+        }
+        numbering.AppendChild(abstractNum1);
+
+        // Number instances
+        var numberingInstance1 = new NumberingInstance() { NumberID = 1 };
+        numberingInstance1.AppendChild(new AbstractNumId() { Val = 0 });
+        numbering.AppendChild(numberingInstance1);
+
+        var numberingInstance2 = new NumberingInstance() { NumberID = 2 };
+        numberingInstance2.AppendChild(new AbstractNumId() { Val = 1 });
+        numbering.AppendChild(numberingInstance2);
+
+        numberingPart.Numbering = numbering;
+        numberingPart.Numbering.Save();
+    }
+
+    private static int ProcessBlockquote(Body body, string[] lines, int startIndex)
+    {
+        var i = startIndex;
+        var quoteText = "";
+
+        while (i < lines.Length)
+        {
+            var line = lines[i];
+
+            if (string.IsNullOrWhiteSpace(line))
+            {
+                i++;
+                break;
+            }
+
+            if (!line.TrimStart().StartsWith(">"))
+                break;
+
+            var text = line.TrimStart().Substring(1).TrimStart();
+            quoteText += (quoteText.Length > 0 ? " " : "") + text;
+            i++;
+        }
+
+        var paragraph = body.AppendChild(new Paragraph());
+        var paragraphProperties = new ParagraphProperties();
+        paragraphProperties.ParagraphStyleId = new ParagraphStyleId() { Val = "Quote" };
+        paragraph.AppendChild(paragraphProperties);
+
+        AddFormattedText(paragraph, quoteText);
+
+        return i;
+    }
+
+    private static void AddHorizontalLine(Body body)
+    {
+        var paragraph = body.AppendChild(new Paragraph());
+        var paragraphProperties = new ParagraphProperties();
+
+        var paragraphBorders = new ParagraphBorders();
+        paragraphBorders.AppendChild(new BottomBorder()
+        {
+            Val = BorderValues.Single,
+            Color = "auto",
+            Size = 6,
+            Space = 1
+        });
+        paragraphProperties.AppendChild(paragraphBorders);
+        paragraph.AppendChild(paragraphProperties);
+    }
+
+    private static int ProcessTable(Body body, string[] lines, int startIndex)
+    {
+        var i = startIndex;
+        var tableRows = new System.Collections.Generic.List<string[]>();
+
+        // Read all table rows
+        while (i < lines.Length)
+        {
+            var line = lines[i].Trim();
+
+            if (string.IsNullOrWhiteSpace(line) || !line.StartsWith("|"))
+                break;
+
+            // Skip separator line
+            if (Regex.IsMatch(line, @"^\|[\s\-:|\|]+\|$"))
+            {
+                i++;
+                continue;
+            }
+
+            var cells = line.Split('|')
                 .Skip(1)
-                .SkipLast(1)
+                .Take(line.Split('|').Length - 2)
                 .Select(c => c.Trim())
                 .ToArray();
 
-            foreach (var cellText in cells)
+            tableRows.Add(cells);
+            i++;
+        }
+
+        if (tableRows.Count == 0)
+            return i;
+
+        // Create table
+        var table = new Table();
+
+        // Table properties
+        var tableProperties = new TableProperties();
+        tableProperties.AppendChild(new TableBorders(
+            new TopBorder() { Val = BorderValues.Single, Size = 4 },
+            new BottomBorder() { Val = BorderValues.Single, Size = 4 },
+            new LeftBorder() { Val = BorderValues.Single, Size = 4 },
+            new RightBorder() { Val = BorderValues.Single, Size = 4 },
+            new InsideHorizontalBorder() { Val = BorderValues.Single, Size = 4 },
+            new InsideVerticalBorder() { Val = BorderValues.Single, Size = 4 }
+        ));
+        tableProperties.AppendChild(new TableWidth() { Width = "5000", Type = TableWidthUnitValues.Pct });
+        table.AppendChild(tableProperties);
+
+        // Add rows
+        bool isHeader = true;
+        foreach (var rowData in tableRows)
+        {
+            var tableRow = new TableRow();
+
+            foreach (var cellText in rowData)
             {
-                // Create cell with content and styling
-                TableCell tableCell = CreateTableCell(cellText, isHeader);
+                var tableCell = new TableCell();
+
+                // Cell properties
+                var cellProperties = new TableCellProperties();
+                if (isHeader)
+                {
+                    cellProperties.AppendChild(new Shading()
+                    {
+                        Val = ShadingPatternValues.Clear,
+                        Color = "auto",
+                        Fill = "D0D0D0"
+                    });
+                }
+                tableCell.AppendChild(cellProperties);
+
+                // Cell content
+                var paragraph = new Paragraph();
+                var run = new Run();
+
+                if (isHeader)
+                {
+                    var runProperties = new RunProperties();
+                    runProperties.AppendChild(new Bold());
+                    run.AppendChild(runProperties);
+                }
+
+                run.AppendChild(new Text(cellText));
+                paragraph.AppendChild(run);
+                tableCell.AppendChild(paragraph);
+
                 tableRow.AppendChild(tableCell);
             }
 
             table.AppendChild(tableRow);
+            isHeader = false;
         }
 
-        return table;
-    }
+        body.AppendChild(table);
+        body.AppendChild(new Paragraph()); // Add spacing after table
 
-    /// <summary>
-    /// Helper to create a TableCell with content, styling the header row differently.
-    /// </summary>
-    private static TableCell CreateTableCell(string content, bool isHeader)
-    {
-        TableCell tableCell = new TableCell();
-
-        // 1. Cell Properties
-        TableCellProperties cellProps = new TableCellProperties();
-
-        // Add light gray shading for header cells
-        if (isHeader)
-        {
-            cellProps.Append(new Shading()
-            {
-                Val = ShadingPatternValues.Clear,
-                Fill = "D9D9D9" // Light gray color
-            });
-        }
-        tableCell.Append(cellProps);
-
-        // 2. Cell Content (must be wrapped in a Paragraph)
-        Paragraph paragraph = new Paragraph();
-
-        Run run = new Run();
-
-        // Make header text bold
-        if (isHeader)
-        {
-            run.Append(new RunProperties(new Bold()));
-        }
-
-        // Using fully qualified name for SpaceProcessingModeValues
-        run.Append(new Text(content) { Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve });
-        paragraph.Append(run);
-
-        tableCell.Append(paragraph);
-        return tableCell;
-    }
-
-    /// <summary>
-    /// Helper to create a paragraph with a specific Word style (e.g., Heading1).
-    /// </summary>
-    private static Paragraph CreateParagraphWithStyle(string styleId, string text)
-    {
-        var paragraph = new Paragraph(
-            new ParagraphProperties(
-                // *** FIX: Changed DocumentFormat.OpenXml.Wordprocessing.ParagraphStyle to Style 
-                // to resolve the reported compiler error in your environment. ***
-                new Style() { StyleId = styleId }
-            ),
-            new Run(
-                new Text(text)
-                {
-                    // Using fully qualified name for SpaceProcessingModeValues
-                    Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve
-                }
-            )
-        );
-        return paragraph;
-    }
-
-    /// <summary>
-    /// Helper to create a standard paragraph.
-    /// </summary>
-    private static Paragraph CreateParagraphWithText(string text)
-    {
-        var paragraph = new Paragraph(
-            new Run(
-                new Text(text)
-                {
-                    // Using fully qualified name for SpaceProcessingModeValues
-                    Space = DocumentFormat.OpenXml.SpaceProcessingModeValues.Preserve
-                }
-            )
-        );
-        return paragraph;
+        return i;
     }
 }

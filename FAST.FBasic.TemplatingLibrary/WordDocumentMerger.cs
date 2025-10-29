@@ -8,16 +8,16 @@ namespace FAST.FBasic.TemplatingLibrary
         /// <summary>
         /// Appends the content of the second document to the first document
         /// </summary>
-        /// <param name="mainDocumentStream">The main document stream that will receive the content</param>
-        /// <param name="documentToAppendStream">The document stream to append</param>
-        public void AppendDocument(Stream mainDocumentStream, Stream documentToAppendStream)
+        /// <param name="whatToAppendDocStream">The main document stream that will receive the content</param>
+        /// <param name="destinationDocumentStream">The document stream to append</param>
+        public void AppendDocument(Stream whatToAppendDocStream, Stream destinationDocumentStream)
         {
             // Ensure streams are at the beginning
-            mainDocumentStream.Position = 0;
-            documentToAppendStream.Position = 0;
+            whatToAppendDocStream.Position = 0;
+            destinationDocumentStream.Position = 0;
 
-            using (WordprocessingDocument mainDoc = WordprocessingDocument.Open(mainDocumentStream, true))
-            using (WordprocessingDocument docToAppend = WordprocessingDocument.Open(documentToAppendStream, false))
+            using (WordprocessingDocument mainDoc = WordprocessingDocument.Open(whatToAppendDocStream, true))
+            using (WordprocessingDocument docToAppend = WordprocessingDocument.Open(destinationDocumentStream, false))
             {
                 // Get the main document body
                 var mainBody = mainDoc.MainDocumentPart.Document.Body;
@@ -45,7 +45,7 @@ namespace FAST.FBasic.TemplatingLibrary
             }
 
             // Reset position for further use
-            mainDocumentStream.Position = 0;
+            whatToAppendDocStream.Position = 0;
         }
 
         private void ImportStyles(MainDocumentPart mainPart, MainDocumentPart appendPart)

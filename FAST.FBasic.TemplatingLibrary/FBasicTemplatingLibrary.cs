@@ -11,7 +11,7 @@
 // WORDEXTRACTPART input_stream_name, output_stream_name, begin_marker, end_market 
 // WORDDELETEPART input_stream_name, begin_marker, end_market 
 //
-// todo: WORDFROMMARKDOWN stream_with_md, output_word_stream 
+// todo: WORDFROMMARKDOWN variable, output_word_stream 
 // 
 // todo: WORDREPALCEPART input_stream_name, input_part_name, marker
 
@@ -50,12 +50,50 @@ namespace FAST.FBasic.TemplatingLibrary
             interpreter.AddStatement("WORDEXTRACTPART", WordExtractPart);
             interpreter.AddStatement("WORDDELETEPART", WordDeletePart);
 
+            interpreter.AddStatement("WORDFROMMARKDOWN", WordFromMarkDown);
+
         }
+
+
+        private void WordFromMarkDown(IInterpreter interpreter)
+        {
+            // Syntax: WORDFROMMARKDOWN variable|value, output_word_stream 
+
+            // (v) argument: variable
+            var mdtext = interpreter.ValueOrVariable(true);
+            interpreter.GetNextToken();
+
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            interpreter.Match(Token.Identifier);
+            var name=interpreter.lex.Identifier;
+            
+            interpreter.GetNextToken();
+
+            Stream stream;
+            if (interpreter.IsVariable(name) )
+            {
+                var streamVar = interpreter.GetVar(name);
+                checkForStream(interpreter, streamVar);
+                stream=((Stream)streamVar.Object);
+            }
+            else
+            {
+                stream = new WordPlaceHolder().CreateEmptyWordDocument();
+                interpreter.SetVar(name,new Value(stream,valueStamp));
+            }
+
+            var wordStream=MarkdownToWordConverter.ConvertMarkdownToWord(mdtext.ToString());
+            File.WriteAllBytes(@"c:\temp\output.docx", ((MemoryStream)wordStream).ToArray());
+            wordStream.Position=0;
+            new WordDocumentMerger().AppendDocument(stream, wordStream);
+        }
+
 
 
         private void WordAppendRow(IInterpreter interpreter)
         {
-            // WORDAPPENDROW stream, marker
+            // Syntax: WORDAPPENDROW stream, marker
 
             // (v) argument: name
             interpreter.Match(Token.Identifier);
