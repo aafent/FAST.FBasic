@@ -19,6 +19,13 @@ Latest NuGet package:
 | FAST.FBasicInterpreter | [![NuGet](https://img.shields.io/nuget/v/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasicInterpreter) | [![Nuget](https://img.shields.io/nuget/dt/FAST.FBasicInterpreter.svg)](https://www.nuget.org/packages/FAST.FBasicInterpreter) | [![Last Commit](https://img.shields.io/github/last-commit/aafent/FAST.FBasic/main?label=Latest%20Project%20Commit&path=FAST.FBasicInterpreter)](https://github.com/aafent/FAST.FBasic/commits/main) |
 | FAST.FBasic.LibraryToolkit | [![NuGet](https://img.shields.io/nuget/v/FAST.FBasicLibraryToolkit.svg)](https://www.nuget.org/packages/FAST.FBasicLibraryToolkit) | [![Nuget](https://img.shields.io/nuget/dt/FAST.FBasicLibraryToolkit.svg)](https://www.nuget.org/packages/FAST.FBasicLibraryToolkit) | [![Last Commit](https://img.shields.io/github/last-commit/aafent/FAST.FBasic/main?label=Laster%20Project%20Commit&path=FAST.FBasic.LibraryToolkit)](https://github.com/aafent/FAST.FBasic/commits/main) |
 
+**Libraries in seperate nuget packages:**
+
+| NuGet Package | Version | Download | Activity | 
+| --- | --- | --- | --- |
+| FAST.FBasic.TemplatingLibrary | [![NuGet](https://img.shields.io/nuget/v/FAST.FBasicTemplatingLibrary.svg)](https://www.nuget.org/packages/FAST.FBasicTemplatingLibrary) | [![Nuget](https://img.shields.io/nuget/dt/FAST.FBasicTemplatingLibrary.svg)](https://www.nuget.org/packages/FAST.FBasicTemplatingLibrary) | [![Last Commit](https://img.shields.io/github/last-commit/aafent/FAST.FBasic/main?label=Laster%20Project%20Commit&path=FAST.FBasic.TemplatingLibrary)](https://github.com/aafent/FAST.FBasic/commits/main) |
+
+
 | Solution activity |
 |:----------------- |
 | [![NuGet](https://img.shields.io/github/last-commit/aafent/FAST.FBasic)](https://img.shields.io/github/last-commit/aafent/FAST.FBasic) |
