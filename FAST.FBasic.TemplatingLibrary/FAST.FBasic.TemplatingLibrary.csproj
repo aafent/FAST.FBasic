@@ -1,18 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-	  <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-	  <ImplicitUsings>enable</ImplicitUsings>
-	  <Nullable>enable</Nullable>
-	  <Platforms>AnyCPU;x64</Platforms>
+ 
+
+	<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+	<ImplicitUsings>enable</ImplicitUsings>
+	<Nullable>enable</Nullable>
+
+	<Title>FAST FBasic Templating Library</Title>
+	<Description>A powerful .NET library for Word document automation that combines application data with rich, template-based structures defined by the flexible FBasic language. Ideal for generating dynamic contracts, reports, invoices, and other mission-critical documents directly from your application.</Description>
+	<Copyright>Global Cloud Services EOOD</Copyright>
+	<PackageOutputPath>.\Packages</PackageOutputPath>
+	<PackageId>FAST.FBasicTemplatingLibrary</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>GCS</Authors>
+	<RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
+	<RootNamespace>FAST.FBasic.TemplatingLibrary</RootNamespace>
+	<Platforms>AnyCPU;x64</Platforms>
+
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\FAST.FBasic.LibraryToolkit\FAST.FBasic.LibraryToolkit.csproj" />
-  </ItemGroup>
-
 </Project>
