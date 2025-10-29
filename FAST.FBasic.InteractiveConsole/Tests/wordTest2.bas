@@ -7,7 +7,6 @@ FILESTREAM src, in, "", "other", "StandardText.docx"
 FILESTREAM dst, out, "", "Output", "example2.docx"
 WORDEMPTYDOC newDoc
 
-
 rem (v) implementation
 WORDEXTRACTPART src, disclaimer, "DisclaimerBegin", "DisclaimerEnd"
 srewind src

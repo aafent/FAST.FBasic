@@ -9,6 +9,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-10-29 | Package FBasic.TemplatingLibrary release 1.0.0         |
 | 2025-10-29 | Bug fix of ucase() and pcase(). New Statement STOS to Streams Library | 
 | 2025-10-27 | Prelease of FBasic version 1.1.0                       |
 | 2025-10-25 | Demo Database, Major Improvements, Word Templating     | 

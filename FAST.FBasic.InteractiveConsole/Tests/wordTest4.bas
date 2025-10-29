@@ -1,7 +1,6 @@
 REM Word Templating - example4 
 REM Demonstration of Markdown code
 REM 
-
 rem (v) Declare and prepare 
 FILESTREAM Templates, INMEMORY, "", "other", "StandardText.docx"   
 FILESTREAM dst, out, "", "Output", "example4.docx"

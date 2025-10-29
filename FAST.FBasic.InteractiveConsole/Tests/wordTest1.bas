@@ -4,7 +4,6 @@ REM attaching a second document at the end of the first. The example demonstrati
 REM how to retrieve only the necessary for the template data from the database.
 REM
 
-
 FILESTREAM template, in, "", "other", "LoanTemplate.docx"    ' Streams Library
 FILESTREAM final, out, "", "Output", "example1.docx"
 loginfo "Reading the file"
