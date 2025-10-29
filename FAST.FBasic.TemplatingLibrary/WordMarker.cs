@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FAST.FBasic.TemplatingLibrary
 {
-    public class WordMarker
+    internal class WordMarker
     {
         private string markerPrefix;
         private string markerSuffix;

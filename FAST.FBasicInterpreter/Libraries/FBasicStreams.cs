@@ -5,15 +5,18 @@
 // SCOPY source_stream, destination_stream
 // MEMSTREAM stream_name
 // SREWIND stream_name
+// STOS stream_name FROM|TO variable        :: STOS is Stream To String and String To Stream statement. If the writing stream (FROM) does not exists, will define it.
 //
 // todo: SSEEK stream_name, position
 // todo: SCLOSE stream_name
-//
+// 
 // Stream Functions:
 //
 // slength("stream_name")       :: Return the length of a stream
 // sposition("stream_name")     :: Return the current position of a stream
 // 
+
+using System.Text;
 
 namespace FAST.FBasicInterpreter
 {
@@ -39,10 +42,85 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("MEMSTREAM", MemStream);
             interpreter.AddStatement("SCOPY", CopyStream);
             interpreter.AddStatement("SREWIND", StreamRewind);
+            interpreter.AddStatement("STOS", SToS);
 
             interpreter.AddFunction("slength", slength);
             interpreter.AddFunction("sposition", sposition);
         }
+
+
+        private void SToS(IInterpreter interpreter)
+        {
+            // Syntax: STOS stream_name FROM|TO variable
+            //
+
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string streamName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+
+            bool directionFROM = false;
+            switch (interpreter.lex.Identifier.ToUpper())
+            { 
+                case "TO":
+                    directionFROM=false;
+                    break;
+                case "FROM":
+                    directionFROM=true;
+                    break;
+                default:
+                    interpreter.Error("Streams",Errors.E106_ExpectingKeyword(interpreter.lex.Identifier, "Expecting FROM or TO"));
+                    return;
+            }
+            interpreter.GetNextToken();
+
+            interpreter.Match(Token.Identifier);
+            string varName = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            // (v) implementation 
+            bool directionTO=!directionFROM;
+
+            Stream stream;
+            if (directionTO)
+            {
+                var streamValue = interpreter.GetVar(streamName);
+                checkForStream(interpreter, streamValue);
+                stream = ((Stream)streamValue.Object);
+                using (var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true, leaveOpen: true))
+                {
+                    string value = reader.ReadToEnd();
+                    interpreter.SetVar(varName,new Value(value));
+                    reader.Close();
+                }
+                
+            }
+            else if (directionFROM)
+            {
+                if (interpreter.IsVariable(streamName) )
+                {
+                    var value = interpreter.GetVar(streamName);
+                    checkForStream(interpreter,value);
+                    stream = ((Stream)value.Object);
+                }
+                else
+                {
+                    stream = new MemoryStream();
+                    interpreter.SetVar(streamName, new Value(stream, valueStamp));
+                }
+                using (var writer = new StreamWriter(stream, Encoding.UTF8, bufferSize: -1, leaveOpen: true))
+                {
+                    writer.Write(interpreter.GetVar(varName).ToString() );
+                    writer.Flush();
+                    writer.Close();
+                }
+                stream.Flush();
+            }
+            return;
+        }
+
+            
 
 
         private void StreamRewind(IInterpreter interpreter)

@@ -22,7 +22,6 @@
             interpreter.AddFunction("instr", InStr);
             interpreter.AddFunction("lcase", LCase);
             interpreter.AddFunction("ucase", UCase);
-            
 
         }
 

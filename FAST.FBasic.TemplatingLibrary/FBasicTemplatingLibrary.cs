@@ -10,6 +10,8 @@
 // WORDDELETEROW stream, marker
 // WORDEXTRACTPART input_stream_name, output_stream_name, begin_marker, end_market 
 // WORDDELETEPART input_stream_name, begin_marker, end_market 
+//
+// todo: WORDFROMMARKDOWN stream_with_md, output_word_stream 
 // 
 // todo: WORDREPALCEPART input_stream_name, input_part_name, marker
 

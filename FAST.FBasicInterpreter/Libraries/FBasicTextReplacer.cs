@@ -44,7 +44,7 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.AddStatement("PHGOSUB", PlaceHolderGoSub);
         interpreter.AddStatement("WORDFREQ", WordFrequency);
 
-        interpreter.AddFunction("ucase", PCase); // Proper Case
+        interpreter.AddFunction("pcase", PCase); // Proper Case
         interpreter.AddFunction("words", Words); // words count
         interpreter.AddFunction("phtoname",ToName);
     }
