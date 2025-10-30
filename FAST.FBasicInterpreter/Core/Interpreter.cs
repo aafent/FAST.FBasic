@@ -33,7 +33,7 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The delegation handler for Request for Object
         /// </summary>
-        public FBasicRequestForObject requestForObjectHandler { get; set; } = null;
+        public FBasicRequestForObject RequestForObjectHandler { get; set; } = null;
 
         /// <summary>
         /// Logger for the execution

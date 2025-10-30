@@ -109,7 +109,7 @@
         /// <summary>
         /// The delegation handler for Request for Object
         /// </summary>
-        public FBasicRequestForObject requestForObjectHandler { get; set; }
+        public FBasicRequestForObject RequestForObjectHandler { get; set; }
 
         /// <summary>
         /// Logger for the execution

@@ -92,7 +92,7 @@ namespace FAST.FBasicInterpreter
             sub.inputHandler = this.inputHandler;
             sub.callHandler = this.callHandler;
             sub.FileHandler = this.FileHandler;
-            sub.requestForObjectHandler = this.requestForObjectHandler;
+            sub.RequestForObjectHandler = this.RequestForObjectHandler;
             sub.funcs = this.funcs;
             sub.statements = this.statements;
             if (!this.IsVariable("RESULTVALUE")) this.SetVar("RESULTVALUE", Value.Zero);

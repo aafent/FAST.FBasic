@@ -226,9 +226,9 @@ namespace FAST.FBasicInterpreter
         /// <returns>The requested object or null</returns>
         public object RequestForObject(string context, string group, string name, bool errorIfNull = true)
         {
-            if (this.requestForObjectHandler == null)
+            if (this.RequestForObjectHandler == null)
                 Error(context, $"The Request For Object Handler is not installed ({context},{group},{name}) [E100]");
-            var returnObject = this.requestForObjectHandler(context, group, name);
+            var returnObject = this.RequestForObjectHandler(context, group, name);
             if (errorIfNull & (returnObject == null))
                 Error(context, $"Cannot get object for: ({context},{group},{name}) [E101]");
             return returnObject;
