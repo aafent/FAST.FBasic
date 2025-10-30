@@ -201,7 +201,7 @@
             env.printHandler = Console.Write;
             env.inputHandler = Console.ReadLine;
             env.callHandler = (name) => { var filepath = Path.Combine(".", name); return File.ReadAllText(filepath); };
-            env.requestForObjectHandler = (context, group, name) => null;
+            env.requestForObjectHandler = (request) => null;
 
             if (!string.IsNullOrEmpty(rootFolder) )
             {

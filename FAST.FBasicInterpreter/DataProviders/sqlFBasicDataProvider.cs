@@ -36,7 +36,8 @@ namespace FAST.FBasicInterpreter.DataProviders
 
             try
             {
-                var connectionObject = interpreter.RequestForObject(name, "CONNECTION", cursorName);
+                var request=new FBasicRequestForObjectDescriptor(this.interpreter,name, "CONNECTION",cursorName);
+                var connectionObject = interpreter.RequestForObject(request);  // was:FBasicRequestForObjectDescriptor
                 if (connectionObject==null)
                 {
                     return interpreter.Error(name,Errors.E128_RequestHandlerNullReturn(name,"CONNECTION",cursorName,"DbConnection object is expected (SqlConnection,OdbcConnect...etc")).falseError;

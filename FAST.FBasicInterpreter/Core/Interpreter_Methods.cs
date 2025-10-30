@@ -224,13 +224,13 @@ namespace FAST.FBasicInterpreter
         /// <param name="group">The group</param>
         /// <param name="name">The name</param>
         /// <returns>The requested object or null</returns>
-        public object RequestForObject(string context, string group, string name, bool errorIfNull = true)
+        public object RequestForObject(IFBasicRequestForObjectDescriptor descriptor, bool errorIfNull = true)
         {
             if (this.RequestForObjectHandler == null)
-                Error(context, $"The Request For Object Handler is not installed ({context},{group},{name}) [E100]");
-            var returnObject = this.RequestForObjectHandler(context, group, name);
+                Error(descriptor.Context, $"The Request For Object Handler is not installed ({descriptor.Context},{descriptor.Group},{descriptor.Name}) [E100]");
+            var returnObject = this.RequestForObjectHandler(descriptor);
             if (errorIfNull & (returnObject == null))
-                Error(context, $"Cannot get object for: ({context},{group},{name}) [E101]");
+                Error(descriptor.Context, $"Cannot get object for: ({descriptor.Context},{descriptor.Group},{descriptor.Name}) [E101]");
             return returnObject;
         }
 

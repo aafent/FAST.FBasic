@@ -610,10 +610,32 @@ namespace FAST.FBasicInterpreter
             string vname = this.lex.Identifier;
 
             GetNextToken();
-
-            var value=RequestForObject(context: "IN", group: group, name: name);
-
-            SetVar(vname, new Value(value.ToString()) );
+            var request = new FBasicRequestForObjectDescriptor(this,"IN");
+            request.Group=group;
+            request.Name=name;
+            request.VariableName=vname;
+            var value=RequestForObject(request);
+            
+            if (value is Value)
+            {
+                SetVar(vname,(Value)value);
+                return;
+            }
+            if (value is string)
+            {
+                SetVar(vname, new Value(value.ToString()));
+                return;
+            }
+            else if ((value is Double) | (value is int)) 
+            {
+                SetVar(vname, new Value((double)value));
+                return;
+            }
+            else
+            {
+                SetVar(vname,new Value(value,value.GetType().ToString()));
+                return;
+            }
 
         }
 

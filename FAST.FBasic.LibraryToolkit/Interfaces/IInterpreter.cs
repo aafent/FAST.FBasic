@@ -77,7 +77,7 @@
         void Exec();
         #endregion (+) Program execution methods
 
-        object RequestForObject(string context, string group, string name, bool errorIfNull = true);
+        object RequestForObject(IFBasicRequestForObjectDescriptor request, bool errorIfNull = true);
 
         void dumpInterpreter(bool interactive = false);
         bool TryParseSourceCode(out ProgramContainer program);

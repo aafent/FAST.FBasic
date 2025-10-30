@@ -33,11 +33,9 @@ namespace FAST.FBasicInterpreter
     /// <summary>
     /// The delegation of object requesting
     /// </summary>
-    /// <param name="context">The Context</param>
-    /// <param name="group">The group of names</param>
-    /// <param name="name">The name</param>
+    /// <param name="descriptor">The request descriptor</param>
     /// <returns>object</returns>
-    public delegate object FBasicRequestForObject(string context, string group, string name);
+    public delegate object FBasicRequestForObject(IFBasicRequestForObjectDescriptor descriptor);
 
 
     /// <summary>

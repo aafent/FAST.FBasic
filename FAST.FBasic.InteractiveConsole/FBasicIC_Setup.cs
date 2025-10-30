@@ -11,19 +11,16 @@ namespace FAST.FBasic.InteractiveConsole
         {
             this.env = new();
             env.DefaultEnvironment(programsFolder);
-            env.callHandler = (name) => { var filepath = Path.Combine(programsFolder, name); return File.ReadAllText(filepath); };
-            env.requestForObjectHandler = (context, group, name) =>
+            env.requestForObjectHandler = (request) =>
             {
-                
-
-                if ($"{context}.{group}.{name}" == "SQL.CONNECTION.MyCursor1")
+                if ( request.Level3Request() == "SQL.CONNECTION.MyCursor1")
                 {
                     string cs = "<replace with your CS hear>";
                     var connection = new SqliteConnection(cs);
                     return connection;
                 }
 
-                if ($"{context}.{group}" == "SQL.CONNECTION")
+                if ( request.Level2Request() == "SQL.CONNECTION")
                 {
                     var demoDBcs = $"Data Source={getProgramsFolder()}\\Other\\demo.db";
                     if (!File.Exists($"{getProgramsFolder()}\\Other\\demo.db"))
@@ -34,13 +31,28 @@ namespace FAST.FBasic.InteractiveConsole
                     return connection;
                 }
 
-                if ($"{context}.{group}.{name}" == "IN.TEST.NAME") return "THIS IS AN IN TEST!";
-                if ($"{context}.{group}.{name}" == "IN.DB.DEMO") 
+                if (request.Level3Request() == "IN.TEST.NAME") return "THIS IS AN IN TEST!";
+                if (request.Level3Request() == "IN.DB.DEMO") 
                 {
                     var demoDBcs = $"Data Source={getProgramsFolder()}\\Other\\demo.db";
                     new DemoDatabase().QueryData(demoDBcs);
                     return true;
                 }
+
+
+                if (request.Level3Request() == "IN.OBJECT.EMPLOYPROFILE")
+                {
+                    return new DemoObjects.EmployeeProfileExample().GetEmployeeProfile();
+                }
+
+                if (request.Level3Request() == "IN.OBJECT.SHOWEMPLOYPROFILE")
+                {
+                    return new DemoObjects.EmployeeProfileExample().GetEmployeeProfile();
+                }
+
+
+                Console.WriteLine($"Interactive: THE REQUEST FOR OBJECT NOT FOUND. Context:{request.Context}, Group:{request.Group}, Name:{request.Name}");
+
                 return null;
             };
             env.AddLibrary(new FBasicStringFunctions());
@@ -53,6 +65,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicDecisionTables());
             env.AddLibrary(new FBasic2DArrays());
             env.AddLibrary(new FBasicStreams());
+            env.AddLibrary(new FBasicJsonLibrary());
             env.AddLibrary(new FBasicTemplatingLibrary());
             env.AddVariable("table.column", "myColumn1");
 
