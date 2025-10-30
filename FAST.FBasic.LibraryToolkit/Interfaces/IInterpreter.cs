@@ -87,12 +87,12 @@
         /// <summary>
         /// The delegation handler for the PRINT statement
         /// </summary>
-        public FBasicPrintFunction printHandler {get; set; }
+        public FBasicPrintFunction PrintHandler {get; set; }
 
         /// <summary>
         /// The delegation handler for the INPUT statement
         /// </summary>
-        public FBasicInputFunction inputHandler { get;set;}
+        public FBasicInputFunction InputHandler { get;set;}
 
         /// <summary>
         /// The delegation handler for the CALL statement

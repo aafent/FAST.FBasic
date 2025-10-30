@@ -156,8 +156,8 @@
         public void SetupInterpreter(IInterpreter interpreter)
         {
             // (v) setup handlers
-            if (this.printHandler!=null) interpreter.printHandler=this.printHandler;
-            if (this.inputHandler!=null) interpreter.inputHandler=this.inputHandler;
+            if (this.printHandler!=null) interpreter.PrintHandler=this.printHandler;
+            if (this.inputHandler!=null) interpreter.InputHandler=this.inputHandler;
             if (this.callHandler!=null) interpreter.callHandler=this.callHandler;
             if (this.FileHandler!=null) interpreter.FileHandler=this.FileHandler;
             if (this.requestForObjectHandler!=null) interpreter.RequestForObjectHandler=this.requestForObjectHandler;

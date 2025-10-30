@@ -88,8 +88,8 @@ namespace FAST.FBasicInterpreter
 
             Interpreter sub = new(false, src); // BuiltIns will passed with funcs and statements
 
-            sub.printHandler = this.printHandler;
-            sub.inputHandler = this.inputHandler;
+            sub.PrintHandler = this.PrintHandler;
+            sub.InputHandler = this.InputHandler;
             sub.callHandler = this.callHandler;
             sub.FileHandler = this.FileHandler;
             sub.RequestForObjectHandler = this.RequestForObjectHandler;
@@ -447,7 +447,7 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         void Print()
         {
-            if (printHandler == null)
+            if (PrintHandler == null)
             {
                 Expr(); // just to move the next instruction
                 if (lastToken == Token.Semicolon) GetNextToken();
@@ -459,14 +459,14 @@ namespace FAST.FBasicInterpreter
                 if (lastToken == Token.Semicolon)
                 {
                     // (>) do not append new line
-                    printHandler?.Invoke(message);
+                    PrintHandler?.Invoke(message);
                     GetNextToken();
                 }
                 else
                 {
                     // (>) append new line
                     message += System.Environment.NewLine;
-                    printHandler?.Invoke(message);
+                    PrintHandler?.Invoke(message);
                 }
             }
 
@@ -483,7 +483,7 @@ namespace FAST.FBasicInterpreter
 
                 if (!vars.ContainsKey(lex.Identifier)) vars.Add(lex.Identifier, new Value());
 
-                string input = inputHandler?.Invoke();
+                string input = InputHandler?.Invoke();
                 double d;
                 // try to parse as double, if failed read value as string
                 if (double.TryParse(input, System.Globalization.NumberStyles.Float, System.Globalization.CultureInfo.InvariantCulture, out d))

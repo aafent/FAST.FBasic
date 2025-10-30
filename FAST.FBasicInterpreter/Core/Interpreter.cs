@@ -11,12 +11,12 @@ namespace FAST.FBasicInterpreter
         /// <summary>
         /// The delegation handler for the PRINT statement
         /// </summary>
-        public FBasicPrintFunction printHandler { get;set; } = null;
+        public FBasicPrintFunction PrintHandler { get;set; } = null;
 
         /// <summary>
         /// The delegation handler for the INPUT statement
         /// </summary>
-        public FBasicInputFunction inputHandler { get; set; } = null;
+        public FBasicInputFunction InputHandler { get; set; } = null;
 
         /// <summary>
         /// The delegation handler for the CALL statement
