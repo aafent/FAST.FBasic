@@ -1,15 +1,14 @@
-﻿
+﻿using FAST.FBasicInterpreter.Types;
+using System.Dynamic;
 using System.Text.Json;
 
 namespace FAST.FBasicInterpreter
 {
     /*
-    Events:
-        Statements:
+    Statements:
 
-        JSON variable_string|value [DYNAMIC] FROM|TO variable_object
+    JSON variable_string|value [DYNAMIC] FROM|TO variable_object
         
-
      */
     public class FBasicJsonLibrary : IFBasicLibrary
     {
@@ -45,7 +44,7 @@ namespace FAST.FBasicInterpreter
                     directionFROM = true;
                     break;
                 default:
-                    interpreter.Error("Streams", Errors.E106_ExpectingKeyword(interpreter.lex.Identifier, "Expecting FROM or TO"));
+                    interpreter.Error("JSON", Errors.E106_ExpectingKeyword(interpreter.lex.Identifier, "Expecting FROM or TO"));
                     return;
             }
             interpreter.GetNextToken();
@@ -58,18 +57,18 @@ namespace FAST.FBasicInterpreter
             bool directionTO = !directionFROM;
 
             object obj;
-            if (directionTO)
+            if (directionTO) // (<v) De-Serialize
             {
                 var value = interpreter.GetVar(varName);
                 if (useDynamic)
                 {
-                    obj = FBasicDynamicJsonDeserializer.Deserialize(value.String);
+                    obj = JsonSerializer.Deserialize<ExpandoObject>(value.String); 
                 }
                 else
                 {
                     if (interpreter.RequestForObjectHandler == null)
                     {
-                        interpreter.Error("JSON","No Request For Objects handler found");
+                        interpreter.Error("JSON", Errors.E100_RequestForObjectHandlerNotInstalled(null,"It is necessary for Json DYNAMIC deserialization."));
                         return;
                     }
 
@@ -84,15 +83,16 @@ namespace FAST.FBasicInterpreter
                         return;
                     }
                 }
-                interpreter.SetVar(objName, new Value(new(),$"Object:{objName}"));
+                interpreter.SetVar(objName, new Value(obj,$"Object:{objName}"));
             }
-            else if (directionFROM)
+            else if (directionFROM) // (<v) Serialize
             {
                 obj = interpreter.GetVar(objName).Object;
                 string jsonString;
                 if (useDynamic)
                 {
-                    jsonString = FBasicDynamicJsonDeserializer.Serialize(obj);
+                    var eobj=ExpandoConverter.ToDeepExpando(obj);
+                    jsonString = jsonString = JsonSerializer.Serialize(eobj);
                 }
                 else
                 {

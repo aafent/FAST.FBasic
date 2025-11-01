@@ -1,6 +1,5 @@
 ﻿namespace FAST.FBasicInterpreter
 {
-
     /// <summary>
     /// Value type
     /// </summary>
@@ -370,9 +369,7 @@
                 default:
                     throw new NotSupportedException();
             }
-
                 
         }
-
     }
 }

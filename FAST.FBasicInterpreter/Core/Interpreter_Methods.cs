@@ -227,7 +227,10 @@ namespace FAST.FBasicInterpreter
         public object RequestForObject(IFBasicRequestForObjectDescriptor descriptor, bool errorIfNull = true)
         {
             if (this.RequestForObjectHandler == null)
-                Error(descriptor.Context, $"The Request For Object Handler is not installed ({descriptor.Context},{descriptor.Group},{descriptor.Name}) [E100]");
+            {
+                Error(descriptor.Context, Errors.E100_RequestForObjectHandlerNotInstalled(descriptor));
+                return null;
+            }
             var returnObject = this.RequestForObjectHandler(descriptor);
             if (errorIfNull & (returnObject == null))
                 Error(descriptor.Context, $"Cannot get object for: ({descriptor.Context},{descriptor.Group},{descriptor.Name}) [E101]");

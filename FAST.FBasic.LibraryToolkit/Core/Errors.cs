@@ -1,9 +1,21 @@
 ﻿using System.ComponentModel.Design;
+using System.Reflection.Metadata;
 
 namespace FAST.FBasicInterpreter
 {
     public static class Errors
     {
+
+        public static string E100_RequestForObjectHandlerNotInstalled(IFBasicRequestForObjectDescriptor request =null, string more="")
+        {
+            if (request != null)
+            {
+                more=$" ({request.Context}, {request.Group}, {request.Name}) {more}";
+            }
+            return $"The Request For Object Handler is not installed. {more} [E100].";
+        }
+
+
         public static string E102_ExpectingThatButGotThis(string expected, string found)
         {
             return $"Expecting {expected}, got {found} [E102]";

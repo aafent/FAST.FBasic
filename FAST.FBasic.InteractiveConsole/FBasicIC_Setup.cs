@@ -1,7 +1,11 @@
-﻿using FAST.FBasic.TemplatingLibrary;
+﻿using FAST.FBasic.InteractiveConsole.DemoObjects;
+using FAST.FBasic.TemplatingLibrary;
 using FAST.FBasicInteractiveConsole.TestCode;
 using FAST.FBasicInterpreter;
+using FAST.FBasicInterpreter.Types;
 using Microsoft.Data.Sqlite;
+using System.Dynamic;
+using System.Text.Json;
 
 namespace FAST.FBasic.InteractiveConsole
 {
@@ -39,6 +43,11 @@ namespace FAST.FBasic.InteractiveConsole
                     return true;
                 }
 
+                if (request.Context=="JSON.DESERIALIZE")
+                {   // Context:JSON.DESERIALIZE, Group:text, Name:emp
+                    var json = request.Interpreter.GetVar(request.Group).String;
+                    return JsonSerializer.Deserialize(json,typeof(EmployeeProfile) );
+                }
 
                 if (request.Level3Request() == "IN.OBJECT.EMPLOYPROFILE")
                 {
@@ -47,7 +56,13 @@ namespace FAST.FBasic.InteractiveConsole
 
                 if (request.Level3Request() == "IN.OBJECT.SHOWEMPLOYPROFILE")
                 {
-                    return new DemoObjects.EmployeeProfileExample().GetEmployeeProfile();
+                    var emp=request.Interpreter.GetVar(request.VariableName).Object;
+                    if (emp is ExpandoObject)
+                    {
+                        emp = ExpandoMapper.MapToType<EmployeeProfile>((ExpandoObject)emp);
+                    }
+                    new DemoObjects.EmployeeProfileExample().TestPrint( (EmployeeProfile)emp);
+                    return emp;
                 }
 
 
