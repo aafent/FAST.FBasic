@@ -1,5 +1,4 @@
-﻿using System;
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     public class DefaultFileManagementLayer : IFBasicFileManagementLayer
     {

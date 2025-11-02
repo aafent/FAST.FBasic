@@ -3,10 +3,6 @@
 This library is depending of the package: DocumentFormat.OpenXml 
 
 
-
-
-
-
 ## Supported Markdown Elements:
 
 1. **Headings** (H1-H6): `# Heading 1` through `###### Heading 6`

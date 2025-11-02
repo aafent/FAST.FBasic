@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.Design;
-using System.Reflection.Metadata;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     public static class Errors
     {

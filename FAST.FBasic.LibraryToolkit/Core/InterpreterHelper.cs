@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Helper for the FBasic Interpreter

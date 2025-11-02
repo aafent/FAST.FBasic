@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     public interface IFBasicFileManagementLayer
     {

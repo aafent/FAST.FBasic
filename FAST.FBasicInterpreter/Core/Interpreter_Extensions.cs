@@ -1,6 +1,4 @@
-﻿using System.Reflection.Emit;
-
-namespace FAST.FBasicInterpreter
+﻿namespace FAST.FBasicInterpreter
 {
     /// <summary>
     /// Extensions to the class Interpreter 
