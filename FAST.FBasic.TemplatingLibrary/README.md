@@ -1,6 +1,6 @@
 ﻿This is a library for FBASIC
 
-Further documentation will come soon. Check the [`Business Case` here](/aafent/FAST.FBasic/wiki/Bussiness-Case-‐-MS‐Word-with-List-of-Customers) for further understanding of the Templating Library
+Further documentation will come soon. Check the [`Business Case` here](https://github.com/aafent/FAST.FBasic/wiki/Bussiness-Case-‐-MS‐Word-with-List-of-Customers) for further understanding of the Templating Library
 
 ---
 ---
