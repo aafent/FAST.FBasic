@@ -4,8 +4,10 @@ using FAST.FBasicInteractiveConsole.TestCode;
 using FAST.FBasicInterpreter;
 using FAST.FBasicInterpreter.Types;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Configuration;
 using System.Dynamic;
 using System.Text.Json;
+using System.Xml.XPath;
 
 namespace FAST.FBasic.InteractiveConsole
 {
@@ -17,6 +19,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.DefaultEnvironment(programsFolder);
             env.requestForObjectHandler = (request) =>
             {
+
                 if ( request.Level3Request() == "SQL.CONNECTION.MyCursor1")
                 {
                     string cs = "<replace with your CS hear>";
@@ -64,7 +67,6 @@ namespace FAST.FBasic.InteractiveConsole
                     new DemoObjects.EmployeeProfileExample().TestPrint( (EmployeeProfile)emp);
                     return emp;
                 }
-
 
                 Console.WriteLine($"Interactive: THE REQUEST FOR OBJECT NOT FOUND. Context:{request.Context}, Group:{request.Group}, Name:{request.Name}");
 

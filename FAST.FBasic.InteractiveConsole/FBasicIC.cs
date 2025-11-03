@@ -147,7 +147,7 @@ namespace FAST.FBasic.InteractiveConsole
                 env = new();
                 env.DefaultEnvironment(programsFolder);
             }
-            this.sourceProgram = File.ReadAllText(basProgramFile);
+            this.sourceProgram = env.FileHandler( new FBasicFileDescriptor(){FileName= basProgramFile } ).GetSourceProgram();
             basic = new Interpreter(env.installBuiltIns, this.sourceProgram);
             env.SetupInterpreter(basic);
 
@@ -163,6 +163,7 @@ namespace FAST.FBasic.InteractiveConsole
                 Console.WriteLine();
                 Console.WriteLine("....................end of program....................");
                 Console.WriteLine($"Result: {result.value}");
+                Console.WriteLine();
             }
                 
 
