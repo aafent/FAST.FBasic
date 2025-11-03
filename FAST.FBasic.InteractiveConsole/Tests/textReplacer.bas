@@ -34,6 +34,10 @@ print words(outtext,1)+" Words in total"
 print words(outtext,2)+" Words > than 2 characters in length"
 print words(outtext,4)+" Words > than 4 characters in length"
 
+print len(outtext)+" Characters in length ";
+print len(singlewhite(outtext))+" characters signle white spaces."
+
+
 halt
 
 rem

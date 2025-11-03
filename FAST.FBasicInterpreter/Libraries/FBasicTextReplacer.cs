@@ -15,7 +15,8 @@ using System.Text.RegularExpressions;
 /// pcase(string)                   :: Converts the string to Proper Case (first letter upper rest lower)
 /// words(s, 1)                     :: counts the number of words in a string s that are at least 1 character long. if the input string is empty returns 0, if the minWordSize is less than 1 it is set to 1. The word delimiters are space, tab, newline and carriage-return. Consequent delimiters are treated as one.
 /// phtoname(s)                     :: from a placeholder keeps only the variable name (simple or squear bracket) 
-
+/// singlewhite(s)                  :: return the input string without duplicate white spaces (newlines etc).
+///
 
 /// 
 /// Placeholders are defined as {name}, where name is the name of a variable.
@@ -36,6 +37,12 @@ using System.Text.RegularExpressions;
 /// </summary>
 public class FBasicTextReplacer : IFBasicLibrary
 {
+    // We can pre-compile the Regex for better performance if this method
+    // is called very frequently. For .NET 7+, we can use [GeneratedRegex].
+    // For a simple static method, Regex.Replace is clear and efficient.
+    private static readonly Regex _whitespaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
+
+
     public void InstallAll(IInterpreter interpreter)
     {
         interpreter.AddStatement("PHREPLACE", placeHolderReplace);
@@ -47,6 +54,7 @@ public class FBasicTextReplacer : IFBasicLibrary
         interpreter.AddFunction("pcase", PCase); // Proper Case
         interpreter.AddFunction("words", Words); // words count
         interpreter.AddFunction("phtoname",ToName);
+        interpreter.AddFunction("singlewhite",SignleWhite);
     }
 
     #region (+) FBASIC Statments
@@ -174,7 +182,6 @@ public class FBasicTextReplacer : IFBasicLibrary
 
 
     #endregion (+) FBASIC Statements
-
 
     #region (+) Supporting methods 
 
@@ -378,6 +385,28 @@ public class FBasicTextReplacer : IFBasicLibrary
         return new Value(CountLongWords(str, size));
     }
 
+
+    /// <summary>
+    /// FBASIC Function Words()
+    /// </summary>
+    /// <param name="interpreter"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    private static Value SignleWhite(IInterpreter interpreter, List<Value> args)
+    {
+        // Syntax: singlewhite(s) : remove all duplicate characters are white spaces (such as space,tab, newline etc). 
+        //                          Used to shorten a string when the lines and spaces are not necessary (for example prompts to AI).  
+        //
+        string syntax = "singlewhite(string)";
+        if (args.Count != 1)
+            return interpreter.Error("SINGLEWHITE", Errors.E125_WrongNumberOfArguments(1, syntax)).value;
+
+        string str = args[0].Convert(FAST.FBasicInterpreter.ValueType.String).String;
+
+        return new Value(RemoveDuplicateWhitespace(str));
+    }
+
+
     private static Value ToName(IInterpreter interpreter, List<Value> args)
     {
         string syntax = "phtoname(string)";
@@ -397,6 +426,8 @@ public class FBasicTextReplacer : IFBasicLibrary
     }
 
     #endregion (+) FBASIC Functions
+
+
 
     #region (+) Public static methods 
 
@@ -477,7 +508,50 @@ public class FBasicTextReplacer : IFBasicLibrary
     }
 
 
+    /// <summary>
+    /// Takes an input string and replaces any sequence of one or more
+    /// whitespace characters (space, tab, carriage return, newline)
+    /// with a single space character.
+    /// </summary>
+    /// <param name="input">The string to process.</param>
+    /// <returns>A copy of the string with consolidated whitespace.</returns>
+    public static string RemoveDuplicateWhitespace(string input)
+    {
+        /* Note: In .NET's RegEx engine, \s is a special shorthand that matches any whitespace character.
+            This explicitly includes:
+            Space ( )
+            Tab (\t)
+            New-line (\n)
+            Carriage return (\r)
+            Form feed (\f)
+            Vertical tab (\v)
+        */
+
+        // Handle null or empty strings gracefully
+        if (string.IsNullOrEmpty(input)) return input;
+
+        // The \s character class in RegEx matches any whitespace character,
+        // including space, \t (tab), \r (carriage return), and \n (newline).
+        // The + quantifier means "one or more" of the preceding element.
+        // So, \s+ finds all sequences of one or more whitespace chars.
+        // We replace each found sequence with a single space " ".
+
+        // Using the static Regex.Replace method:
+        return Regex.Replace(input, @"\s+", " ");
+
+        // Alternatively, using the pre-compiled instance:
+        // return _whitespaceRegex.Replace(input, " ");
+    }
+
+
     #endregion (+) Public static methods
 
 
 }
+
+
+
+
+
+
+
