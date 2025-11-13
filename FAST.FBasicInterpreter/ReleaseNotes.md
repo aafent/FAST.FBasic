@@ -9,6 +9,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-11-13 | Support for .Net.10.0                                  |
 | 2025-11-03 | New function singlewhite() to Text Replacer Library    |
 | 2025-11-01 | New Packages versions (Interpreter,Toolkit)            |
 | 2025-11-01 | New library for basic Json operations.                 |
