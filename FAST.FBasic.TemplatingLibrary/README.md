@@ -1,5 +1,12 @@
 ﻿This is a library for FBASIC
 
+Further documentation will come soon. Check the [`Business Case` here](https://github.com/aafent/FAST.FBasic/wiki/Bussiness-Case-‐-MS‐Word-with-List-of-Customers) for further understanding of the Templating Library
+
+---
+---
+---
+
+
 This library is depending of the package: DocumentFormat.OpenXml 
 
 
