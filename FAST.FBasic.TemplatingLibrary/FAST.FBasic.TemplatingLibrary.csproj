@@ -3,7 +3,7 @@
   <PropertyGroup>
  
 
-	<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+	<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 	<ImplicitUsings>enable</ImplicitUsings>
 	<Nullable>enable</Nullable>
 
@@ -12,7 +12,7 @@
 	<Copyright>Global Cloud Services EOOD</Copyright>
 	<PackageOutputPath>.\Packages</PackageOutputPath>
 	<PackageId>FAST.FBasicTemplatingLibrary</PackageId>
-	<Version>1.0.0</Version>
+	<Version>1.0.1</Version>
 	<Authors>GCS</Authors>
 	<RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
 	<PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
