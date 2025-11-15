@@ -7,8 +7,7 @@ REM ---------------------------------------------------
 REM Category: Collections
 REM
 
-
-rem uncomment the folloing line to perform a database test
+rem uncomment the following line to perform a database test
 'rinput DB, DEMO, ok
 
 

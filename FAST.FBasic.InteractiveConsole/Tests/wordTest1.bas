@@ -4,18 +4,18 @@ REM attaching a second document at the end of the first. The example demonstrati
 REM how to retrieve only the necessary for the template data from the database.
 REM
 
-FILESTREAM template, in, "", "other", "LoanTemplate.docx"    ' Streams Library
+rem Prepare template documents
+FILESTREAM template, inmemory, "", "other", "LoanTemplate.docx"    ' Streams Library
 FILESTREAM final, out, "", "Output", "example1.docx"
-loginfo "Reading the file"
 WORDEXTRACTBODY template, text   ' Templating Library
 
-rem Orchestrate the needed data
-rem extract metadata
-print "Load data on demand..."
+rem Extract metadata
 PHVSDATA allNames text          ' TextReplacer Library
 PHSdata cnames text             ' TextReplacer Library
 
-let LoanAmount=25000
+rem Orchestrate the needed data 
+print "Load data on demand..."
+let AppID=1010  ' Input from the caller application
 
 foreach cnames 
    loginfo "Setting up...."+[cnames.ph]
@@ -25,14 +25,14 @@ endforeach cnames
 
 rem (v) Do the replacement and save the document
 loginfo "Creating the new document"
-WORDREPALCEBODY template, newdoc, allNames   ' Templating Library
+WORDREPALCEBODY template, ALL, allNames   ' Templating Library
+
 
 rem (v) Append Consent 
 FILESTREAM Consent, in, "", "other", "Consent.docx"
-'WORDPAGEBREAK newdoc
-WORDAPPEND Consent, newdoc
+WORDAPPEND Consent, template
 
-SCOPY newdoc,final    ' Streams Library
+SCOPY template,final    ' Streams Library
 
 halt
 
@@ -46,9 +46,17 @@ reset Days
 fetch Days
 return
 
+Appl:
+loginfo "Loading Application: "+AppID
+CURSOR Appl, "select CustomerID,RequestedAmount,LoanTerms,Purpose,ApplicationDate from Applications  where ApplicationID="+sql(AppID)   ' SQLData Adapter 
+reset Appl
+fetch Appl
+
+return
+
 Cust:
-loginfo "Loading Customers"
-CURSOR Cust, "select CustomerID,Name,VatNumber,Email,Address,City from Customers"   ' SQLData Adapter 
+loginfo "Loading Customer:"+[Appl.CustomerID]
+CURSOR Cust, "select Name,VatNumber,Email,Address,City from Customers where CustomerID="+sql([Appl.CustomerID])
 reset Cust
 fetch Cust
 
@@ -58,6 +66,4 @@ notfound:
 print "***NOT FOUND***"
 return
 
-
 End
-

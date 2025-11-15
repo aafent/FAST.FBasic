@@ -44,6 +44,20 @@ namespace FAST.FBasicInteractiveConsole.TestCode
                 FOREIGN KEY (CustomerID) REFERENCES Customers(CustomerID)
             )";
             command.ExecuteNonQuery();
+
+
+            // Create Customers table
+            command.CommandText = @"
+            CREATE TABLE IF NOT EXISTS Applications (
+                ApplicationID INTEGER PRIMARY KEY AUTOINCREMENT,
+                CustomerID INTEGER not null,
+                RequestedAmount REAL not null,
+                LoanTerms INTEGER not null,
+                Purpose TEXT NOT NULL,
+                ApplicationDate TEXT NOT NUll
+            )";
+            command.ExecuteNonQuery();
+
         }
 
         private void InsertSampleData(string connectionString)
@@ -96,7 +110,7 @@ namespace FAST.FBasicInteractiveConsole.TestCode
                 new { CustomerId = 3, Date = "2024-01-30", Amount = 175.50 },
                 new { CustomerId = 4, Date = "2024-03-05", Amount = 220.00 },
                 new { CustomerId = 1, Date = "2024-03-22", Amount = 350.25 }
-            };
+                };
 
                 foreach (var order in orders)
                 {
@@ -106,6 +120,34 @@ namespace FAST.FBasicInteractiveConsole.TestCode
                     cmd.Parameters.AddWithValue("@amount", order.Amount);
                     cmd.ExecuteNonQuery();
                 }
+
+
+                cmd.CommandText = @"
+                INSERT INTO Applications (ApplicationID, CustomerID, RequestedAmount, LoanTerms, Purpose, ApplicationDate) 
+                VALUES (@applicationId, @customerId, @requestedAmount, @loanTerms, @purpose, @applicationDate)";
+
+                var applications = new[] {
+                new { ApplicationId = 1010, CustomerId = 1, Date = "2025-01-15", Amount = 1152.50 },
+                new { ApplicationId = 1011, CustomerId = 1, Date = "2025-02-20", Amount = 2000.00 },
+                new { ApplicationId = 1012, CustomerId = 2, Date = "2025-01-18", Amount = 975.25 },
+                new { ApplicationId = 1013, CustomerId = 3, Date = "2025-02-18", Amount = 3975.00},
+                };
+
+                Random random = new Random();
+                foreach (var appl in applications)
+                {
+                    cmd.Parameters.Clear();
+                    cmd.Parameters.AddWithValue("@applicationId", appl.ApplicationId);
+                    cmd.Parameters.AddWithValue("@customerId", appl.CustomerId);
+                    cmd.Parameters.AddWithValue("@requestedAmount", appl.Amount);
+                    cmd.Parameters.AddWithValue("@loanTerms", random.Next(1,4)*12);
+                    cmd.Parameters.AddWithValue("@purpose", "To buy consumer goods.");
+                    cmd.Parameters.AddWithValue("@applicationDate", appl.Date);
+
+                    cmd.ExecuteNonQuery();
+                }
+
+
 
                 transaction.Commit();
                 Console.WriteLine("Sample data inserted successfully!");
