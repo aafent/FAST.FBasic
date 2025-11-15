@@ -66,6 +66,18 @@
                     }
                 }
 
+                if (modifiers.Contains("D"))
+                {
+                    // Date: YYYY-MM-DD to DD-MM-YYYY 
+                    if (value.Length >= 10 )
+                    {
+                        value = value.Substring(8, 2) + value[4]
+                              + value.Substring(5,2) + value[4]
+                              + value.Substring(0,4) 
+                              + value.Substring(10);
+                    }
+                }
+
                 if (modifiers.Contains("U")) value = value.ToUpper();
                 if (modifiers.Contains("L")) value = value.ToLower();
                 if (modifiers.Contains("P")) value = ToProperCase(value);

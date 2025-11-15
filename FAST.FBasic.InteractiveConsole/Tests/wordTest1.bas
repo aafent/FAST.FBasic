@@ -16,6 +16,7 @@ PHSdata cnames text             ' TextReplacer Library
 rem Orchestrate the needed data 
 print "Load data on demand..."
 let AppID=1010  ' Input from the caller application
+let Today = date()
 
 foreach cnames 
    loginfo "Setting up...."+[cnames.ph]
