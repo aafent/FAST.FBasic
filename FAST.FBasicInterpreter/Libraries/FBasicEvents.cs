@@ -5,6 +5,7 @@
         Statements:
 
         RAISEEVENT event_name [, parameter1, parameter2, ...]	Triggers an event named event_name and optionally passes data (parameters) to any registered handlers. 
+        ERROR RESULTVALUE, error_message
      */
     public class FBasicEvents : IFBasicLibrary
     {
@@ -17,6 +18,7 @@
         public void InstallAll(IInterpreter interpreter)
         {
             interpreter.AddStatement("RAISEEVENT", RaiseEvent);
+            interpreter.AddStatement("ERROR", RaiseError);
         }
 
 
@@ -79,6 +81,22 @@
             }
             
         }
+
+        private static void RaiseError(IInterpreter interpreter)
+        {
+            //Syntax: Error RESULTVALUE, error_message
+            interpreter.SetVar("RESULTVALUE",interpreter.ValueOrVariable(true));
+
+            interpreter.GetNextToken();
+            interpreter.MatchAndThenNextToken(Token.Comma);
+
+            var msg= interpreter.ValueOrVariable(true).ToString();
+
+            interpreter.Error($"",Errors.E001_UserError(msg));
+            return;
+
+        }
+
 
     }
 

@@ -2,6 +2,10 @@
 {
     public static class Errors
     {
+        public static string E001_UserError(string msg)
+        {
+            return $"{msg} [E001].";
+        }
 
         public static string E100_RequestForObjectHandlerNotInstalled(IFBasicRequestForObjectDescriptor request =null, string more="")
         {
