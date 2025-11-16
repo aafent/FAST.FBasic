@@ -207,7 +207,7 @@ namespace FAST.FBasicInterpreter
         /// <param name="collection">The collection handler</param>
         public void AddCollection(string name, IBasicCollection collection)
         {
-            if (!dataAdapters.ContainsKey(name))
+            if (!collections.ContainsKey(name))
             {
                 collections.Add(name, collection);
             }
@@ -215,6 +215,20 @@ namespace FAST.FBasicInterpreter
             {
                 collections[name] = collection;
             }
+        }
+
+        /// <summary>
+        /// Drop and forget a collection of the interpreter
+        /// </summary>
+        /// <param name="name">The collection name</param>
+        /// <param name="collection">The collection handler</param>
+        public void DropCollection(string name)
+        {
+            if (!collections.ContainsKey(name)) return;
+
+            collections[name].ClearCollection(); // prepare collection to remove it
+            collections[name].Reset();
+            collections.Remove(name);
         }
 
         /// <summary>

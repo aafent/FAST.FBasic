@@ -59,6 +59,10 @@ namespace FAST.FBasicInterpreter.DataProviders
             return !this.endOfData;
         }
 
+        /// <summary>
+        /// Reset the Data Reader
+        /// Is the collection is Open, will close it.
+        /// </summary>
         public void Reset()
         {
             if (this.isOpen)
@@ -142,6 +146,11 @@ namespace FAST.FBasicInterpreter.DataProviders
             }
         }
 
+
+        /// <summary>
+        /// Clear Collection.
+        /// It is synonym to Reset()
+        /// </summary>
         public void ClearCollection()
         {
             Reset();

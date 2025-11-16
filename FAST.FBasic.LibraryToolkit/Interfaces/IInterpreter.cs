@@ -23,6 +23,8 @@
         InterpretationState GetState();
         FBasicArray GetArray(string name);
         IBasicCollection GetCollection(string name);
+        void DropCollection(string name);
+
         Marker GetCurrentInstructionMarker();
         T GetDataAdapter<T>(string name) where T : IFBasicDataAdapter;
         Value GetVar(string name);

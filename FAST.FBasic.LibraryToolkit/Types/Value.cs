@@ -82,10 +82,41 @@
         }
 
         /// <summary>
+        /// Constructor with a decimal as initial value
+        /// </summary>
+        /// <param name="decimal">the decimal number</param>
+        public Value(decimal val) : this()
+        {
+            this.Type = ValueType.Real;
+            this.Real = decimal.ToDouble(val);
+        }
+
+        /// <summary>
         /// Constructor with a value an integer casted to Real as initial value
         /// </summary>
         /// <param name="value">The integer</param>
         public Value(int value)
+        {
+            this.Type = ValueType.Real;
+            this.Real = value;
+        }
+
+
+        /// <summary>
+        /// Constructor with a value an long casted to Real as initial value
+        /// </summary>
+        /// <param name="value">The long</param>
+        public Value(long value)
+        {
+            this.Type = ValueType.Real;
+            this.Real = value;
+        }
+
+        /// <summary>
+        /// Constructor with a value an ulong casted to Real as initial value
+        /// </summary>
+        /// <param name="value">The ulong</param>
+        public Value(ulong value)
         {
             this.Type = ValueType.Real;
             this.Real = value;

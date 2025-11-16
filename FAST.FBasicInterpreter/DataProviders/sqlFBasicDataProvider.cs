@@ -1,4 +1,5 @@
-﻿using System.Data.Common;
+﻿using System.Data;
+using System.Data.Common;
 
 namespace FAST.FBasicInterpreter.DataProviders
 {
@@ -27,6 +28,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             this.interpreter = interpreter;
             this.cursors = new();
             this.interpreter.AddStatement("CURSOR", CURSOR);
+            this.interpreter.AddStatement("RETRIEVE", RETRIEVE);
             this.interpreter.AddFunction("sql", SQL);
         }
 
@@ -75,6 +77,8 @@ namespace FAST.FBasicInterpreter.DataProviders
             collection.channel.Close();
         }
 
+
+
         public static void CURSOR(IInterpreter interpreter)
         {
             // Syntax: CURSOR name,sql_command
@@ -105,6 +109,107 @@ namespace FAST.FBasicInterpreter.DataProviders
                 adapter.cursors[name].sqlText = sql; //reset the sql command
                 interpreter.GetCollection(name).Reset();
             }
+        }
+
+        public static void RETRIEVE(IInterpreter interpreter)
+        {
+            // Syntax: RETRIEVE array_name, NEW|APPEND, number|*, SQL Data retrieval statement
+            //  Used to retrieve rows and place them in an array
+            //
+            interpreter.Match(Token.Identifier);           
+            string name = interpreter.lex.Identifier;
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Comma);
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Identifier);
+            string rowSet = interpreter.lex.Identifier.ToUpper();
+            if (rowSet!="NEW" && rowSet!="APPEND")
+            {
+                interpreter.Error(adapterName, Errors.E106_ExpectingKeyword(rowSet,"Only NEW or APPEND is expected.") );
+                return;
+            }
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Comma);
+
+            interpreter.GetNextToken();
+            int maxRows=0;
+            interpreter.MatchAny(Token.Identifier, Token.Value,Token.Asterisk);
+            if (interpreter.LastToken == Token.Asterisk)
+            {
+                maxRows=0;
+            }
+            else
+            {
+                maxRows=interpreter.ValueOrVariable().ToInt();
+            }
+
+            interpreter.GetNextToken();
+            interpreter.Match(Token.Comma);
+
+            interpreter.GetNextToken();
+            string sql = interpreter.Expr().ToString();
+
+            // (v) do the statement
+            var adapter = interpreter.GetDataAdapter<sqlFBasicDataProvider>(adapterName);
+            IBasicCollection collection;
+            if (!adapter.cursors.ContainsKey(name))
+            {
+                adapter.cursors.Add(name, new() { sqlText = sql });
+                collection=new cursorCollection(name, adapter);
+                interpreter.AddCollection(name, collection);
+            }
+            else
+            {
+                adapter.cursors[name].sqlText = sql; //reset the sql command
+                collection = new cursorCollection(name, adapter);
+                collection.ClearCollection();
+            }
+            collection.MoveNext();
+
+
+            if (collection.Current is IDataRecord data)
+            {
+                FBasicArray array;
+                if (interpreter.IsArray(name))
+                {
+                    array = interpreter.GetArray(name);
+                    if (rowSet == "NEW") array.ResetArray();
+                }
+                else
+                {
+                    array=new();
+                    interpreter.AddArray(name, array);
+                }
+                array.SetColumnNamesFrom(data);
+  
+                int row;
+                if (rowSet == "APPEND")
+                {
+                    row=array.Length+1;
+                }
+                else
+                { 
+                    row = array.GetCurrentRow();
+                }
+                
+                if (maxRows == 0 ) maxRows=int.MaxValue;
+                for (int times = 1; times<=maxRows; times++)
+                {
+                    for (int inx = 0; inx < array.ColumnNamesCount; inx++)
+                    {
+                        array[row - 1 + (times-1), inx] = ToolKitHelper.ToValue(data[inx]);
+                    }
+
+                    collection.MoveNext();
+                    if (collection.endOfData) break; // stop early (before maxRow) as no more datas
+                }
+
+                interpreter.DropCollection(name);
+            }
+
         }
         public static Value SQL(IInterpreter interpreter, List<Value> args)
         {

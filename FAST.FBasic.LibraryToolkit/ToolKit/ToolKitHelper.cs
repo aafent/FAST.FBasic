@@ -11,7 +11,7 @@
         /// <param name="value"></param>
         /// <param name="placeholder"></param>
         /// <returns></returns>
-        public static string FormatStringValue(string placeholder, string value )
+        public static string FormatStringValue(string placeholder, string value)
         {
             // Check for formatter: {name:specifier,modifiers}
             string name = placeholder;
@@ -69,11 +69,11 @@
                 if (modifiers.Contains("D"))
                 {
                     // Date: YYYY-MM-DD to DD-MM-YYYY 
-                    if (value.Length >= 10 )
+                    if (value.Length >= 10)
                     {
                         value = value.Substring(8, 2) + value[4]
-                              + value.Substring(5,2) + value[4]
-                              + value.Substring(0,4) 
+                              + value.Substring(5, 2) + value[4]
+                              + value.Substring(0, 4)
                               + value.Substring(10);
                     }
                 }
@@ -151,5 +151,79 @@
             return firstCharUpper + restOfStringLower;
         }
 
+        /// <summary>
+        /// Convert any variable to FBasic Value
+        /// Does not support arrays
+        /// </summary>
+        /// <param name="obj">Input value</param>
+        /// <param name="acceptObjects">Set to true, if object as value type is supported. Default is false</param>
+        /// <returns>Value</returns>
+        public static Value ToValue(object obj, bool acceptObjects = false)
+        {
+            if (obj == null) return Value.Zero;
+            switch (obj)
+            {
+                case char c:
+                    return new Value(c);
+
+                case string s:
+                    return new Value(s);
+
+                case double d:
+                    return new Value(d);
+
+                case float f:
+                    return new Value(f);
+
+                case decimal d:
+                    return new Value(d);
+
+                case int i:
+                    return new Value(i);
+                case uint i:
+                    return new Value(i);
+                case long l:
+                    return new Value(l);
+                case ulong ul:
+                    return new Value(ul);
+
+                case byte b:
+                    return new Value(b);
+
+                case sbyte sb:
+                    return new Value(sb);
+
+                case short sh:
+                    return new Value(sh);
+
+                case ushort sh:
+                    return new Value(sh);
+
+                case DateTime dt:
+                    return new Value(DateOnly.FromDateTime(dt));
+
+                case DateOnly dt:
+                    return new Value(dt);
+
+                case TimeOnly dt:
+                    return new Value(dt);
+
+                case null: // Handle the case where obj is null
+                    throw new ArgumentNullException(nameof(obj));
+
+                default: // Handle any other type
+                    if (!acceptObjects)
+                    {
+                        throw new NotSupportedException($"Type {obj.GetType().Name} is not supported.");
+                    }
+
+                    return new Value(obj, obj.ToString()!);
+
+            }
+
+        }
+
+
     }
 }
+
