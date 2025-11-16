@@ -81,7 +81,14 @@ namespace FAST.FBasicInterpreter
                 Error(Errors.E112_UndeclaredEntity("Array",name));
                 return null; // unnecessary but the compiler will like it...
             }
-            return this.arrays[name];
+            var array= this.arrays[name];
+            if (array.LazyInitializingCallback == null) return array;
+
+            // (v) init
+            array.LazyInitializingCallback(null); 
+            array.LazyInitializingCallback=null;
+
+            return array;
         }
 
         /// <summary>

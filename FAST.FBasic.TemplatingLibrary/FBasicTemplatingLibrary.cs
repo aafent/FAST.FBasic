@@ -356,7 +356,6 @@ namespace FAST.FBasic.TemplatingLibrary
             var replacements=array.ConvertToDictionary<string,string>(0,1);
             foreach (var item in replacements)
             {
-                Console.WriteLine(item.Value);
                 replacements[item.Key] = ToolKitHelper.FormatStringValue(item.Key, interpreter.GetValue(item.Value).ToString());
             }
             new WordPlaceHolder(placeHolderPrefix,placeHolderSuffix).ReplacePlaceholders(((Stream)stream.Object), replacements, policy);

@@ -7,6 +7,8 @@
     {
         private string[] columnNames = new string[0];
 
+        public Action<object[]> LazyInitializingCallback = null!; 
+
         /// <summary>
         /// Default is false. If it is true, on delete row statement, the row order will prevented
         /// but the operation will be slow, as all the rows will shifted one up. 

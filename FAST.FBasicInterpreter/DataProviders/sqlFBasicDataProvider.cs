@@ -152,6 +152,21 @@ namespace FAST.FBasicInterpreter.DataProviders
             interpreter.GetNextToken();
             string sql = interpreter.Expr().ToString();
 
+            // (v) add the array with lazy initializing method
+            FBasicArray array;
+            if (interpreter.IsArray(name))
+            {
+                array = interpreter.GetArray(name);
+            }
+            else
+            {
+                array = new();
+                interpreter.AddArray(name,array);
+            }
+            array.LazyInitializingCallback=(a)=>lazyRetrieve(interpreter, array, name, rowSet, maxRows, sql);
+            
+
+            /*
             // (v) do the statement
             var adapter = interpreter.GetDataAdapter<sqlFBasicDataProvider>(adapterName);
             IBasicCollection collection;
@@ -209,7 +224,7 @@ namespace FAST.FBasicInterpreter.DataProviders
 
                 interpreter.DropCollection(name);
             }
-
+            */
         }
         public static Value SQL(IInterpreter interpreter, List<Value> args)
         {
@@ -234,6 +249,58 @@ namespace FAST.FBasicInterpreter.DataProviders
             return args[0]; // will never reach this point
         }
 
+
+        private static void lazyRetrieve(IInterpreter interpreter, FBasicArray array, string name, string rowSet, int maxRows, string sql)
+        {
+            // (v) do the statement
+            var adapter = interpreter.GetDataAdapter<sqlFBasicDataProvider>(adapterName);
+            IBasicCollection collection;
+            if (!adapter.cursors.ContainsKey(name))
+            {
+                adapter.cursors.Add(name, new() { sqlText = sql });
+                collection = new cursorCollection(name, adapter);
+                interpreter.AddCollection(name, collection);
+            }
+            else
+            {
+                adapter.cursors[name].sqlText = sql; //reset the sql command
+                collection = new cursorCollection(name, adapter);
+                collection.ClearCollection();
+            }
+            collection.MoveNext();
+
+            if (collection.Current is IDataRecord data)
+            {
+                if (rowSet == "NEW") array.ResetArray();
+
+                array.SetColumnNamesFrom(data);
+
+                int row;
+                if (rowSet == "APPEND")
+                {
+                    row = array.Length + 1;
+                }
+                else
+                {
+                    row = array.GetCurrentRow();
+                }
+
+                if (maxRows == 0) maxRows = int.MaxValue;
+                for (int times = 1; times <= maxRows; times++)
+                {
+                    for (int inx = 0; inx < array.ColumnNamesCount; inx++)
+                    {
+                        array[row - 1 + (times - 1), inx] = ToolKitHelper.ToValue(data[inx]);
+                    }
+
+                    collection.MoveNext();
+                    if (collection.endOfData) break; // stop early (before maxRow) as no more datas
+                }
+
+                interpreter.DropCollection(name);
+            }
+
+        }
 
     }
 
