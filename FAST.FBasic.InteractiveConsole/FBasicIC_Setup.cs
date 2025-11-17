@@ -1,14 +1,11 @@
 ﻿using FAST.FBasic.InteractiveConsole.DemoObjects;
 using FAST.FBasic.TemplatingLibrary;
 using FAST.FBasicInteractiveConsole.BusinessCases;
-using FAST.FBasicInteractiveConsole.TestCode;
 using FAST.FBasicInterpreter;
 using FAST.FBasicInterpreter.Types;
 using Microsoft.Data.Sqlite;
-using Microsoft.Extensions.Configuration;
 using System.Dynamic;
 using System.Text.Json;
-using System.Xml.XPath;
 
 namespace FAST.FBasic.InteractiveConsole
 {
@@ -20,6 +17,12 @@ namespace FAST.FBasic.InteractiveConsole
             env.DefaultEnvironment(programsFolder);
             env.requestForObjectHandler = (request) =>
             {
+                // (v) Get a string from configuration files
+                string entry = config[$"RequestForObject:{request.Level3Request()}"]!;
+                if (string.IsNullOrEmpty(entry) ) entry = config[$"RequestForObject:{request.Level2Request()}"]!;
+                if (!string.IsNullOrEmpty(entry)) return entry;
+
+                // (v) return Object using HC logic
 
                 if ( request.Level3Request() == "SQL.CONNECTION.MyCursor1")
                 {
@@ -69,6 +72,7 @@ namespace FAST.FBasic.InteractiveConsole
                     return emp;
                 }
 
+                // (v) Nothing found, so raise an error
                 Console.WriteLine($"Interactive: THE REQUEST FOR OBJECT NOT FOUND. Context:{request.Context}, Group:{request.Group}, Name:{request.Name}");
 
                 return null;
@@ -85,6 +89,7 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicStreams());
             env.AddLibrary(new FBasicJsonLibrary());
             env.AddLibrary(new FBasicTemplatingLibrary());
+            env.AddLibrary(new FBasicAIChat());
             env.AddVariable("table.column", "myColumn1");
 
             FBasicEvents.Reset();

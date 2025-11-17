@@ -1,4 +1,4 @@
-﻿namespace FAST.IAIProvider
+﻿namespace FAST.AIProvider
 {
     /// <summary>
     /// Main Session Manager

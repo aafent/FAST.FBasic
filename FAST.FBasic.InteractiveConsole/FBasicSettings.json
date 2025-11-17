@@ -5,5 +5,13 @@
   },
   "ConnectionStrings": {
     "DefaultConnection": "Server=myServer;Database=myDB;Trusted_Connection=True;"
+  },
+  "RequestForObject": {
+    "APIKEY.OPENAI": "<Your_API_Key_Here>",
+    "APIKEY.GEMINI": "<Your_API_Key_Here>",
+    "APIKEY.CLAUDE": "<Your_API_Key_Here>",
+    "APIKEY.HUGGINGFACE": "<Your_API_Key_Here>",
+    "APIKEY.TEST": "test"
   }
+
 }

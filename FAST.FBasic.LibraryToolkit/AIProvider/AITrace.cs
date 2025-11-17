@@ -1,4 +1,4 @@
-﻿namespace FAST.IAIProvider
+﻿namespace FAST.AIProvider
 {
     /// <summary>
     /// Trace record of AI provider

@@ -2,7 +2,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace FAST.IAIProvider
+namespace FAST.AIProvider
 {
     /// <summary>
     /// Hugging Face Inference Providers API (New 2025 API)

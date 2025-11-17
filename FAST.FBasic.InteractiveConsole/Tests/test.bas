@@ -1,16 +1,11 @@
 rem
 
-' RETRIEVE array_name, NEW|APPEND, number|*, SQL Data retrieval statement
-retrieve Cust, APPEND, *, "select CustomerID, Name, Email,City from Customers where CustomerID=1"  
-retrieve Cust, APPEND, 1, "select CustomerID, Name, Email,City from Customers"  
-retrieve Cust, APPEND, 2, "select CustomerID, Name, Email,City from Customers"  
+AiPROVIDER prov, test, *
+AiSESSION chat, prov, "You are an Oceanographer. Provide clear and concise responses, no more that 100 words."
 
-Error 1,"Not found"
+AiPROMPT chat, resp, "What is the whale? reply with up to 20 words" 
 
-print "Count="+ubound("Cust")
-print [Cust.CustomerID]+": Name:"+[Cust.Name]+", Email: "+[Cust.Email]
-
-
+print resp
 
 halt
 

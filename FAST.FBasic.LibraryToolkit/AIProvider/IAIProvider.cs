@@ -1,5 +1,5 @@
 ﻿
-namespace FAST.IAIProvider
+namespace FAST.AIProvider
 {
     /// <summary>
     /// Base interface for all AI providers

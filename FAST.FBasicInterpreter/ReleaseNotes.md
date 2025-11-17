@@ -9,7 +9,9 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
-| 2025-11-16 | Now Arrays supporting the Lazy Initialization Pattern           |
+| 2025-11-17 | New Package version for Interpreter and Toolkit        |
+| 2025-11-17 | AI Chat Library added                                  |
+| 2025-11-16 | Now Arrays supporting the Lazy Initialization Pattern  |
 | 2025-11-16 | New statement RETRIEVE for SQL Data Adapter using lazy initialization |
 | 2025-11-15 | New format specifier D for dates                       |
 | 2025-11-13 | Support for .Net.10.0                                  |

@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using System.Text.Json;
 
-namespace FAST.IAIProvider
+namespace FAST.AIProvider
 {
     // Google Gemini Provider
     public class GeminiProvider : IAIProvider, IAITraceableProvider
