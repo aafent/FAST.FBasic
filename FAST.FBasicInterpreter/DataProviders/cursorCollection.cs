@@ -2,11 +2,11 @@
 
 namespace FAST.FBasicInterpreter.DataProviders
 {
-    public class cursorCollection : dataReaderCollection<DbDataReader, sqlFBasicDataProvider>
+    public class CursorCollection : DataReaderCollection<DbDataReader, FBasicSqlDataProvider>
     {
         public override string title => "CURSOR";
 
-        public cursorCollection(string cursorName, sqlFBasicDataProvider callback) : base(cursorName, callback)
+        public CursorCollection(string cursorName, FBasicSqlDataProvider callback) : base(cursorName, callback)
         {
         }
 

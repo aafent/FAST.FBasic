@@ -1,5 +1,6 @@
 ﻿using FAST.FBasic.InteractiveConsole.DemoObjects;
 using FAST.FBasic.TemplatingLibrary;
+using FAST.FBasicInteractiveConsole.BusinessCases;
 using FAST.FBasicInteractiveConsole.TestCode;
 using FAST.FBasicInterpreter;
 using FAST.FBasicInterpreter.Types;

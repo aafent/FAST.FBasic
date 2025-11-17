@@ -141,7 +141,7 @@ public static class FBasicDynamicJsonDeserializer
 }
 
 // Usage Examples
-public class Program
+public class TestProgram
 {
     public static void Main()
     {

@@ -6,7 +6,7 @@ namespace FAST.FBasicInterpreter.DataProviders
     /// <summary>
     /// FBASIC SQL Data Provider 
     /// </summary>
-    public class sqlFBasicDataProvider : IFBasicDataAdapter
+    public class FBasicSqlDataProvider : IFBasicDataAdapter
     {
         public const string adapterName = "SQL";
         public string name => adapterName;
@@ -32,7 +32,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             this.interpreter.AddFunction("sql", SQL);
         }
 
-        public bool openCursor(string cursorName, cursorCollection collection)
+        public bool openCursor(string cursorName, CursorCollection collection)
         {
             bool errorFound = false;
 
@@ -71,7 +71,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             return !collection.reader.IsClosed;
         }
 
-        public void closeCursor(string cursorName, cursorCollection collection)
+        public void closeCursor(string cursorName, CursorCollection collection)
         {
             if (collection.channel == null ) return;
             collection.channel.Close();
@@ -98,11 +98,11 @@ namespace FAST.FBasicInterpreter.DataProviders
 
             // (v) do the statement
             //var adapter = (sqlFBasicDataProvider)interpreter.dataAdapters[adapterName];
-            var adapter = interpreter.GetDataAdapter<sqlFBasicDataProvider>(adapterName);
+            var adapter = interpreter.GetDataAdapter<FBasicSqlDataProvider>(adapterName);
             if (!adapter.cursors.ContainsKey(name))
             {
                 adapter.cursors.Add(name, new() { sqlText = sql });
-                interpreter.AddCollection(name, new cursorCollection(name, adapter));
+                interpreter.AddCollection(name, new CursorCollection(name, adapter));
             }
             else
             {
@@ -253,18 +253,18 @@ namespace FAST.FBasicInterpreter.DataProviders
         private static void lazyRetrieve(IInterpreter interpreter, FBasicArray array, string name, string rowSet, int maxRows, string sql)
         {
             // (v) do the statement
-            var adapter = interpreter.GetDataAdapter<sqlFBasicDataProvider>(adapterName);
+            var adapter = interpreter.GetDataAdapter<FBasicSqlDataProvider>(adapterName);
             IBasicCollection collection;
             if (!adapter.cursors.ContainsKey(name))
             {
                 adapter.cursors.Add(name, new() { sqlText = sql });
-                collection = new cursorCollection(name, adapter);
+                collection = new CursorCollection(name, adapter);
                 interpreter.AddCollection(name, collection);
             }
             else
             {
                 adapter.cursors[name].sqlText = sql; //reset the sql command
-                collection = new cursorCollection(name, adapter);
+                collection = new CursorCollection(name, adapter);
                 collection.ClearCollection();
             }
             collection.MoveNext();

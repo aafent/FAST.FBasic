@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.Sqlite;
 
-namespace FAST.FBasicInteractiveConsole.TestCode
+namespace FAST.FBasicInteractiveConsole.BusinessCases
 {
     // NuGet: Install-Package Microsoft.Data.Sqlite
 

@@ -14,7 +14,7 @@ namespace FAST.FBasicInterpreter
     {
         public void InstallAll(IInterpreter interpreter)
         {
-            interpreter.AddDataAdapter(new sqlFBasicDataProvider());
+            interpreter.AddDataAdapter(new FBasicSqlDataProvider());
 
             // (>) in this case, the data adapter is also a library, so it will add the functions and statements itself
         }

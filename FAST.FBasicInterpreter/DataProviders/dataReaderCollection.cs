@@ -7,7 +7,7 @@ namespace FAST.FBasicInterpreter.DataProviders
     /// </summary>
     /// <typeparam name="TReader">The type of the reader</typeparam>
     /// <typeparam name="TCallback">The type of FBASIC data adapter callback</typeparam>
-    public abstract class dataReaderCollection<TReader, TCallback> : IBasicCollection
+    public abstract class DataReaderCollection<TReader, TCallback> : IBasicCollection
         where TReader : IDataReader
         where TCallback : IFBasicDataAdapter
     {
@@ -27,7 +27,7 @@ namespace FAST.FBasicInterpreter.DataProviders
         private string cursorName = null;
         private Dictionary<string, Tuple<int, Type, bool>> columnsMap = null;
 
-        public dataReaderCollection(string cursorName, TCallback callback)
+        public DataReaderCollection(string cursorName, TCallback callback)
         {
             this.callback = callback;
             this.cursorName = cursorName;
