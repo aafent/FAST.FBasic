@@ -14,6 +14,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="PrivateSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="FBasicSettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -7,7 +7,9 @@ var builder = Host.CreateDefaultBuilder(args)
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
         config.AddJsonFile("FBasicSettings.json", optional: true, reloadOnChange: true);
+        config.AddJsonFile("PrivateSettings.json", optional: true, reloadOnChange: true);
     });
+
 var host = builder.Build();
 IConfiguration config = host.Services.GetRequiredService<IConfiguration>();
 FBasicIC FBASIC = new(config);
