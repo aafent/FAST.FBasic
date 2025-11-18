@@ -6,7 +6,7 @@ namespace FAST.FBasicInterpreter
     AIChat:
         Statements:
 
-        AIPROVIDER provider_name, OPENAI|CLAUDE|GEMINI|HUGGINGFACE|TEST, *|model     :: setup a AI provider and a model. Use * for the default model.
+        AIPROVIDER provider_name, OPENAI|CLAUDE|GEMINI|HUGGINGFACE|DEEPSEEK|TEST, *|model     :: setup a AI provider and a model. Use * for the default model.
         AISESSION session_name, provider_name, system_prompt              :: initialize an AI session topic.
         AIPROMPT session_name, variable_response, prompt                  :: Send a prompt over a session and store the response at a variable
         AISETPROVIDER session_name, provider_name                         :: Change the initial provider
@@ -24,7 +24,7 @@ namespace FAST.FBasicInterpreter
 
         private static void AIPROVIDER(IInterpreter interpreter)
         {
-            // Syntax: AIPROVIDER provider_name, OPENAI|CLAUDE|GEMINI|HUGGINGFACE|TEST,  *|model
+            // Syntax: AIPROVIDER provider_name, OPENAI|CLAUDE|GEMINI|HUGGINGFACE|DEEPSEEK|TEST,  *|model
             //  
             interpreter.Match(Token.Identifier);
             string name = interpreter.lex.Identifier;
@@ -75,8 +75,12 @@ namespace FAST.FBasicInterpreter
                 case "HUGGINGFACE":
                     provider = string.IsNullOrEmpty(aiModel)?new HuggingFaceProvider(apiKey):new HuggingFaceProvider(apiKey, aiModel);
                     break;
+                case "DEEPSEEK":
+                    provider = string.IsNullOrEmpty(aiModel) ? new DeepSeekProvider(apiKey) : new DeepSeekProvider(apiKey, aiModel);
+                    break;
+
                 default:
-                    interpreter.Error("AIChat", Errors.E106_ExpectingKeyword(providerNameToUse, "Expected: CLAUDE,GEMINI or HUGGINGFACE") );
+                    interpreter.Error("AIChat", Errors.E106_ExpectingKeyword(providerNameToUse, "Expected: CLAUDE,GEMINI,OPENAI,DEEPSEEK,HUGGINGFACE or TEST") );
                     return;
             }
 
