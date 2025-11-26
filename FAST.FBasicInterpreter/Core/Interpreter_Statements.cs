@@ -139,6 +139,34 @@ namespace FAST.FBasicInterpreter
         }
 
         /// <summary>
+        /// EVAL
+        /// </summary>
+        void EvalStatement()
+        {
+            // (v) load the chain source program
+            string srcCode = Expr().ToString();
+
+            // (v) save the current program state
+            var oldState = this.GetState();
+
+            //// (v) Set the new chain program and execute it
+            lex.SetSource(srcCode);
+            exit = false;
+            GetNextToken();
+            while (!exit) Line(); // do all lines
+            exit = false;
+
+            // (v) restore the old program state
+            this.SetState(oldState);
+
+            // (v) continue with the next instruction
+
+            return;
+        }
+
+
+
+        /// <summary>
         /// HALT | END
         /// </summary>
         void Halt()

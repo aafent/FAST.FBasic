@@ -168,6 +168,7 @@ namespace FAST.FBasicInterpreter
                     case "RETURN": return Token.Return;
                     case "CALL": return Token.Call;
                     case "CHAIN": return Token.Chain;
+                    case "EVAL": return Token.Eval;
                     case "FOREACH": return Token.ForEach;
                     case "ENDFOREACH": return Token.EndForEach;
 

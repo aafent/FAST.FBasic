@@ -90,6 +90,8 @@ namespace FAST.FBasic.InteractiveConsole
             env.AddLibrary(new FBasicJsonLibrary());
             env.AddLibrary(new FBasicTemplatingLibrary());
             env.AddLibrary(new FBasicAIChat());
+            env.AddLibrary(new FBasicLanguageExtensions());
+
             env.AddVariable("table.column", "myColumn1");
 
             FBasicEvents.Reset();

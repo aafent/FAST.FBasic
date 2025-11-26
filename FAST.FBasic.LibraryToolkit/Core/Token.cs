@@ -30,6 +30,7 @@
         Dump,
         Call,
         Chain,
+        Eval,
         ForEach,
         EndForEach,
         SData,

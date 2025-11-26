@@ -31,6 +31,7 @@
                 case Token.Dump: DumpStatement(); break;
                 case Token.Call: CallStatement(); break;
                 case Token.Chain: ChainStatement(); break;
+                case Token.Eval: EvalStatement(); break;
                 case Token.ForEach: ForEachStatement(); break;
                 case Token.EndForEach: EndForEachStatement(); break;
                 case Token.SData: SDataStatement(); break;    

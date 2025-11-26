@@ -35,6 +35,7 @@
                 case Token.Dump:
                 case Token.Call:
                 case Token.Chain:
+                case Token.Eval:
                 case Token.ForEach:
                 case Token.EndForEach:
                 case Token.SData:
