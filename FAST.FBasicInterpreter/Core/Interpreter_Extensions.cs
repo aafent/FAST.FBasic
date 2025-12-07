@@ -175,5 +175,27 @@
             Console.WriteLine(line);
         }
 
+        /// <summary>
+        /// Get the conde within until the EndOfBlock statement 
+        /// </summary>
+        /// <param name="interpreter">this interpreter</param>
+        /// <param name="endOfBlock">the end of block statement</param>
+        /// <returns>the code between the current position until the end of block statement</returns>
+        public static string GetBlockCode(this IInterpreter interpreter, string endOfBlock)
+        {
+            endOfBlock = endOfBlock.ToUpper();
+            string code = "";
+            var currentMarket = interpreter.lex.CurrentSourceMarker; // save the position
+            while (interpreter.lex.GetLine(out string line))
+            {
+                if (string.IsNullOrWhiteSpace(line)) continue;
+                if (line.Trim().ToUpper().StartsWith(endOfBlock)) break;
+                code = code + line;
+            }
+            return code;
+        }
+
+
+
     }
 }

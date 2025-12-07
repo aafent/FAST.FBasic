@@ -29,6 +29,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             this.cursors = new();
             this.interpreter.AddStatement("CURSOR", CURSOR);
             this.interpreter.AddStatement("RETRIEVE", RETRIEVE);
+            this.interpreter.AddStatement("SQLEXEC", SQLEXEC);
             this.interpreter.AddFunction("sql", SQL);
         }
 
@@ -79,7 +80,7 @@ namespace FAST.FBasicInterpreter.DataProviders
 
 
 
-        public static void CURSOR(IInterpreter interpreter)
+        private static void CURSOR(IInterpreter interpreter)
         {
             // Syntax: CURSOR name,sql_command
             //  Used to set the cursor and the sql command or to re-set the sql command
@@ -111,7 +112,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             }
         }
 
-        public static void RETRIEVE(IInterpreter interpreter)
+        private static void RETRIEVE(IInterpreter interpreter)
         {
             // Syntax: RETRIEVE array_name, NEW|APPEND, number|*, SQL Data retrieval statement
             //  Used to retrieve rows and place them in an array
@@ -226,7 +227,58 @@ namespace FAST.FBasicInterpreter.DataProviders
             }
             */
         }
-        public static Value SQL(IInterpreter interpreter, List<Value> args)
+
+        private static void SQLEXEC(IInterpreter interpreter)
+        {
+            // Syntax: SQLEXEC variable|value
+            //  execute an sql script
+            //
+            string sql = interpreter.Expr().ToString();
+
+
+            var name=adapterName;
+            try
+            {
+                var request = new FBasicRequestForObjectDescriptor(interpreter, name, "CONNECTION", "SQLSCRIPT");
+                var connectionObject = interpreter.RequestForObject(request);  
+                if (connectionObject == null)
+                {
+                    interpreter.Error(name, Errors.E128_RequestHandlerNullReturn(name, "CONNECTION", "SQLSCRIPT", "DbConnection object is expected (SqlConnection,OdbcConnect...etc"));
+                    return;
+                }
+
+                DbConnection channel = null;
+                DbCommand command = null;
+
+                channel = connectionObject as DbConnection; // to support all the types of connections (sql,odbc,etc)
+                channel.Open();
+
+                command = channel.CreateCommand();
+                // (>) maybe to do something for the transactions here (see sqlChannel.executeAndGetReader() of FAST, maybe not.
+                command.CommandText =sql;
+                command.CommandType = System.Data.CommandType.Text; // (!) check if need to do something different here 
+                // (>) if pass parameters, this is a nice time to do it
+                var rowsAffected=command.ExecuteNonQuery();
+                interpreter.SetVar("ROWSAFFECTED",new Value(rowsAffected));
+                interpreter.SetVar("FOUND", rowsAffected<1?Value.False:Value.True);
+            }
+            catch (FBasicException)
+            {
+                interpreter.SetVar("ROWSAFFECTED", Value.Zero);
+                interpreter.SetVar("FOUND", Value.False);
+                throw;
+            }
+            catch (Exception ex)
+            {
+                interpreter.SetVar("ROWSAFFECTED", Value.Zero);
+                interpreter.SetVar("FOUND", Value.False);
+                interpreter.Error(name, Errors.X012_GeneralException(name, ex));
+                return;
+            }
+
+        }
+
+        private static Value SQL(IInterpreter interpreter, List<Value> args)
         {
             if (args.Count != 1)
             {
@@ -248,6 +300,7 @@ namespace FAST.FBasicInterpreter.DataProviders
             }
             return args[0]; // will never reach this point
         }
+
 
 
         private static void lazyRetrieve(IInterpreter interpreter, FBasicArray array, string name, string rowSet, int maxRows, string sql)

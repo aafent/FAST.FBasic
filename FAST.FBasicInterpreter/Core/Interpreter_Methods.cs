@@ -172,6 +172,16 @@ namespace FAST.FBasicInterpreter
         }
 
         /// <summary>
+        /// Remove a Statement from the statements
+        /// </summary>
+        /// <param name="name">Statement name</param>
+        public void RemoveStatement(string name)
+        {
+            name = name.ToUpper(); // crucial to be upper
+            if (statements.ContainsKey(name)) statements.Remove(name);
+        }
+
+        /// <summary>
         /// Add data adapter. 
         /// Adapter can added only once
         /// </summary>
@@ -474,11 +484,48 @@ namespace FAST.FBasicInterpreter
                     lib.PrepareToExecute();
                 }
             }
-            lex.SetAddonStatements(statements.Keys.ToArray());
+            RefreshLexerStatements();
             GetNextToken = interpreter_GetNextToken;
             exit = false;
             GetNextToken();
             while (!exit) Line(); // do all lines
+        }
+
+
+        /// <summary>
+        /// Evaluate (Run) a code
+        /// </summary>
+        /// <param name="code">The code to run</param>
+        /// <param name="isolateState">if True, runs in a state that will restored.</param>
+        /// <returns>The RESULTVALUE</returns>
+        public Value Eval(string code, bool isolateState=true)
+        {
+            // (v) save the current program state
+            InterpretationState oldState=null;
+            if (isolateState) oldState=this.GetState();
+
+            //// (v) Set the new chain program and execute it
+            this.lex.SetSource(code);
+            this.exit = false;
+            this.GetNextToken();
+            while (!this.exit) Line(); // do all lines
+            this.exit = false;
+
+            // (v) restore the old program state
+            if (isolateState) this.SetState(oldState);
+
+            // (v) continue with the next instruction
+            if (!this.IsVariable("RESULTVALUE")) return Value.Empty;
+            return this.GetVar("RESULTVALUE");
+        }
+
+        /// <summary>
+        /// Refresh the statements in the Lexer. 
+        /// Invoke once after add/remove of new statements before use them.
+        /// </summary>
+        public void RefreshLexerStatements()
+        {
+            lex.SetAddonStatements(statements.Keys.ToArray());
         }
 
         /// <summary>

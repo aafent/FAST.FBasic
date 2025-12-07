@@ -25,6 +25,11 @@ namespace FAST.FBasicInterpreter
         public Value Value { get; set; } // Last number or string
         public string AddOn { get; set; } // Last AddOn Statement found
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="error"></param>
         public Lexer(string input, ErrorHandler error)
         {
             source = input;
@@ -32,7 +37,6 @@ namespace FAST.FBasicInterpreter
 
             sourceMarker = new Marker(0, 1, 1);
             lastChar = source[0];
-
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace FAST.FBasicInterpreter
             string line = "";
             do
             {
-                line += GetChar();
+              line += GetChar();
             } while (lastChar != '\n' && lastChar != (char)0);
 
             line.Remove(line.Length - 1);
@@ -131,6 +135,34 @@ namespace FAST.FBasicInterpreter
             lastChar = value;
         }
 
+
+        /// <summary>
+        /// Get Line from source
+        /// </summary>
+        /// <returns>a line</returns>
+        public bool GetLine(out string line)
+        {
+            line="";
+            if (lastChar==0)
+            {
+                return false;
+            }
+            if (lastChar == '\r') GetChar();
+            while (lastChar != '\r')
+            {
+                line +=lastChar;
+                GetChar();
+                if (lastChar == 0)
+                {
+                    return false;
+                }
+            }
+            TokenMarker = sourceMarker;
+            return true;
+        }
+
+
+
         /// <summary>
         /// Used to return one Token, the next token from the current marker.
         /// </summary>
@@ -145,11 +177,12 @@ namespace FAST.FBasicInterpreter
 
             if (char.IsLetter(lastChar))
             {
-                Identifier = lastChar.ToString();
+                var tmpIdentifier = lastChar.ToString();
                 while (char.IsLetterOrDigit(GetChar()))
-                    Identifier += lastChar;
+                    tmpIdentifier += lastChar;
 
-                var identifierUpper = Identifier.ToUpper();
+                this.Identifier = tmpIdentifier; // for performance field vs property
+                var identifierUpper = this.Identifier.ToUpper();
                 switch (identifierUpper)
                 {
                     // (v) high priority 

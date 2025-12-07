@@ -139,7 +139,7 @@ namespace FAST.FBasicInterpreter
         }
 
         /// <summary>
-        /// EVAL
+        /// EVAL variable_name 
         /// </summary>
         void EvalStatement()
         {

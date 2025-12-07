@@ -6,9 +6,10 @@
 // MEMSTREAM stream_name
 // SREWIND stream_name
 // STOS stream_name FROM|TO variable        :: STOS is Stream To String and String To Stream statement. If the writing stream (FROM) does not exists, will define it.
+// SCLOSE stream_name                       :: Used to Close and destroy a stream. 
 //
 // todo: SSEEK stream_name, position
-// todo: SCLOSE stream_name
+// 
 // 
 // Stream Functions:
 //
@@ -42,6 +43,7 @@ namespace FAST.FBasicInterpreter
             interpreter.AddStatement("MEMSTREAM", MemStream);
             interpreter.AddStatement("SCOPY", CopyStream);
             interpreter.AddStatement("SREWIND", StreamRewind);
+            interpreter.AddStatement("SCLOSE", SCLOSE);
             interpreter.AddStatement("STOS", SToS);
 
             interpreter.AddFunction("slength", slength);
@@ -120,8 +122,33 @@ namespace FAST.FBasicInterpreter
             return;
         }
 
-            
 
+
+        private void SCLOSE(IInterpreter interpreter)
+        {
+            //
+            // Syntax SCLOSE name
+            //
+
+            // (v) argument: name
+            interpreter.Match(Token.Identifier);
+            string name = interpreter.lex.Identifier;
+            interpreter.GetNextToken();
+
+            // (v) implementation 
+            var stream = interpreter.GetVar(name);
+            checkForStream(interpreter, stream);
+
+            try // suppress all errors, if any
+            {
+                ((Stream)stream.Object).Flush();
+                ((Stream)stream.Object).Close();
+                ((Stream)stream.Object).Dispose();
+            } catch
+            { }
+
+            return;
+        }
 
         private void StreamRewind(IInterpreter interpreter)
         {

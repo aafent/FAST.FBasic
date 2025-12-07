@@ -1,0 +1,85 @@
+﻿let N = 16
+SREWIND GridStream
+STOS GridStream TO GridText
+let row = 0
+let col = 0
+let qRow = 0
+let qCol = 0
+let idx = 0
+let cellChar = "."
+let curCell = "."
+let sideNeighbors = 0
+let newChar = "."
+let NextText = ""
+
+For row = 1 To N
+For col = 1 To N
+
+qRow = row
+qCol = col
+GOSUB GetCell
+curCell = cellChar
+
+sideNeighbors = 0
+
+qRow = row
+qCol = col - 1
+GOSUB GetCell
+if cellChar = "@" Then
+   sideNeighbors = sideNeighbors + 1
+EndIf
+
+qRow = row
+qCol = col + 1
+GOSUB GetCell
+if cellChar = "@" Then
+   sideNeighbors = sideNeighbors + 1
+EndIf
+
+newChar = "."
+if curCell = "@" Then
+   if sideNeighbors = 1 Then
+      newChar = "@"
+   EndIf
+   
+   if sideNeighbors = 2 Then
+      newChar = "@"
+   EndIf
+ Else
+   if sideNeighbors = 2 Then
+      newChar = "@"
+   EndIf
+EndIf
+
+NextText = NextText + newChar
+Next col
+Next row
+
+SREWIND GridStream
+STOS GridStream FROM NextText
+RESULT 0
+END
+
+GetCell:
+if qRow < 1 Then
+   cellChar = "."
+   RETURN    
+EndIf    
+if qRow > N Then
+   cellChar = "."
+   RETURN
+EndIf    
+
+if qCol < 1 Then
+   cellChar = "."
+   RETURN    
+EndIf
+
+if qCol > N Then
+   cellChar = "."
+   RETURN
+EndIf
+
+idx = (qRow - 1) * N + qCol
+cellChar = mid(GridText, idx, 1)
+RETURN

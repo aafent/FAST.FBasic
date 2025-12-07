@@ -15,6 +15,8 @@
         void AddDataAdapter(IFBasicDataAdapter adapter);
         void AddFunction(string name, FBasicFunction function);
         void AddStatement(string name, FBasicStatement statement);
+        void RemoveStatement(string name);
+        void RefreshLexerStatements();
 
         #endregion (+) Add elements methods
 
@@ -78,6 +80,10 @@
         ErrorReturnClass Error(string source, string text);
         void Exec();
         #endregion (+) Program execution methods
+
+
+        Value Eval(string code, bool isolateState);
+
 
         object RequestForObject(IFBasicRequestForObjectDescriptor request, bool errorIfNull = true);
 

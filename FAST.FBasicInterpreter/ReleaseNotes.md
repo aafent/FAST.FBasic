@@ -9,6 +9,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-11-26 | New statements EVAL (core), SCLOSE (streams lib.)      |
 | 2025-11-18 | DeepSeek as AI Provider                                |
 | 2025-11-17 | New Package version for Interpreter and Toolkit        |
 | 2025-11-17 | AI Chat Library added                                  |
