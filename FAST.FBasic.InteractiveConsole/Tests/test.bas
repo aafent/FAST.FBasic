@@ -5,18 +5,23 @@ let a=10
 
 print a
 
-
 statement 2, mystatement
     input lastI
     input arg2
 
-    print arg2
+    print arg2+":"
     for i=1 To lastI
-        print i
+        print i;
+        print " ";
     next i
+    print ""
 endstatement
 
-mystatement 10,"Count to 10"
+for j=1 To 10
+ let msg="Count from 1 to "+j
+ mystatement j, msg
+next j
+
 
 block marika
 let a= 1 

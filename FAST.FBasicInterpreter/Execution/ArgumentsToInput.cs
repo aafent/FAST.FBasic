@@ -35,6 +35,8 @@
                     return s;
                 case int i:
                     return i.ToString();
+                case double d:
+                    return d.ToString();
                 case DateTime dt:
                     var sdt = dt.ToString(Value.dateFormat);
                     return sdt;
