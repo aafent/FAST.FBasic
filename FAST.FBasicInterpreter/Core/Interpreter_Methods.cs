@@ -491,6 +491,25 @@ namespace FAST.FBasicInterpreter
             while (!exit) Line(); // do all lines
         }
 
+        /// <summary>
+        /// Execute the program asynchronous
+        /// </summary>
+        public async Task ExecAsync()
+        {
+            if (this.librariesWithMemory != null)
+            {
+                foreach (var lib in this.librariesWithMemory.Values)
+                {
+                    lib.PrepareToExecute();
+                }
+            }
+            RefreshLexerStatements();
+            GetNextToken = interpreter_GetNextToken;
+            exit = false;
+            GetNextToken();
+            while (!exit) Line(); // do all lines
+        }
+
 
         /// <summary>
         /// Evaluate (Run) a code

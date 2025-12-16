@@ -108,6 +108,90 @@
             return result;
         }
 
+        /// <summary>
+        /// Execute the program and return the results Asynchronous 
+        /// </summary>
+        /// <param name="interpreter">The interpreter</param>
+        /// <param name="copyOfTheVariables">Optional,if true return a copy of the variables otherwise a reference to them</param>
+        /// <returns>the results</returns>
+        public async static Task<ExecutionResult> ExecWithResultAsync(this Interpreter interpreter, bool copyOfTheVariables = false)
+        {
+            bool exception = false;
+            ExecutionResult result = new();
+            try
+            {
+                result.programStartWhen = DateTime.Now;
+                await interpreter.ExecAsync();
+                result.programEndWhen = DateTime.Now;
+                result.hasError = false;
+                result.value = interpreter.Result;
+                if (copyOfTheVariables) // (v) copy of the variables
+                {
+                    var variables = interpreter.GetVariables();
+                    result.variables = new();
+                    foreach (var item in variables)
+                    {
+                        result.variables.Add(item.Key, new Value(item.Value));
+                    }
+                }
+                else
+                {
+                    result.variables = interpreter.GetVariables(); // Reference to the variables
+                }
+            }
+            catch (FBasicException e)
+            {
+                result.hasError = true;
+                result.errorText = e.ToString();
+                result.lineOfError = e.line;
+                result.errorSourceLine = e.sourceLine;
+#if DEBUG
+                result.exception = e;
+#endif
+                exception = true;
+            }
+            catch (IndexOutOfRangeException e1)
+            {
+                result.hasError = true;
+                result.errorText = Errors.E130_OutOfRange(interpreter.lex.Identifier);
+                result.lineOfError = interpreter.lex.CurrentSourceMarker.Line;
+                result.errorSourceLine = interpreter.lex.GetLine(result.lineOfError);
+#if DEBUG
+                result.exception = e1;
+#endif
+                exception = true;
+            }
+            catch (Exception ex)
+            {
+                result.hasError = true;
+                result.lineOfError = interpreter.lex.CurrentSourceMarker.Line;
+                result.errorText = Errors.X012_GeneralException("", ex, $" Near line {result.lineOfError}");
+                result.errorSourceLine = interpreter.lex.GetLine(result.lineOfError);
+#if DEBUG
+                result.exception = ex;
+#endif
+                exception = true;
+            }
+            finally
+            {
+                if (exception) result.programEndWhen = DateTime.Now;
+                foreach (var lib in interpreter.librariesWithMemory)
+                {
+                    if (lib.Value is IDisposable)
+                    {
+                        try // do not produce errors from Dispose
+                        {
+                            ((IDisposable)lib.Value).Dispose();
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
 
         /// <summary>
         /// Get a value of any name (variable, collection item)

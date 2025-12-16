@@ -78,6 +78,11 @@ namespace FAST.FBasicInterpreter
         public Value Result { get; set; }
 
         /// <summary>
+        /// True if runs in Asynchronous mode (Exec or ExecAsync)
+        /// </summary>
+        public bool AsynchronousMode {  get; private set; }
+
+        /// <summary>
         /// The GetNextToken handler, no need to be defined as the the interpreter uses the default built-in.
         /// </summary>
         public FBasicGetNextTokenMethod GetNextToken { get; set;} = null;
