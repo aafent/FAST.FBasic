@@ -20,7 +20,7 @@ while (true)
 {
     try
     {
-        FBASIC.run(iCommand);
+        await FBASIC.run(iCommand);
     }
     catch (Exception ex)
     {

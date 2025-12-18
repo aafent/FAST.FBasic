@@ -47,10 +47,16 @@ namespace FAST.FBasicInterpreter
     public delegate Value FBasicFunction(IInterpreter interpreter, List<Value> args);
 
     /// <summary>
-    /// A new statement delegate
+    /// A new sync statement delegate
     /// </summary>
     /// <param name="interpreter">The instance of this interpreter</param>
-    public delegate void FBasicStatement(IInterpreter interpreter);
+    public delegate void FBasicStatementSync(IInterpreter interpreter);
+
+    /// <summary>
+    /// A new async statement delegate
+    /// </summary>
+    /// <param name="interpreter">The instance of this interpreter</param>
+    public delegate Task FBasicStatementAsync(IInterpreter interpreter);
 
     /// <summary>
     /// Delegate type for GetNextToken Method

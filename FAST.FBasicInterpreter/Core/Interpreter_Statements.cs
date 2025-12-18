@@ -94,7 +94,8 @@ namespace FAST.FBasicInterpreter
             sub.FileHandler = this.FileHandler;
             sub.RequestForObjectHandler = this.RequestForObjectHandler;
             sub.funcs = this.funcs;
-            sub.statements = this.statements;
+            sub.statementsSync = this.statementsSync;
+            sub.statementsAsync = this.statementsAsync;
             if (!this.IsVariable("RESULTVALUE")) this.SetVar("RESULTVALUE", Value.Zero);
             sub.SetVar("RESULTVALUE", this.GetVar("RESULTVALUE")!);
             var subResult = sub.ExecWithResult();
@@ -672,14 +673,6 @@ namespace FAST.FBasicInterpreter
         #region (+) methods to implement the FBASIC Other statements 
 
         /// <summary>
-        /// any ADDON statement
-        /// </summary>
-        void AddOnStatement()
-        {
-            this.statements[lex.AddOn](this);
-        }
-
-        /// <summary>
         /// ASSERT
         /// </summary>
         void Assert()
@@ -691,6 +684,19 @@ namespace FAST.FBasicInterpreter
                 Error("Assertion fault [E108]"); // if out assert evaluate to false, throw error with source code line
             }
         }
+
+        /// <summary>
+        /// Wait statement (returns the time, so, supports both Sync and Async)
+        /// </summary>
+        /// <returns>returns the time (ms) to wait</returns>
+        int waitStatement()
+        {
+            var time = ValueOrVariable(doMatch: true);
+            GetNextToken();
+
+            return time.ToInt();
+        }
+
 
         /// <summary>
         /// DUMP

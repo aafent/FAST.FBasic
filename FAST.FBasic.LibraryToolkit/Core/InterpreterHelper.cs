@@ -40,6 +40,7 @@
                 case Token.EndForEach:
                 case Token.SData:
                 case Token.RInput:
+                case Token.Wait:
                     return true;
 
                 default:

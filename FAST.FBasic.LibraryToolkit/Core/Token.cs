@@ -35,6 +35,7 @@
         EndForEach,
         SData,
         RInput,
+        Wait,
 
 
         NewLine,

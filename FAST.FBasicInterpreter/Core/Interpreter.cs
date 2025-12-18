@@ -53,7 +53,8 @@ namespace FAST.FBasicInterpreter
         private Stack<Marker> instructionStack; // for return points
 
         private Dictionary<string, FBasicFunction> funcs; // all mapped functions
-        private Dictionary<string, FBasicStatement> statements; // all mapped statements
+        private Dictionary<string, FBasicStatementSync> statementsSync; // all mapped statements
+        private Dictionary<string, FBasicStatementAsync> statementsAsync; // all mapped statements
         private int ifCounter; // (NOT WORKING, TO RECHECK) counter used for matching "if" with "else"
 
         private Marker lineMarker; // current line marker

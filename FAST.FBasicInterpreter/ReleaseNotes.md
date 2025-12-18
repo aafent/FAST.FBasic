@@ -9,6 +9,7 @@ For **Business and Technical** documentation read the [Wiki page](https://github
 
 | When       | Description                                            |
 |------------|--------------------------------------------------------|
+| 2025-12-18 | Deeper Async. New Statement WAIT      |
 | 2025-12-16 | Initial support of Asynchronous execution (ExecAsync)  |
 | 2025-12-09 | New statement SQLEXEC                                  |
 | 2025-11-26 | New statements EVAL (core), SCLOSE (streams lib.)      |

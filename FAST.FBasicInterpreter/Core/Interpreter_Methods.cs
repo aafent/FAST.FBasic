@@ -162,13 +162,24 @@ namespace FAST.FBasicInterpreter
         /// Add a new statement
         /// </summary>
         /// <param name="name">The name of the statement</param>
-        /// <param name="statment">A reference to the statement method implementation</param>
-        public void AddStatement(string name, FBasicStatement statement)
+        /// <param name="statement">A reference to the statement method implementation</param>
+        public void AddStatement(string name, FBasicStatementSync statement)
         {
             name = name.ToUpper(); // crucial to be upper
-            if (!statements.ContainsKey(name)) statements.Add(name, statement);
-            else statements[name] = statement;
+            if (!statementsSync.ContainsKey(name)) statementsSync.Add(name, statement);
+            else statementsSync[name] = statement;
 
+        }
+        /// <summary>
+        /// Add a new statement
+        /// </summary>
+        /// <param name="name">The name of the statement</param>
+        /// <param name="statement">A reference to the statement method implementation</param>
+        public void AddStatement(string name, FBasicStatementAsync statement)
+        {
+            name = name.ToUpper(); // crucial to be upper
+            if (!statementsAsync.ContainsKey(name)) statementsAsync.Add(name, statement);
+            else statementsAsync[name] = statement;
         }
 
         /// <summary>
@@ -178,7 +189,8 @@ namespace FAST.FBasicInterpreter
         public void RemoveStatement(string name)
         {
             name = name.ToUpper(); // crucial to be upper
-            if (statements.ContainsKey(name)) statements.Remove(name);
+            if (statementsSync.ContainsKey(name)) statementsSync.Remove(name);
+            if (statementsAsync.ContainsKey(name)) statementsAsync.Remove(name);
         }
 
         /// <summary>
@@ -507,7 +519,7 @@ namespace FAST.FBasicInterpreter
             GetNextToken = interpreter_GetNextToken;
             exit = false;
             GetNextToken();
-            while (!exit) Line(); // do all lines
+            while (!exit) await LineAsync(); // do all lines
         }
 
 
@@ -544,7 +556,8 @@ namespace FAST.FBasicInterpreter
         /// </summary>
         public void RefreshLexerStatements()
         {
-            lex.SetAddonStatements(statements.Keys.ToArray());
+            var all=statementsSync.Keys.Union(statementsAsync.Keys);
+            lex.SetAddonStatements(all.ToArray());
         }
 
         /// <summary>

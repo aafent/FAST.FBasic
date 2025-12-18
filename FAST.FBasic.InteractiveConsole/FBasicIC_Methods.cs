@@ -34,6 +34,7 @@ namespace FAST.FBasic.InteractiveConsole
             Console.WriteLine("HELP | ?  :: Show this help");
             Console.WriteLine("QUIT | Q  :: Exit of the test console program");
             Console.WriteLine("CLS  |    :: Clear the screen");
+            Console.WriteLine("SYNC |    :: switch between async and sync mode");
             Console.WriteLine();
             Console.WriteLine("BC1  |    :: Run Business Case 1 - Credit Scoring");
             Console.WriteLine();

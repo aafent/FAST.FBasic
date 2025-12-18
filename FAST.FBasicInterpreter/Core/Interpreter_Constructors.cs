@@ -51,7 +51,8 @@ namespace FAST.FBasicInterpreter
             this.loops = new Dictionary<string, Marker>();
             this.instructionStack = new();
             this.funcs = new Dictionary<string, FBasicFunction>();
-            this.statements = new();
+            this.statementsSync = new();
+            this.statementsAsync = new();
             this.ifCounter = 0;
             this.Result = new();
         }

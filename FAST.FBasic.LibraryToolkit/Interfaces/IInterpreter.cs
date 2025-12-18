@@ -14,7 +14,7 @@
         void AddCollection(string name, IBasicCollection collection);
         void AddDataAdapter(IFBasicDataAdapter adapter);
         void AddFunction(string name, FBasicFunction function);
-        void AddStatement(string name, FBasicStatement statement);
+        void AddStatement(string name, FBasicStatementSync statement);
         void RemoveStatement(string name);
         void RefreshLexerStatements();
 

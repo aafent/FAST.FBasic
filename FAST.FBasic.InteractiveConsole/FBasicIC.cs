@@ -15,9 +15,11 @@ namespace FAST.FBasic.InteractiveConsole
         string sourceProgram=null!;
         Interpreter basic= null!;
         ExecutionResult result = null!;
+        bool asyncMode = true;
 
-        public void run(string iCommandArg)
+        public async Task run(string iCommandArg)
         {
+            
             if (env == null ) setupEnvironment(); // run once
             iCommand = iCommandArg;
 
@@ -33,7 +35,7 @@ namespace FAST.FBasic.InteractiveConsole
 
                 case "RUN":
                 case "R":
-                    runFBasicProgram();
+                    await runFBasicProgram();
                     break;
 
                 case "DUMP":
@@ -92,6 +94,14 @@ namespace FAST.FBasic.InteractiveConsole
                     }
                     break;
 
+                case "SYNC":
+                    if (asyncMode)
+                        Console.WriteLine("Switching to SYNCHRONOUS mode");
+                    else
+                        Console.WriteLine("Switching to ASYNCHRONOUS mode");
+                    asyncMode = !asyncMode;
+                    break;
+
                 case "S":
                     Console.WriteLine("REVERSED SOURCE:");
                     Console.WriteLine("---------------------------");
@@ -115,7 +125,7 @@ namespace FAST.FBasic.InteractiveConsole
             
         }
 
-        private void runFBasicProgram()
+        private async Task runFBasicProgram()
         {
             
             var basProgramFile = Directory.GetFiles(programsFolder, startupName).FirstOrDefault();
@@ -151,7 +161,15 @@ namespace FAST.FBasic.InteractiveConsole
             basic = new Interpreter(env.installBuiltIns, this.sourceProgram);
             env.SetupInterpreter(basic);
 
-            result=basic.ExecWithResult();
+            if (asyncMode)
+            {
+                result = await basic.ExecWithResultAsync();
+            }
+            else
+            {
+                result = basic.ExecWithResult();
+            }
+            
 
             if (result.hasError)
             {
@@ -161,7 +179,10 @@ namespace FAST.FBasic.InteractiveConsole
             else
             {
                 Console.WriteLine();
-                Console.WriteLine("....................end of program....................");
+                if (asyncMode)
+                    Console.WriteLine("....................end of async program....................");
+                else
+                    Console.WriteLine("....................end of program....................");
                 Console.WriteLine($"Result: {result.value}");
                 Console.WriteLine();
             }
