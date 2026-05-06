@@ -12,7 +12,7 @@
 	<Copyright>Global Cloud Services EOOD</Copyright>
 	<PackageOutputPath>.\Packages</PackageOutputPath>
 	<PackageId>FAST.FBasicTemplatingLibrary</PackageId>
-	<Version>1.0.1</Version>
+	<Version>1.0.2</Version>
 	<Authors>GCS</Authors>
 	<RepositoryUrl>https://github.com/aafent/FAST.FBasic</RepositoryUrl>
 	<PackageProjectUrl>https://github.com/aafent/FAST.FBasic/blob/main/README.md</PackageProjectUrl>
@@ -22,7 +22,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DocumentFormat.OpenXml" Version="3.3.0" />
+    <PackageReference Include="DocumentFormat.OpenXml" Version="3.5.1" />
   </ItemGroup>
 
   <ItemGroup>
